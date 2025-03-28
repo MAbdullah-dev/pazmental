@@ -62,9 +62,9 @@ return [
         'wordpress' => [
             'driver' => 'mysql',
             'host' => env('DB_WORDPRESS_HOST', '127.0.0.1'),
-            'database' => env('DB_WORDPRESS_DATABASE', 'new_pz'),
-            'username' => env('DB_WORDPRESS_USERNAME', 'root'),
-            'password' => env('DB_WORDPRESS_PASSWORD', ''),
+            'database' => env('DB_WORDPRESS_DATABASE', 'stellixsoft_wp76'),
+            'username' => env('DB_WORDPRESS_USERNAME', 'stellixsoft_wp76'),
+            'password' => env('DB_WORDPRESS_PASSWORD', 'py6Lz6)S-3'),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => 'wp_',
