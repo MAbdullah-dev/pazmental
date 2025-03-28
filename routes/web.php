@@ -42,7 +42,6 @@ Route::middleware(['site_access'])->group(
 
 
         Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
-        Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
         Route::get('DetailsView/{data}', DetailsView::class)->name('DetailsView');
     }
 );
@@ -76,3 +75,6 @@ Route::get('/test-db-connection', function () {
         return 'Error: ' . $e->getMessage();
     }
 });
+
+
+Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
