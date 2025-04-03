@@ -520,40 +520,6 @@
         @endauth
     </div>
     <script>
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                console.log("Latitude:", latitude, "Longitude:", longitude);
-
-                // Send the coordinates to your backend via AJAX
-                fetch('/save-location', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                'content')
-                        },
-                        body: JSON.stringify({
-                            latitude,
-                            longitude
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Location saved:', data);
-                        // After successful post, redirect to the desired route with any necessary data
-                        window.location.href = '/process-qr?user=' + encodeURIComponent(data.user) + '&lat=' +
-                            latitude + '&lng=' + longitude;
-                    })
-                    .catch(error => console.error('Error saving location:', error));
-            }, function(error) {
-                console.error("Geolocation error:", error);
-                // Handle error appropriately
-            });
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
         let scrollTimeout;
 
         // Function to redirect the user after 30 seconds of inactivity

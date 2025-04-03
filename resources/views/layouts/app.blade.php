@@ -56,7 +56,43 @@
             $('.select2').select2();
         });
     </script>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if latitude is already provided in the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (!urlParams.has('lat') || !urlParams.has('lng')) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            const lat = position.coords.latitude;
+                            const lng = position.coords.longitude;
+                            // Append coordinates to the current URL
+                            const currentUrl = new URL(window.location.href);
+                            currentUrl.searchParams.set('lat', lat);
+                            currentUrl.searchParams.set('lng', lng);
+                            window.location.href = currentUrl.toString();
+                        },
+                        function(error) {
+                            console.error('Geolocation error:', error);
+                            // If permission is denied or any error occurs, you can still pass empty values
+                            // or a default fallback value if desired.
+                            const currentUrl = new URL(window.location.href);
+                            currentUrl.searchParams.set('lat', '');
+                            currentUrl.searchParams.set('lng', '');
+                            window.location.href = currentUrl.toString();
+                        }
+                    );
+                } else {
+                    console.error('Geolocation is not supported by this browser.');
+                    // Fallback logic if geolocation is not supported
+                    const currentUrl = new URL(window.location.href);
+                    currentUrl.searchParams.set('lat', '');
+                    currentUrl.searchParams.set('lng', '');
+                    window.location.href = currentUrl.toString();
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
