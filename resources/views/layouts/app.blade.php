@@ -63,14 +63,30 @@
                 const longitude = position.coords.longitude;
                 console.log("Latitude:", latitude, "Longitude:", longitude);
 
-                // Redirect to your Laravel route with the coordinates as query parameters
-                const currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('lat', latitude);
-                currentUrl.searchParams.set('lng', longitude);
-                window.location.href = currentUrl.toString();
+                // Send the coordinates to your backend via AJAX
+                fetch('/save-location', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                'content')
+                        },
+                        body: JSON.stringify({
+                            latitude,
+                            longitude
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Location saved:', data);
+                        // After successful post, redirect to the desired route with any necessary data
+                        window.location.href = '/process-qr?user=' + encodeURIComponent(data.user) + '&lat=' +
+                            latitude + '&lng=' + longitude;
+                    })
+                    .catch(error => console.error('Error saving location:', error));
             }, function(error) {
                 console.error("Geolocation error:", error);
-                // Optionally, handle error: redirect without coordinates or show a message
+                // Handle error appropriately
             });
         } else {
             alert("Geolocation is not supported by this browser.");
