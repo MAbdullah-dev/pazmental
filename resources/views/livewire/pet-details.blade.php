@@ -1,6 +1,3 @@
-@php
-    echo 'pet-details.blade.php';
-@endphp
 <section class="medical-history py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
@@ -239,7 +236,7 @@
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
-                                                        & Exit')</a>
+                                                                            & Exit')</a>
             </div>
         @endauth
     </div>
