@@ -57,34 +57,20 @@
         });
     </script>
     <script>
-        // Check if geolocation is supported
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
-                console.log("Latitude: " + latitude + ", Longitude: " + longitude);
+                console.log("Latitude:", latitude, "Longitude:", longitude);
 
-                // Send the coordinates to your Laravel endpoint
-                fetch('/save-location', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                'content')
-                        },
-                        body: JSON.stringify({
-                            latitude,
-                            longitude
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Location saved:', data);
-                        // Optionally, trigger email notification or further redirection
-                    })
-                    .catch(error => console.error('Error saving location:', error));
+                // Redirect to your Laravel route with the coordinates as query parameters
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('lat', latitude);
+                currentUrl.searchParams.set('lng', longitude);
+                window.location.href = currentUrl.toString();
             }, function(error) {
                 console.error("Geolocation error:", error);
+                // Optionally, handle error: redirect without coordinates or show a message
             });
         } else {
             alert("Geolocation is not supported by this browser.");
