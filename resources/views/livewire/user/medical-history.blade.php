@@ -1,3 +1,6 @@
+@php
+    echo 'medical-history.blade.php';
+@endphp
 <section class="medical-history py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="heading my-4 sm:my-9">
@@ -41,205 +44,205 @@
                 <div class="information-wrapper grid gap-4 grid-cols-1 grid-rows-auto px-2 sm:grid-cols-2">
                     @php
 
-                            if ($content['name'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Name') .
-                                    ': </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['name'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['name'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Name') .
+                                ': </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['name'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['cedula_no'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Cedula no') .
-                                    ' :  </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['cedula_no'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['cedula_no'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Cedula no') .
+                                ' :  </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['cedula_no'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['date_of_birth'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Date of Birth') .
-                                    ': </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['date_of_birth'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['date_of_birth'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Date of Birth') .
+                                ': </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['date_of_birth'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['age'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Age') .
-                                    ': </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['age'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['age'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Age') .
+                                ': </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['age'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if (!empty($content['gender'])) {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Gender') .
-                                    ': </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">';
-                                if ($content['gender'] === 'male') {
-                                    echo @translate('Male');
-                                } elseif ($content['gender'] === 'female') {
-                                    echo @translate('Female');
-                                } elseif ($content['gender'] === 'other') {
-                                    echo @translate('Other');
-                                } else {
-                                    echo @translate('Not Specified');
-                                }
-                                echo '</span>';
-                                echo '</div>';
-                                echo '</div>';
+                        if (!empty($content['gender'])) {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Gender') .
+                                ': </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">';
+                            if ($content['gender'] === 'male') {
+                                echo @translate('Male');
+                            } elseif ($content['gender'] === 'female') {
+                                echo @translate('Female');
+                            } elseif ($content['gender'] === 'other') {
+                                echo @translate('Other');
+                            } else {
+                                echo @translate('Not Specified');
                             }
+                            echo '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['home_address'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Home Address') .
-                                    ' :  </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['home_address'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['home_address'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Home Address') .
+                                ' :  </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['home_address'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['emergency_contact_name'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Emergency Contact Name') .
-                                    ': </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['emergency_contact_name'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['emergency_contact_name'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Emergency Contact Name') .
+                                ': </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['emergency_contact_name'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['emergency_phone_no'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Emergency Phone no') .
-                                    ' : </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['emergency_phone_no'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['emergency_phone_no'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Emergency Phone no') .
+                                ' : </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['emergency_phone_no'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['emrg_email'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Emergency Email') .
-                                    ' :  </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['emrg_email'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['emrg_email'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Emergency Email') .
+                                ' :  </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['emrg_email'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['emergency_contact_name2'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Emergency Contact Name2') .
-                                    ' :  </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['emergency_contact_name2'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['emergency_contact_name2'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Emergency Contact Name2') .
+                                ' :  </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['emergency_contact_name2'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['emergency_phone_no2'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Emergency Phone no2') .
-                                    ' :  </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['emergency_phone_no2'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['emergency_phone_no2'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Emergency Phone no2') .
+                                ' :  </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['emergency_phone_no2'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['emrg_email2'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Emergency Email2') .
-                                    ' :  </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['emrg_email2'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['emrg_email2'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Emergency Email2') .
+                                ' :  </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['emrg_email2'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if (!empty($content['marital_status'])) {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Marital Status') .
-                                    ' :  </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">';
-                                if ($content['marital_status'] == 1) {
-                                    echo @translate('Single');
-                                } elseif ($content['marital_status'] == 2) {
-                                    echo @translate('Married');
-                                } elseif ($content['marital_status'] == 3) {
-                                    echo @translate('Divorced');
-                                } elseif ($content['marital_status'] == 4) {
-                                    echo @translate('Widowed');
-                                } else {
-                                    echo @translate('Unknown');
-                                }
-                                echo '</span>';
-                                echo '</div>';
-                                echo '</div>';
+                        if (!empty($content['marital_status'])) {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Marital Status') .
+                                ' :  </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">';
+                            if ($content['marital_status'] == 1) {
+                                echo @translate('Single');
+                            } elseif ($content['marital_status'] == 2) {
+                                echo @translate('Married');
+                            } elseif ($content['marital_status'] == 3) {
+                                echo @translate('Divorced');
+                            } elseif ($content['marital_status'] == 4) {
+                                echo @translate('Widowed');
+                            } else {
+                                echo @translate('Unknown');
                             }
+                            echo '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
 
-                            if ($content['other_id_document'] != '') {
-                                echo '<div class="flex items-start flex-col pl-2">';
-                                echo '<div class="span-wrapper">';
-                                echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
-                                    @translate('Other ID Document') .
-                                    ' :  </span>';
-                                echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
-                                    $content['other_id_document'] .
-                                    '</span>';
-                                echo '</div>';
-                                echo '</div>';
-                            }
+                        if ($content['other_id_document'] != '') {
+                            echo '<div class="flex items-start flex-col pl-2">';
+                            echo '<div class="span-wrapper">';
+                            echo '<span class="text-[16px] dark:text-white text-[#000] font-semibold">' .
+                                @translate('Other ID Document') .
+                                ' :  </span>';
+                            echo '<span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">' .
+                                $content['other_id_document'] .
+                                '</span>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
                     @endphp
 
                 </div>
