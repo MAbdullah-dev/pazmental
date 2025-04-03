@@ -167,8 +167,11 @@ class PatientHistory extends Component
             $ipAddress = '8.8.8.8';
         }
 
+        $latitude = $request->query('lat', null);
+        $longitude = $request->query('lng', null);
+
         $currentUserInfo = Location::get($ipAddress);
 
-        Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo));
+        Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude));
     }
 }
