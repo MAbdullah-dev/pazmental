@@ -15,8 +15,7 @@
         <li><strong>Latitud:</strong> {{ $latitude }}</li>
         <li><strong>Longitud:</strong> {{ $longitude }}</li>
         <li><strong>Ubicación en el mapa:</strong>
-            <a href="https://www.google.com/maps?q={{ $currentUserInfo->latitude }},{{ $currentUserInfo->longitude }}"
-                target="_blank">
+            <a href="https://www.google.com/maps?q={{ $latitude }},{{ $longitude }}" target="_blank">
                 Ver en Google Maps
             </a>
         </li>
