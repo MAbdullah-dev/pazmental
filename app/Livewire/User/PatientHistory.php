@@ -171,7 +171,7 @@ class PatientHistory extends Component
         $latitude = $request->query('lat');
         $longitude = $request->query('lng');
 
-        Log::info("Coordinates received:", ['lat' => $latitude, 'lng' => $longitude]);
+        Log::info('Query parameters:', $request->query());;
 
         $currentUserInfo = Location::get($ipAddress);
 
