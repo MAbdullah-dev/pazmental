@@ -22,4 +22,6 @@ package-lock.json
 composer.lock
 composer
 composer-setup.php
+.htaccess
+index.php
 
