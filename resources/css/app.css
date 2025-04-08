@@ -1,0 +1,391 @@
+@import 'boxicons';
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "@dasundev/livewire-dropzone-styles";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.steps {
+    width: 100%;
+}
+
+.dz-max-w-2xl {
+    max-width: 100%;
+}
+
+.dz-w-14:has(img) {
+    width: auto;
+}
+
+canvas#party-welcome {
+    overflow-y: hidden;
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    display: flex;
+}
+
+.custom-select {
+    appearance: none;
+    background-image: linear-gradient(to right, #FF6B6B, #A500CD) !important;
+    color: white;
+    padding-right: 2.5rem;
+    background-clip: padding-box;
+    background-position: center !important;
+    background-repeat: no-repeat;
+    background-size: 100% !important;
+    border: none !important;
+    width: 100%;
+    font-weight: 600;
+}
+
+.custom-select:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none;
+}
+
+.custom-select option {
+    color: #000;
+}
+
+.custom-select::-ms-expand {
+    display: none;
+    /* Remove default select arrow for IE */
+}
+
+.custom-select-wrapper::after {
+    content: '▼';
+    /* Custom arrow */
+    font-size: 0.75rem;
+    color: white;
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+@media screen and (max-width: 575px) {
+    .custom-select {
+        padding-right: 1.5rem !important;
+        font-size: 12px;
+    }
+}
+
+
+.steps .step {
+
+    position: relative;
+    padding-top: 15px;
+    margin: 0 5px;
+}
+
+.steps .step::after {
+    content: '';
+}
+
+span.step-icon img {
+    max-height: 25px;
+    min-height: 25px;
+    object-fit: contain;
+}
+
+span.step-icon {
+    position: absolute;
+    z-index: 9;
+    font-size: 30px;
+    line-height: 1;
+    top: 0;
+    transform: translateY(80%);
+}
+
+.steps .step::after {
+    content: '' !important;
+    width: 60px;
+    height: 60px;
+}
+
+.steps .step span.step-icon {
+    color: #000;
+}
+
+.dark .steps .step::after,
+.dark .steps .step::before {
+    background-image: linear-gradient(90deg, #ffffff 0%, #ffffff 55%, #ffffff 100%);
+}
+
+.steps .step-primary::after,
+.steps .step-primary::before {
+    background-image: linear-gradient(90deg, #FF6B6B 0%, #A500CD 55%, #0101C5 100%) !important;
+    background-color: none;
+}
+
+
+.steps .step-primary span.step-icon img {
+    filter: invert(1);
+}
+
+.steps .step:before {
+    height: 0.2rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    right: auto;
+    margin-inline-start: 0 !important;
+    position: absolute;
+    top: 20px;
+}
+
+span.step-text {
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+.step-form input,
+.step-form select {
+    max-height: 41px !important;
+}
+
+.phone-number-select .flex:has(select) {
+    background-color: transparent !important;
+}
+
+.phone-number-select .number-select input,
+.phone-number-select .number-select>div {
+    width: 100%;
+}
+
+.phone-number-select input {
+    height: 100%;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    background-color: #fff;
+    border: none !important;
+    outline: none !important;
+}
+
+.phone-number-select select:focus,
+.phone-number-select input:focus,
+.step-form input:focus,
+.phone-number-select .number-select input:focus,
+.step-form input:focus,
+.step-form select:focus {
+    --tw-ring-color: transparent;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
+    outline: none !important;
+    border: none !important;
+}
+
+@media screen and (max-width: 768px) {
+    .dz-p-10 {
+        padding: 0 !important;
+    }
+}
+
+.accordion-collapse {
+    transition-property: height, visibility;
+    transition-duration: 0.3s;
+    height: 0;
+    overflow: hidden;
+}
+
+.accordion-collapse.show {
+    height: auto;
+    overflow: visible;
+}
+
+.accordion-body {
+    padding: 1rem;
+    margin-top: 10px;
+}
+
+.dark .phone-number-select input {
+    background-color: #374151;
+}
+
+.label-text-alt {
+    display: none !important;
+}
+
+.myDate svg {
+    display: none;
+}
+
+.tags-input.input-primary:focus,
+.tags-input.input-primary:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.tags-input input {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    margin-bottom: auto !important;
+    margin-top: 0 !important;
+    display: flex !important;
+}
+
+.text-primary {
+    color: #000 !important;
+}
+
+.dark .text-primary {
+    color: oklch(0.746477 0.0216 264.436) !important;
+}
+
+.accordion-button i {
+    transition: all 0.2s ease-in-out;
+}
+
+.accordion-button:not(.collapsed) i {
+    transform: rotate(180deg);
+}
+
+@media screen and (max-width:1024px) {
+    .drawer-side {
+        position: static;
+        display: flex;
+        width: fit-content;
+        flex-direction: column;
+        overflow: hidden;
+        width: 0;
+    }
+
+    .drawer-side>*:not(.drawer-overlay) {
+        width: 0;
+        overflow: hidden;
+    }
+
+    .drawer-toggle:checked~.drawer-side>*:not(.drawer-overlay),
+    .drawer-toggle:checked~.drawer-side {
+        width: auto;
+        overflow: visible;
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:drawer-open>.drawer-toggle~.drawer-side {
+        display: grid !important;
+    }
+}
+@media screen and (max-width: 480px) {
+    .navitems-wrapper {
+       flex-direction: column !important;
+       justify-content: center !important;
+       gap: 10px;
+    }
+}
+.content-management table tbody > tr td:nth-child(2) {
+    word-break: break-all !important;
+}
+
+.mary-tags-element {
+    word-break: break-all !important;
+    margin-left: 0 !important;
+}
+.input.input-bordered.input-primary {
+    padding-inline-end: 2.5rem !important;
+}
+
+.span-wrapper span:nth-child(2) {
+    word-break: break-all;
+}
+
+.field-groups .span-wrapper span:nth-child(2) {
+    word-break: break-word !important;
+}
+
+[type='checkbox'], [type='radio'] {
+    color: #fc686e !important;
+}
+.alert-white {
+    background-color: #ffffff !important;
+    color: #333333 !important; /* Optional: Adjust text color for contrast */
+    border: 1px solid #ccc !important; /* Optional: Add border for clarity */
+}
+
+
+.toast {
+    white-space: unset !important;
+}
+.pet_label {
+        font-size: 24px !important;
+}
+.information-wrapper:has(.pet_label) .dz-items-start {
+    padding-top: 0;
+}
+.grid_images {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+@media (max-width: 1024px) {
+    .grid_images {
+            margin-top: 70px;
+        }
+}
+@media (max-width: 640px) {
+    .grid_images {
+                    margin-top: 105px;
+                    grid-template-columns: repeat(2, 1fr);
+        }
+}
+.gradient_icons_wrapper {
+    position: relative;
+    padding-inline-start: 3.2rem !important;
+}
+.gradient_icons {
+    position: absolute;
+    top: 50%;
+    left: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+    transform: translateY(-50%);
+}
+.section_icons_wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    flex-direction: column;
+}
+.section_icons_wrapper h5 {
+    text-wrap: nowrap;
+    line-height: 1;
+}
+
+@media screen and (max-width:767px) {
+    .section_icons_wrapper h5 {
+            text-wrap: wrap;
+            line-height: 1.2;
+        }
+}
+.gradient_icons_wrapper_dashboard {
+    position: relative;
+        width: fit-content;
+            margin: 0 auto;
+}
+
+.gradient_icons_dashboard {
+    position: absolute;
+    top: 50%;
+    left: -0.5rem;
+    width: 2.5rem;
+    -o-object-fit: contain;
+    object-fit: contain;
+    transform: translate(-100%, -50%);
+}
