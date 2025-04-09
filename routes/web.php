@@ -54,6 +54,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('login', Adminlogin::class)->name('login');
     });
     Route::middleware('auth:admin')->group(function () {
+        Route::get('/', AdminDashboard::class)->name('dashboard');
         Route::get('manage-language', ManageLanguage::class)->name('language');
         Route::get('editlang/{id}', ManageLanguage::class)->name('editlang');
         Route::delete('deletelang/{id}', [AdminDashboard::class, 'delete'])->name('deletelang');
@@ -65,7 +66,6 @@ Route::post('/change-language', [ManageLanguage::class, 'changeLanguage'])->name
 require __DIR__ . '/auth.php';
 // Route::fallback(ErrorPage::class);
 
-Route::get('/', AdminDashboard::class)->name('dashboard');
 Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
 
 Route::get('/test-db-connection', function () {
