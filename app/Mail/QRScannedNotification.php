@@ -17,7 +17,7 @@ class QRScannedNotification extends Mailable
     public $latitude;
     public $longitude;
 
-    public function __construct($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude)
+    public function __construct($userName, $deviceInfo, $ipAddress, $currentUserInfo)
     {
         $this->userName = $userName;
         $this->deviceInfo = $deviceInfo;
