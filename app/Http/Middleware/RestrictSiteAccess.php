@@ -67,6 +67,6 @@ class RestrictSiteAccess
         }
 
         // Redirect if access is restricted
-        return redirect()->route('wizard')->with('error', 'Invalid or missing QR data.');
+        return redirect('/unauthorized')->with('error', 'Access restricted.');
     }
 }
