@@ -67,7 +67,7 @@ return [
             'password' => env('DB_WORDPRESS_PASSWORD', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => 'wp_',
+            'prefix' => 'wpfr_',
             'strict' => false,
         ],
 
