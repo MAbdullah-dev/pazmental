@@ -27,10 +27,16 @@ use Illuminate\Support\Facades\DB;
 $locales = env('DEFAULT_LANGUAGE');
 session()->put('locale', $locales);
 // Wrap all non-admin routes with 'site_access' middleware
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('wizard', WizardForm::class)->name('wizard');
+});
+
+
 Route::middleware(['site_access'])->group(
     function () {
         Route::middleware(['auth', 'verified'])->group(function () {
-            Route::get('wizard', WizardForm::class)->name('wizard');
+            // Route::get('wizard', WizardForm::class)->name('wizard');
             Route::get('medical-history', MedicalHistory::class)->name('medical-history');
             Route::get('SaveExit', [MedicalHistory::class, 'SaveExit'])->name('SaveExit');
             Route::get('pet-history', PetDetails::class)->name('pet-history');
