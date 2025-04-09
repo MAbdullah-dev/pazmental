@@ -18,6 +18,7 @@ use App\Mail\QRScannedNotification;
 use libphonenumber\PhoneNumberUtil;
 use Illuminate\Support\Facades\Mail;
 use Corcel\WooCommerce\Model\Product;
+use Illuminate\Support\Facades\Log;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\NumberParseException;
 use Stevebauman\Location\Facades\Location;
@@ -167,8 +168,13 @@ class PatientHistory extends Component
             $ipAddress = '8.8.8.8';
         }
 
+        $latitude = $request->query('lat');
+        $longitude = $request->query('lng');
+
+        Log::info('Query parameters:', $request->query());;
+
         $currentUserInfo = Location::get($ipAddress);
 
-        Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo));
+        Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude));
     }
 }
