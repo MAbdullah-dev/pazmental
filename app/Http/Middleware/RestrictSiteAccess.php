@@ -6,6 +6,7 @@ use Closure;
 use Corcel\Model\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\URL;
 
@@ -62,10 +63,10 @@ class RestrictSiteAccess
             }
         } catch (\Exception $e) {
             // Log error for debugging purposes
-            \Log::error('Middleware error: ' . $e->getMessage());
+            Log::error('Middleware error: ' . $e->getMessage());
         }
 
         // Redirect if access is restricted
-        return redirect('/unauthorized')->with('error', 'Access restricted.');
+        return redirect()->route('wizard')->with('error', 'Invalid or missing QR data.');
     }
 }
