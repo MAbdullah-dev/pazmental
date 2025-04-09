@@ -5,13 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-<meta name="apple-mobile-web-app-title" content="Mirpre">
+    <meta name="apple-mobile-web-app-title" content="Mirpre">
     <title>{{ config('app.name', 'Mirpre') }}</title>
-<link rel="icon" type="image/png" href="{{ asset('assets/images/favicon-96x96.png') }}" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/favicon.svg') }}" />
-<link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
-<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/apple-touch-icon.png') }}" />
-<link rel="manifest" href="{{ asset('assets/images/site.webmanifest') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/favicon.svg') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/apple-touch-icon.png') }}" />
+    <link rel="manifest" href="{{ asset('assets/images/site.webmanifest') }}" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -47,8 +47,8 @@
                     <ul
                         class="menu border-r p-4 w-80 min-h-full bg-white dark:bg-gray-900 text-base-content border-gray-200 dark:border-gray-300">
                         <!-- Sidebar content here -->
-                        <li><a href="{{route('admin.dashboard')}}">@translate('Management')</a></li>
-                        <li><a href="{{route('admin.language')}}">@translate('Add Language')</a></li>
+                        {{-- <li><a href="{{route('admin.dashboard')}}">@translate('Management')</a></li> --}}
+                        <li><a href="{{ route('admin.language') }}">@translate('Add Language')</a></li>
 
                     </ul>
 
@@ -57,7 +57,7 @@
         </main>
     </div>
     <livewire:layout.footer />
-    <mary-toast/>
+    <mary-toast />
     @livewireScripts
     @stack('js')
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
