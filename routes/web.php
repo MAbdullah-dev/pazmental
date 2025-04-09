@@ -42,7 +42,6 @@ Route::middleware(['site_access'])->group(
 
 
         Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
-        Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
         Route::get('DetailsView/{data}', DetailsView::class)->name('DetailsView');
     }
 );
@@ -67,6 +66,7 @@ require __DIR__ . '/auth.php';
 // Route::fallback(ErrorPage::class);
 
 Route::get('/', AdminDashboard::class)->name('dashboard');
+Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
 
 Route::get('/test-db-connection', function () {
     try {
