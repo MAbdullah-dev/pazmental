@@ -168,8 +168,12 @@ class PatientHistory extends Component
             $ipAddress = '8.8.8.8';
         }
 
-        // $latitude = $request->query('lat');
-        // $longitude = $request->query('lng');
+        $latitude = $request->query('lat');
+        $longitude = $request->query('lng');
+
+        if ($latitude && $longitude === '') {
+            return;
+        }
 
         Log::info('Query parameters:', $request->query());;
 
