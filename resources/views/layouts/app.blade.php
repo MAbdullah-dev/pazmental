@@ -28,10 +28,12 @@
 
 <body class="font-sans antialiased">
     <!-- Location Required Overlay -->
-    <div id="locationOverlay" class="location-overlay">
+    <div id="locationOverlay" class="location-overlay mx-auto">
         <h2>Please Enable Location</h2>
         <p>We need your location to proceed. Click below to allow access.</p>
-        <button id="allowLocation" class="btn btn-primary">Allow Location</button>
+        <button id="allowLocation"
+            class="flex w-fit mx-auto my-4 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white capitalize">Allow
+            Location</button>
     </div>
 
     <!-- Main Content (hidden until location is provided) -->
@@ -70,9 +72,8 @@
             const mainContent = document.getElementById('mainContent');
             const allowButton = document.getElementById('allowLocation');
 
-            // Check if lat and lng are already in URL and valid
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                'lng') !== '') {
+                    'lng') !== '') {
                 overlay.classList.add('hidden');
                 mainContent.style.display = 'block';
             } else {
