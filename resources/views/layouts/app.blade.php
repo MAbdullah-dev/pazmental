@@ -29,9 +29,10 @@
 <body class="font-sans antialiased">
     <!-- Location Required Overlay -->
     <div id="locationOverlay"
-        class="location-overlay fixed inset-0 bg-gray-900 text-white flex flex-col justify-content-center items-center z-[9999] p-5">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4">Please Enable Location</h2>
-        <p class="text-lg md:text-xl mb-6 max-w-lg">We need your location to proceed. Click below to allow access.</p>
+        class="location-overlay fixed inset-0 flex flex-col justify-content-center items-center p-5">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 color-black">Please Enable Location</h2>
+        <p class="text-lg md:text-xl mb-6 max-w-lg color-black">We need your location to proceed. Click below to allow
+            access.</p>
         <button id="allowLocation"
             class="w-fit mx-auto my-4 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white capitalize hover:from-[#FF8787] hover:to-[#B91CDE] transition-colors">
             Allow Location

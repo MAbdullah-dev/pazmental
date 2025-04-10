@@ -17,14 +17,14 @@ class QRScannedNotification extends Mailable
     public $latitude;
     public $longitude;
 
-    public function __construct($userName, $deviceInfo, $ipAddress, $currentUserInfo)
+    public function __construct($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude)
     {
         $this->userName = $userName;
         $this->deviceInfo = $deviceInfo;
         $this->ipAddress = $ipAddress;
         $this->currentUserInfo = $currentUserInfo;
-        $this->latitude = request()->query('lat');
-        $this->longitude = request()->query('lng');
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
 
         // dd($userName, $deviceInfo, $ipAddress, $currentUserInfo);
     }

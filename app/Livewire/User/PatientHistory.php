@@ -171,14 +171,18 @@ class PatientHistory extends Component
         $latitude = $request->query('lat');
         $longitude = $request->query('lng');
 
-        if ($latitude && $longitude === '') {
-            return;
+        // Check if latitude or longitude is null or empty, and stop execution if so
+        if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
+            Log::info('Email not sent: Latitude or Longitude is missing.', [
+                'email' => $email,
+                'latitude' => $latitude,
+                'longitude' => $longitude
+            ]);
+            return; // Exit the function early
         }
-
-        Log::info('Query parameters:', $request->query());;
 
         $currentUserInfo = Location::get($ipAddress);
 
-        Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo));
+        Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude));
     }
 }
