@@ -5,6 +5,9 @@
         <p class="dark:text-white py-2 uppercase text-[16px] text-[#000] font-semibold">
             @translate('My Personal Emergency Response RecordTM')</p>
         <p class="dark:text-white py-2 text-[16px] text-[#000] font-semibold">@translate('A solution by Paz Mental')</p>
+        <a class="flex w-fit mx-auto my-4 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white capitalize"
+            href="{{ route('wizard') }}">Insert Details</a>
+
         @if (get_user_products())
             @php
                 $details_added = 0;
@@ -27,7 +30,6 @@
                         @translate('Añade tus datos')
                     @endif
                 </a>
-                <a href="{{ route('wizard') }}">Insert Details</a>
             </div>
 
         @endif
