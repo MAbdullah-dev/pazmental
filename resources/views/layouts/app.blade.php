@@ -77,8 +77,8 @@
             const isAndroid = /Android/.test(navigator.userAgent);
 
             // Check if latitude and longitude are already in the URL
-            if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                    'lng') !== '') {
+            if (urlParams.has('lat') && urlParams.has('lon') && urlParams.get('lat') !== '' && urlParams.get(
+                    'lon') !== '') {
                 overlay.classList.add('hidden');
                 mainContent.style.display = 'block';
             } else {
@@ -96,11 +96,11 @@
                         navigator.geolocation.getCurrentPosition(
                             function(position) {
                                 const lat = position.coords.latitude;
-                                const lng = position.coords.longitude;
-                                console.log("Coordinates captured:", lat, lng);
+                                const lon = position.coords.longitude;
+                                console.log("Coordinates captured:", lat, lon);
                                 const currentUrl = new URL(window.location.href);
                                 currentUrl.searchParams.set('lat', lat);
-                                currentUrl.searchParams.set('lng', lng);
+                                currentUrl.searchParams.set('lon', lon);
                                 console.log("Redirecting to:", currentUrl.toString());
                                 window.location.href = currentUrl.toString();
                             },
@@ -108,9 +108,9 @@
                                 console.error('Geolocation error:', error);
                                 handleGeolocationError(error);
                             }, {
-                                enableHighAccuracy: true, // Request high accuracy for better precision
-                                timeout: 15000, // Increased timeout for slower devices
-                                maximumAge: 0 // Ensure fresh data
+                                enableHighAccuracy: true,
+                                timeout: 15000,
+                                maximumAge: 0
                             }
                         );
                     } else {
