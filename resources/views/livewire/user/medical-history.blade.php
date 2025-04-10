@@ -519,41 +519,7 @@
             </div>
         @endauth
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (!urlParams.has('lat') || !urlParams.has('lng')) {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        function(position) {
-                            const lat = position.coords.latitude;
-                            const lng = position.coords.longitude;
-                            console.log("Coordinates captured:", lat, lng);
-                            const currentUrl = new URL(window.location.href);
-                            currentUrl.searchParams.set('lat', lat);
-                            currentUrl.searchParams.set('lng', lng);
-                            console.log("Redirecting to:", currentUrl.toString());
-                            window.location.href = currentUrl.toString();
-                        },
-                        function(error) {
-                            console.error('Geolocation error:', error);
-                            // In case of error, you can decide how to handle it.
-                            const currentUrl = new URL(window.location.href);
-                            currentUrl.searchParams.set('lat', '');
-                            currentUrl.searchParams.set('lng', '');
-                            window.location.href = currentUrl.toString();
-                        }
-                    );
-                } else {
-                    console.error('Geolocation is not supported by this browser.');
-                    const currentUrl = new URL(window.location.href);
-                    currentUrl.searchParams.set('lat', '');
-                    currentUrl.searchParams.set('lng', '');
-                    window.location.href = currentUrl.toString();
-                }
-            }
-        });
-    </script>
+
     <script>
         let scrollTimeout;
 

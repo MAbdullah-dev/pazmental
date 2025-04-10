@@ -7,11 +7,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="apple-mobile-web-app-title" content="Mirpre">
     <title>{{ config('app.name', 'Mirpre') }}</title>
-  <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon-96x96.png') }}" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/favicon.svg') }}" />
-<link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
-<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/apple-touch-icon.png') }}" />
-<link rel="manifest" href="{{ asset('assets/images/site.webmanifest') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/favicon.svg') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/apple-touch-icon.png') }}" />
+    <link rel="manifest" href="{{ asset('assets/images/site.webmanifest') }}" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -33,11 +33,11 @@
 
         <!-- Page Heading -->
         @if (isset($header))
-        <header class="bg-white dark:bg-gray-800 shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                {{ $header }}
-            </div>
-        </header>
+            <header class="bg-white dark:bg-gray-800 shadow">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
         @endif
 
         <!-- Page Content -->
@@ -54,6 +54,41 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('.select2').select2();
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (!urlParams.has('lat') || !urlParams.has('lng')) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            const lat = position.coords.latitude;
+                            const lng = position.coords.longitude;
+                            console.log("Coordinates captured:", lat, lng);
+                            const currentUrl = new URL(window.location.href);
+                            currentUrl.searchParams.set('lat', lat);
+                            currentUrl.searchParams.set('lng', lng);
+                            console.log("Redirecting to:", currentUrl.toString());
+                            window.location.href = currentUrl.toString();
+                        },
+                        function(error) {
+                            console.error('Geolocation error:', error);
+                            // In case of error, you can decide how to handle it.
+                            const currentUrl = new URL(window.location.href);
+                            currentUrl.searchParams.set('lat', '');
+                            currentUrl.searchParams.set('lng', '');
+                            window.location.href = currentUrl.toString();
+                        }
+                    );
+                } else {
+                    console.error('Geolocation is not supported by this browser.');
+                    const currentUrl = new URL(window.location.href);
+                    currentUrl.searchParams.set('lat', '');
+                    currentUrl.searchParams.set('lng', '');
+                    window.location.href = currentUrl.toString();
+                }
+            }
         });
     </script>
 </body>
