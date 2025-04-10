@@ -77,7 +77,7 @@
 
             // Check if latitude and longitude are already in the URL
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                'lng') !== '') {
+                    'lng') !== '') {
                 overlay.classList.add('hidden');
                 mainContent.style.display = 'block';
             } else {
@@ -148,11 +148,23 @@
                 // Special handling for Safari browser on iOS
                 if (isIOS) {
                     alert(
-                        'For best results, ensure that location access is enabled for Safari in your device settings.');
+                        'For best results, ensure that location access is enabled for Safari in your device settings.'
+                        );
                     // Provide additional guidance if necessary
                 }
             }
         });
+    </script>
+    <script>
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            alert(
+                `Error: ${msg}\nURL: ${url}\nLine: ${lineNo}\nColumn: ${columnNo}\nError object: ${JSON.stringify(error)}`);
+            return false; // Prevent default error handling
+        };
+
+        console.log = function(message) {
+            alert(`Console Log: ${message}`);
+        };
     </script>
 </body>
 
