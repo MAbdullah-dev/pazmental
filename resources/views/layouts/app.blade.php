@@ -63,17 +63,22 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript">
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
+    </script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const overlay = document.getElementById('locationOverlay');
             const mainContent = document.getElementById('mainContent');
             const allowButton = document.getElementById('allowLocation');
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
 
             // Check if latitude and longitude are already in the URL
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                'lng') !== '') {
+                    'lng') !== '') {
                 overlay.classList.add('hidden');
                 mainContent.style.display = 'block';
             } else {
@@ -117,12 +122,14 @@
                     let message = 'Please allow location access to proceed.';
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
-                            message = isSafari ?
-                                'Location access denied. Please tap the "aA" icon in the Safari address bar, select "Website Settings," and set Location to "Allow."' :
+                            message = isIOS ?
+                                'Location permission denied. To enable, tap the "AA" icon in the address bar, select "Website Settings", and set Location to "Ask" or "Allow".' :
                                 'Location permission denied. Please enable it in your browser settings.';
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            message = 'Location unavailable. Please check your device settings.';
+                            message = isIOS ?
+                                'Location unavailable. Please ensure Location Services are enabled in Settings > Privacy > Location Services.' :
+                                'Location unavailable. Please check your device settings.';
                             break;
                         case error.TIMEOUT:
                             message = 'Location request timed out. Please try again.';
@@ -134,13 +141,32 @@
                     alert(message);
                 }
 
+                // Automatically request location for Android devices for better user experience
+                if (isAndroid) {
+                    requestLocation(new Event('initial'));
+                }
+
                 // Special handling for Safari browser on iOS
-                if (isSafari) {
+                if (isIOS) {
                     alert(
-                        'For Safari users: Ensure location access is enabled. Tap the "aA" icon in the Safari address bar, select "Website Settings," and set Location to "Allow."');
+                        'For best results, ensure that location access is enabled for Safari in your device settings.'
+                    );
+                    // Provide additional guidance if necessary
                 }
             }
         });
+    </script>
+    <script>
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            alert(
+                `Error: ${msg}\nURL: ${url}\nLine: ${lineNo}\nColumn: ${columnNo}\nError object: ${JSON.stringify(error)}`
+            );
+            return false; // Prevent default error handling
+        };
+
+        console.log = function(message) {
+            alert(`Console Log: ${message}`);
+        };
     </script>
 </body>
 
