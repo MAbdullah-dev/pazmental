@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="apple-mobile-web-app-title" content="Mirpre">
     <title>{{ config('app.name', 'Mirpre') }}</title>
@@ -29,10 +29,9 @@
 <body class="font-sans antialiased">
     <!-- Location Required Overlay -->
     <div id="locationOverlay"
-        class="location-overlay fixed inset-0 flex flex-col justify-content-center items-center p-5">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4 color-black">Please Enable Location</h2>
-        <p class="text-lg md:text-xl mb-6 max-w-lg color-black">We need your location to proceed. Click below to allow
-            access.</p>
+        class="location-overlay fixed inset-0 bg-gray-900 text-white flex flex-col justify-center items-center p-5">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Please Enable Location</h2>
+        <p class="text-lg md:text-xl mb-6 max-w-lg">We need your location to proceed. Click below to allow access.</p>
         <button id="allowLocation"
             class="w-fit mx-auto my-4 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white capitalize hover:from-[#FF8787] hover:to-[#B91CDE] transition-colors">
             Allow Location
@@ -74,15 +73,21 @@
             const mainContent = document.getElementById('mainContent');
             const allowButton = document.getElementById('allowLocation');
 
+            // Check if lat and lng are valid
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                    'lng') !== '') {
+                'lng') !== '') {
                 overlay.classList.add('hidden');
                 mainContent.style.display = 'block';
             } else {
                 overlay.classList.remove('hidden');
                 mainContent.style.display = 'none';
 
-                allowButton.addEventListener('click', function() {
+                // Ensure button works on touch devices
+                allowButton.addEventListener('click', requestLocation);
+                allowButton.addEventListener('touchend', requestLocation); // Add touch support
+
+                function requestLocation(event) {
+                    event.preventDefault(); // Prevent default behavior on mobile
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
                             function(position) {
@@ -97,13 +102,30 @@
                             },
                             function(error) {
                                 console.error('Geolocation error:', error);
-                                alert('Please allow location access to proceed.');
-                            }
+                                let message = 'Please allow location access to proceed.';
+                                if (error.code === error.PERMISSION_DENIED) {
+                                    message =
+                                        'Location permission denied. Please enable it in your browser settings.';
+                                } else if (error.code === error.POSITION_UNAVAILABLE) {
+                                    message = 'Location unavailable. Please check your device settings.';
+                                } else if (error.code === error.TIMEOUT) {
+                                    message = 'Location request timed out. Please try again.';
+                                }
+                                alert(message);
+                            }, {
+                                timeout: 10000,
+                                maximumAge: 0
+                            } // Add options for better mobile handling
                         );
                     } else {
                         alert('Geolocation is not supported by this browser.');
                     }
-                });
+                }
+
+                // Trigger location request immediately on mobile
+                if (/Mobi|Android|iPhone|iPad/.test(navigator.userAgent)) {
+                    requestLocation(new Event('initial')); // Simulate initial click
+                }
             }
         });
     </script>
