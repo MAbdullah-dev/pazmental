@@ -28,14 +28,15 @@
 
 <body class="font-sans antialiased">
     <!-- Location Required Overlay -->
-    <div id="locationOverlay" class="location-overlay d-flex flex-column justify-content-center align-items-center">
-        <h2>Please Enable Location</h2>
-        <p>We need your location to proceed. Click below to allow access.</p>
+    <div id="locationOverlay"
+        class="location-overlay fixed inset-0 bg-black bg-opacity-80 text-white flex flex-col justify-content-center items-center z-[9999] p-5">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Please Enable Location</h2>
+        <p class="text-lg md:text-xl mb-6 max-w-lg">We need your location to proceed. Click below to allow access.</p>
         <button id="allowLocation"
-            class="flex w-fit mx-auto my-4 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white capitalize">Allow
-            Location</button>
+            class="w-fit mx-auto my-4 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white capitalize hover:from-[#FF8787] hover:to-[#B91CDE] transition-colors">
+            Allow Location
+        </button>
     </div>
-
     <!-- Main Content (hidden until location is provided) -->
     <div id="mainContent" class="bg-white dark:bg-gray-900" style="display: none;">
         <x-mary-toast />
