@@ -28,7 +28,7 @@
 
 <body class="font-sans antialiased">
     <!-- Location Required Overlay -->
-    <div id="locationOverlay" class="location-overlay mx-auto">
+    <div id="locationOverlay" class="location-overlay d-flex flex-column justify-content-center align-items-center">
         <h2>Please Enable Location</h2>
         <p>We need your location to proceed. Click below to allow access.</p>
         <button id="allowLocation"
