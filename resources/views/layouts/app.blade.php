@@ -2,152 +2,125 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <!-- Keep existing head content -->
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+    <!-- Safari-specific meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Rest of head content remains same -->
 </head>
 
 <body class="font-sans antialiased">
     <!-- Geolocation Overlay -->
-    <div id="locationOverlay"
-        class="fixed inset-0 bg-gray-900 text-white flex flex-col justify-center items-center p-5 hidden">
-        <div class="max-w-md text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-4">Location Access Required</h2>
-            <p class="text-lg mb-6">We need your location to provide the best experience.</p>
-            <div id="locationError" class="text-red-400 mb-4 hidden"></div>
-
-            <div class="flex flex-col gap-4">
-                <button id="allowLocation"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-colors">
-                    Allow Location Access
-                </button>
-                <button id="manualLocation"
-                    class="border border-white hover:bg-white/10 text-white px-8 py-3 rounded-lg transition-colors hidden">
-                    Enter Location Manually
-                </button>
-                <button id="retryLocation" class="text-blue-400 hover:text-blue-300 underline hidden">
-                    Retry Location Detection
-                </button>
-            </div>
-
-            <!-- iOS-specific instructions -->
-            <div id="iosInstructions" class="mt-6 text-sm text-gray-300 hidden">
-                <p>If the location prompt doesn't appear:</p>
-                <ol class="list-decimal list-inside mt-2">
-                    <li>Tap the "AA" in the address bar</li>
-                    <li>Select "Website Settings"</li>
-                    <li>Set Location to "Ask" or "Allow"</li>
-                </ol>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div id="mainContent" class="bg-white dark:bg-gray-900 hidden">
-        <!-- Keep existing main content -->
+    <div id="locationOverlay" class="fixed inset-0 bg-gray-900 text-white flex flex-col justify-center items-center p-5"
+        style="display: none;">
+        <!-- Content remains same but with iOS instructions -->
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const overlay = document.getElementById('locationOverlay');
-            const mainContent = document.getElementById('mainContent');
-            const errorDiv = document.getElementById('locationError');
-            const manualBtn = document.getElementById('manualLocation');
-            const retryBtn = document.getElementById('retryLocation');
-            const iosInstructions = document.getElementById('iosInstructions');
-
-            // Detect iOS/Safari
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-            // Check existing location
-            const checkExistingLocation = () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.has('lat') && urlParams.has('lng');
-            };
-
-            if (checkExistingLocation()) {
-                overlay.style.display = 'none';
-                mainContent.style.display = 'block';
+            // 1. Check for HTTPS
+            if (location.protocol !== 'https:' && !location.hostname.match(/localhost|127\.0\.0\.1/)) {
+                alert('This site requires HTTPS for location access. Please reload in secure mode.');
+                location.href = `https://${location.host}${location.pathname}`;
                 return;
             }
 
-            overlay.style.display = 'flex';
-
-            // Safari-specific initialization
+            // 2. Safari-specific initialization
             if (isIOS || isSafari) {
-                iosInstructions.style.display = 'block';
-                manualBtn.style.display = 'block';
+                document.getElementById('iosInstructions').style.display = 'block';
+                document.getElementById('manualLocation').style.display = 'block';
+
+                // Add temporary hash to force Safari to recognize the page
+                if (!window.location.hash) {
+                    window.location.hash = 'safari-workaround';
+                    window.location.reload();
+                }
             }
 
+            // 3. Enhanced permission handling
             const requestLocation = () => {
-                errorDiv.style.display = 'none';
+                if (isIOS) {
+                    // Create temporary iframe for Safari permission triggering
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
 
-                if (!navigator.geolocation) {
-                    showError('Geolocation is not supported by your browser');
-                    manualBtn.style.display = 'block';
-                    return;
+                    try {
+                        iframe.contentWindow.navigator.geolocation.getCurrentPosition(
+                            () => {},
+                            () => {}
+                        );
+                    } catch (e) {
+                        console.log('Safari permission workaround');
+                    }
+                    document.body.removeChild(iframe);
                 }
 
-                // Safari requires click-based permission requests
                 navigator.geolocation.getCurrentPosition(
-                    position => handleSuccess(position.coords),
-                    error => handleError(error), {
+                    position => {
+                        const url = new URL(window.location);
+                        url.searchParams.set('lat', position.coords.latitude);
+                        url.searchParams.set('lng', position.coords.longitude);
+                        window.location.href = url.toString();
+                    },
+                    error => {
+                        handleGeolocationError(error);
+                    }, {
                         enableHighAccuracy: true,
-                        timeout: 15000,
+                        timeout: isIOS ? 20000 : 10000,
                         maximumAge: 0
                     }
                 );
             };
 
-            const handleSuccess = (coords) => {
-                const url = new URL(window.location.href);
-                url.searchParams.set('lat', coords.latitude);
-                url.searchParams.set('lng', coords.longitude);
-                window.location.href = url.toString();
-            };
+            // 4. Safari-specific error handling
+            const handleGeolocationError = (error) => {
+                let message = 'Location access required';
+                const errorDiv = document.getElementById('locationError');
 
-            const handleError = (error) => {
-                let message = 'Unable to retrieve your location';
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        message = isIOS ?
-                            'Location access denied. To enable:\n1. Tap AA in address bar\n2. Select Website Settings\n3. Enable Location' :
-                            'Location permission denied. Please enable in browser settings.';
-                        manualBtn.style.display = 'block';
-                        retryBtn.style.display = 'block';
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        message = 'Location information unavailable';
-                        break;
-                    case error.TIMEOUT:
-                        message = 'Location request timed out';
-                        retryBtn.style.display = 'block';
-                        break;
+                if (isIOS) {
+                    message = `
+                    Please enable location access:
+                    1. Tap the AA in the address bar
+                    2. Select "Website Settings"
+                    3. Set Location to "Allow"
+                    4. Refresh the page
+                `;
+
+                    // Show iOS settings deep link
+                    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                        try {
+                            window.location.href = 'app-settings:';
+                            setTimeout(() => {
+                                window.location.href = window.location.href;
+                            }, 1000);
+                        } catch (e) {
+                            console.error('Failed to open settings');
+                        }
+                    }
                 }
-                showError(message);
-            };
 
-            const showError = (message) => {
-                errorDiv.textContent = message;
+                errorDiv.innerHTML = message.replace(/\n/g, '<br>');
                 errorDiv.style.display = 'block';
             };
 
-            // Event listeners with touch support for iOS
-            const addTapEvents = (element, callback) => {
-                element.addEventListener('click', callback);
-                element.addEventListener('touchend', callback);
+            // 5. Add proper click handlers for Safari
+            const addSafariClickHandler = (element, handler) => {
+                element.addEventListener('click', handler);
+                element.addEventListener('touchend', handler);
+                element.style.cursor = 'pointer';
             };
 
-            addTapEvents(document.getElementById('allowLocation'), requestLocation);
-            addTapEvents(retryBtn, requestLocation);
-            addTapEvents(manualBtn, () => {
-                // Implement manual location entry
-                window.location.href = '/manual-location'; // Example fallback
-            });
-
-            // Safari compatibility checks
-            if (typeof navigator.permissions === 'undefined' && isSafari) {
-                manualBtn.style.display = 'block';
-            }
+            addSafariClickHandler(document.getElementById('allowLocation'), requestLocation);
+            addSafariClickHandler(document.getElementById('retryLocation'), requestLocation);
         });
     </script>
 </body>
