@@ -75,7 +75,6 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const isAndroid = /Android/.test(navigator.userAgent);
 
-            // Check if lat and lng are valid in the URL
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
                 'lng') !== '') {
                 overlay.classList.add('hidden');
@@ -84,19 +83,16 @@
                 overlay.classList.remove('hidden');
                 mainContent.style.display = 'none';
 
-                // Add event listeners for both click and touchend to support all devices
                 allowButton.addEventListener('click', requestLocation);
                 allowButton.addEventListener('touchend', requestLocation);
 
-                // Function to request geolocation
                 function requestLocation(event) {
-                    event.preventDefault(); // Prevent default behavior, especially on mobile
+                    event.preventDefault();
 
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
                             function(position) {
                                 const lat = position.coords.latitude;
-                                upload
                                 const lng = position.coords.longitude;
                                 console.log("Coordinates captured:", lat, lng);
                                 const currentUrl = new URL(window.location.href);
@@ -108,8 +104,6 @@
                             function(error) {
                                 console.error('Geolocation error:', error);
                                 let message = 'Please allow location access to proceed.';
-
-                                // Platform-specific error messages
                                 if (error.code === error.PERMISSION_DENIED) {
                                     if (isIOS) {
                                         message =
@@ -128,21 +122,19 @@
                                 } else if (error.code === error.TIMEOUT) {
                                     message = 'Location request timed out. Please try again.';
                                 }
-
                                 alert(message);
                             }, {
                                 timeout: 10000,
                                 maximumAge: 0
-                            } // Options for reliable geolocation
+                            }
                         );
                     } else {
                         alert('Geolocation is not supported by this browser.');
                     }
                 }
 
-                // Trigger location request automatically only on Android
                 if (isAndroid && !isIOS) {
-                    requestLocation(new Event('initial')); // Simulate initial event for Android
+                    requestLocation(new Event('initial'));
                 }
             }
         });
