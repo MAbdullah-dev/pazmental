@@ -27,11 +27,18 @@
 </head>
 
 <body class="font-sans antialiased">
-    <x-mary-toast />
-    <div class="bg-white dark:bg-gray-900">
+    <!-- Location Required Overlay -->
+    <div id="locationOverlay" class="location-overlay">
+        <h2>Please Enable Location</h2>
+        <p>We need your location to proceed. Click below to allow access.</p>
+        <button id="allowLocation" class="btn btn-primary">Allow Location</button>
+    </div>
+
+    <!-- Main Content (hidden until location is provided) -->
+    <div id="mainContent" class="bg-white dark:bg-gray-900" style="display: none;">
+        <x-mary-toast />
         <livewire:layout.navigation />
 
-        <!-- Page Heading -->
         @if (isset($header))
             <header class="bg-white dark:bg-gray-800 shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -40,12 +47,12 @@
             </header>
         @endif
 
-        <!-- Page Content -->
         <main>
             {{ $slot }}
         </main>
+
+        <livewire:layout.footer />
     </div>
-    <livewire:layout.footer />
 
     @livewireScripts
     @stack('js')
@@ -59,35 +66,41 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
-            if (!urlParams.has('lat') || !urlParams.has('lng')) {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        function(position) {
-                            const lat = position.coords.latitude;
-                            const lng = position.coords.longitude;
-                            console.log("Coordinates captured:", lat, lng);
-                            const currentUrl = new URL(window.location.href);
-                            currentUrl.searchParams.set('lat', lat);
-                            currentUrl.searchParams.set('lng', lng);
-                            console.log("Redirecting to:", currentUrl.toString());
-                            window.location.href = currentUrl.toString();
-                        },
-                        function(error) {
-                            console.error('Geolocation error:', error);
-                            // In case of error, you can decide how to handle it.
-                            const currentUrl = new URL(window.location.href);
-                            currentUrl.searchParams.set('lat', '');
-                            currentUrl.searchParams.set('lng', '');
-                            window.location.href = currentUrl.toString();
-                        }
-                    );
-                } else {
-                    console.error('Geolocation is not supported by this browser.');
-                    const currentUrl = new URL(window.location.href);
-                    currentUrl.searchParams.set('lat', '');
-                    currentUrl.searchParams.set('lng', '');
-                    window.location.href = currentUrl.toString();
-                }
+            const overlay = document.getElementById('locationOverlay');
+            const mainContent = document.getElementById('mainContent');
+            const allowButton = document.getElementById('allowLocation');
+
+            // Check if lat and lng are already in URL and valid
+            if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
+                'lng') !== '') {
+                overlay.classList.add('hidden');
+                mainContent.style.display = 'block';
+            } else {
+                overlay.classList.remove('hidden');
+                mainContent.style.display = 'none';
+
+                allowButton.addEventListener('click', function() {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            function(position) {
+                                const lat = position.coords.latitude;
+                                const lng = position.coords.longitude;
+                                console.log("Coordinates captured:", lat, lng);
+                                const currentUrl = new URL(window.location.href);
+                                currentUrl.searchParams.set('lat', lat);
+                                currentUrl.searchParams.set('lng', lng);
+                                console.log("Redirecting to:", currentUrl.toString());
+                                window.location.href = currentUrl.toString();
+                            },
+                            function(error) {
+                                console.error('Geolocation error:', error);
+                                alert('Please allow location access to proceed.');
+                            }
+                        );
+                    } else {
+                        alert('Geolocation is not supported by this browser.');
+                    }
+                });
             }
         });
     </script>
