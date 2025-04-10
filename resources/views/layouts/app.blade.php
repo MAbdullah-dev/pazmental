@@ -72,8 +72,10 @@
             const overlay = document.getElementById('locationOverlay');
             const mainContent = document.getElementById('mainContent');
             const allowButton = document.getElementById('allowLocation');
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isAndroid = /Android/.test(navigator.userAgent);
 
-            // Check if lat and lng are valid
+            // Check if lat and lng are valid in the URL
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
                 'lng') !== '') {
                 overlay.classList.add('hidden');
@@ -82,16 +84,19 @@
                 overlay.classList.remove('hidden');
                 mainContent.style.display = 'none';
 
-                // Ensure button works on touch devices
+                // Add event listeners for both click and touchend to support all devices
                 allowButton.addEventListener('click', requestLocation);
-                allowButton.addEventListener('touchend', requestLocation); // Add touch support
+                allowButton.addEventListener('touchend', requestLocation);
 
+                // Function to request geolocation
                 function requestLocation(event) {
-                    event.preventDefault(); // Prevent default behavior on mobile
+                    event.preventDefault(); // Prevent default behavior, especially on mobile
+
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
                             function(position) {
                                 const lat = position.coords.latitude;
+                                upload
                                 const lng = position.coords.longitude;
                                 console.log("Coordinates captured:", lat, lng);
                                 const currentUrl = new URL(window.location.href);
@@ -103,28 +108,41 @@
                             function(error) {
                                 console.error('Geolocation error:', error);
                                 let message = 'Please allow location access to proceed.';
+
+                                // Platform-specific error messages
                                 if (error.code === error.PERMISSION_DENIED) {
-                                    message =
-                                        'Location permission denied. Please enable it in your browser settings.';
+                                    if (isIOS) {
+                                        message =
+                                            'Location permission denied. To enable, tap the "AA" icon in the address bar, select "Website Settings", and set Location to "Ask" or "Allow".';
+                                    } else {
+                                        message =
+                                            'Location permission denied. Please enable it in your browser settings.';
+                                    }
                                 } else if (error.code === error.POSITION_UNAVAILABLE) {
-                                    message = 'Location unavailable. Please check your device settings.';
+                                    if (isIOS) {
+                                        message =
+                                            'Location unavailable. Please ensure Location Services are enabled in Settings > Privacy > Location Services.';
+                                    } else {
+                                        message = 'Location unavailable. Please check your device settings.';
+                                    }
                                 } else if (error.code === error.TIMEOUT) {
                                     message = 'Location request timed out. Please try again.';
                                 }
+
                                 alert(message);
                             }, {
                                 timeout: 10000,
                                 maximumAge: 0
-                            } // Add options for better mobile handling
+                            } // Options for reliable geolocation
                         );
                     } else {
                         alert('Geolocation is not supported by this browser.');
                     }
                 }
 
-                // Trigger location request immediately on mobile
-                if (/Mobi|Android|iPhone|iPad/.test(navigator.userAgent)) {
-                    requestLocation(new Event('initial')); // Simulate initial click
+                // Trigger location request automatically only on Android
+                if (isAndroid && !isIOS) {
+                    requestLocation(new Event('initial')); // Simulate initial event for Android
                 }
             }
         });
