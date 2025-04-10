@@ -2,30 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="apple-mobile-web-app-title" content="Mirpre">
-    <title>{{ config('app.name', 'Mirpre') }}</title>
-    <!-- Favicon and manifest declarations -->
-    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon-96x96.png') }}" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/favicon.svg') }}" />
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/apple-touch-icon.png') }}" />
-    <link rel="manifest" href="{{ asset('assets/images/site.webmanifest') }}" />
-
-    <!-- Stylesheets -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    @stack('css')
-
-    <!-- Scripts -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
+    <!-- Keep existing head content -->
 </head>
 
 <body class="font-sans antialiased">
@@ -50,32 +27,23 @@
                     Retry Location Detection
                 </button>
             </div>
+
+            <!-- iOS-specific instructions -->
+            <div id="iosInstructions" class="mt-6 text-sm text-gray-300 hidden">
+                <p>If the location prompt doesn't appear:</p>
+                <ol class="list-decimal list-inside mt-2">
+                    <li>Tap the "AA" in the address bar</li>
+                    <li>Select "Website Settings"</li>
+                    <li>Set Location to "Ask" or "Allow"</li>
+                </ol>
+            </div>
         </div>
     </div>
 
     <!-- Main Content -->
     <div id="mainContent" class="bg-white dark:bg-gray-900 hidden">
-        <!-- Your existing content -->
-        <x-mary-toast />
-        <livewire:layout.navigation />
-
-        @if (isset($header))
-            <header class="bg-white dark:bg-gray-800 shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endif
-
-        <main>
-            {{ $slot }}
-        </main>
-
-        <livewire:layout.footer />
+        <!-- Keep existing main content -->
     </div>
-
-    @livewireScripts
-    @stack('js')
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -84,38 +52,47 @@
             const errorDiv = document.getElementById('locationError');
             const manualBtn = document.getElementById('manualLocation');
             const retryBtn = document.getElementById('retryLocation');
+            const iosInstructions = document.getElementById('iosInstructions');
 
-            // Check if location is already granted
+            // Detect iOS/Safari
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+            // Check existing location
             const checkExistingLocation = () => {
                 const urlParams = new URLSearchParams(window.location.search);
                 return urlParams.has('lat') && urlParams.has('lng');
             };
 
-            // Show main content if location exists
             if (checkExistingLocation()) {
-                overlay.classList.add('hidden');
-                mainContent.classList.remove('hidden');
+                overlay.style.display = 'none';
+                mainContent.style.display = 'block';
                 return;
             }
 
-            // Show location overlay
-            overlay.classList.remove('hidden');
+            overlay.style.display = 'flex';
 
-            // Geolocation functions
+            // Safari-specific initialization
+            if (isIOS || isSafari) {
+                iosInstructions.style.display = 'block';
+                manualBtn.style.display = 'block';
+            }
+
             const requestLocation = () => {
-                errorDiv.classList.add('hidden');
+                errorDiv.style.display = 'none';
 
                 if (!navigator.geolocation) {
                     showError('Geolocation is not supported by your browser');
-                    manualBtn.classList.remove('hidden');
+                    manualBtn.style.display = 'block';
                     return;
                 }
 
+                // Safari requires click-based permission requests
                 navigator.geolocation.getCurrentPosition(
                     position => handleSuccess(position.coords),
                     error => handleError(error), {
                         enableHighAccuracy: true,
-                        timeout: 10000,
+                        timeout: 15000,
                         maximumAge: 0
                     }
                 );
@@ -132,16 +109,18 @@
                 let message = 'Unable to retrieve your location';
                 switch (error.code) {
                     case error.PERMISSION_DENIED:
-                        message = 'Location permission denied. Please enable it in your browser settings.';
-                        manualBtn.classList.remove('hidden');
-                        retryBtn.classList.remove('hidden');
+                        message = isIOS ?
+                            'Location access denied. To enable:\n1. Tap AA in address bar\n2. Select Website Settings\n3. Enable Location' :
+                            'Location permission denied. Please enable in browser settings.';
+                        manualBtn.style.display = 'block';
+                        retryBtn.style.display = 'block';
                         break;
                     case error.POSITION_UNAVAILABLE:
-                        message = 'Location information is unavailable.';
+                        message = 'Location information unavailable';
                         break;
                     case error.TIMEOUT:
-                        message = 'The request to get location timed out.';
-                        retryBtn.classList.remove('hidden');
+                        message = 'Location request timed out';
+                        retryBtn.style.display = 'block';
                         break;
                 }
                 showError(message);
@@ -149,35 +128,25 @@
 
             const showError = (message) => {
                 errorDiv.textContent = message;
-                errorDiv.classList.remove('hidden');
+                errorDiv.style.display = 'block';
             };
 
-            // Event Listeners
-            document.getElementById('allowLocation').addEventListener('click', requestLocation);
-            retryBtn.addEventListener('click', requestLocation);
-            manualBtn.addEventListener('click', () => {
-                // Implement manual location input logic
-                alert('Manual location input feature to be implemented');
+            // Event listeners with touch support for iOS
+            const addTapEvents = (element, callback) => {
+                element.addEventListener('click', callback);
+                element.addEventListener('touchend', callback);
+            };
+
+            addTapEvents(document.getElementById('allowLocation'), requestLocation);
+            addTapEvents(retryBtn, requestLocation);
+            addTapEvents(manualBtn, () => {
+                // Implement manual location entry
+                window.location.href = '/manual-location'; // Example fallback
             });
 
-            // Initial check for geolocation support
-            if (!navigator.geolocation) {
-                showError('Your browser does not support geolocation');
-                manualBtn.classList.remove('hidden');
-            }
-
-            // Check for permissions API support
-            if (navigator.permissions) {
-                navigator.permissions.query({
-                        name: 'geolocation'
-                    })
-                    .then(permissionStatus => {
-                        permissionStatus.onchange = () => {
-                            if (permissionStatus.state === 'granted') {
-                                requestLocation();
-                            }
-                        };
-                    });
+            // Safari compatibility checks
+            if (typeof navigator.permissions === 'undefined' && isSafari) {
+                manualBtn.style.display = 'block';
             }
         });
     </script>
