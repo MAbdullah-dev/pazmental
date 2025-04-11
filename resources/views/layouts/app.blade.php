@@ -241,43 +241,41 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const isAndroid = /Android/.test(navigator.userAgent);
 
-            // Track if we have valid location
-            let hasValidLocation = false;
-
             // Show iOS-specific instructions if on iOS
             if (isIOS) {
                 iosInstructions.classList.remove('hidden');
             }
 
-            function checkLocationParams() {
+            function showMainContent() {
+                overlay.style.display = 'none'; // Use display:none instead of classList
+                mainContent.style.display = 'block';
+            }
+
+            function showLocationOverlay() {
+                overlay.style.display = 'flex'; // Use display:flex instead of classList
+                mainContent.style.display = 'none';
+            }
+
+            // Check if we have valid location parameters
+            function hasValidLocation() {
                 return urlParams.has('lat') &&
                     urlParams.has('lng') &&
                     urlParams.get('lat') !== '' &&
                     urlParams.get('lng') !== '';
             }
 
-            function showMainContent() {
-                overlay.classList.add('hidden');
-                mainContent.style.display = 'block';
-                hasValidLocation = true;
-            }
-
-            function showLocationOverlay() {
-                overlay.classList.remove('hidden');
-                mainContent.style.display = 'none';
-                hasValidLocation = false;
-            }
-
-            // Initial check for location parameters
-            if (checkLocationParams()) {
+            // Initial check - hide overlay immediately if we have location
+            if (hasValidLocation()) {
                 showMainContent();
-                return; // Exit if we already have location
+                return; // Exit early if location is already set
             }
 
-            // For iOS, show content immediately with overlay on top
+            // For iOS, show content with overlay on top
             if (isIOS) {
                 mainContent.style.display = 'block';
                 overlay.style.display = 'flex';
+                // Attempt location automatically after delay
+                setTimeout(requestLocation, 300);
             }
             // For Android, show overlay first
             else {
@@ -285,18 +283,13 @@
             }
 
             // Event listeners for button clicks
-            allowButton.addEventListener('click', handleLocationRequest);
-            allowButton.addEventListener('touchend', handleLocationRequest);
+            allowButton.addEventListener('click', requestLocation);
+            allowButton.addEventListener('touchend', requestLocation);
 
-            function handleLocationRequest(event) {
+            function requestLocation(event) {
                 if (event) {
                     event.preventDefault();
                     event.stopPropagation();
-                }
-
-                if (hasValidLocation) {
-                    showMainContent();
-                    return;
                 }
 
                 locationError.classList.add('hidden');
@@ -347,13 +340,6 @@
                 }
                 locationError.textContent = message;
                 locationError.classList.remove('hidden');
-            }
-
-            // For iOS, attempt location automatically after slight delay
-            if (isIOS && !checkLocationParams()) {
-                setTimeout(() => {
-                    handleLocationRequest();
-                }, 300);
             }
         });
     </script>
