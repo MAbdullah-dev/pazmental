@@ -289,23 +289,32 @@
                 iosInstructions.classList.remove('hidden');
             }
 
-            // Helper functions for toggling visibility
-            function toggleVisibility(showOverlay) {
-                if (showOverlay) {
-                    overlay.style.display = 'flex'; // Show overlay
-                    mainContent.style.display = 'none'; // Hide main content
-                } else {
-                    overlay.style.display = 'none'; // Hide overlay
-                    mainContent.style.display = 'block'; // Show main content
-                }
+            function showMainContent() {
+                overlay.classList.add('hidden');
+                mainContent.style.display = 'block';
+            }
+
+            function showLocationOverlay() {
+                overlay.classList.remove('hidden');
+                mainContent.style.display = 'none';
             }
 
             // Check if latitude and longitude are already in the URL and are not empty
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                'lng') !== '') {
-                toggleVisibility(false); // Show main content
+                    'lng') !== '') {
+                showMainContent();
             } else {
-                toggleVisibility(true); // Show overlay
+                // For iOS, show content immediately with overlay on top
+                if (isIOS) {
+                    mainContent.style.display = 'block';
+                    overlay.style.display = 'flex';
+                    // Auto-attempt location after slight delay
+                    setTimeout(requestLocation, 300);
+                }
+                // For Android, show overlay first
+                else {
+                    showLocationOverlay();
+                }
 
                 // Add event listeners for button clicks
                 allowButton.addEventListener('click', requestLocation);
@@ -316,7 +325,7 @@
                         event.preventDefault();
                         event.stopPropagation();
                     }
-                    locationError.classList.add('hidden'); // Hide error messages
+                    locationError.classList.add('hidden');
 
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
@@ -333,7 +342,7 @@
                             }, {
                                 enableHighAccuracy: true,
                                 timeout: 10000,
-                                maximumAge: 0,
+                                maximumAge: 0
                             }
                         );
                     } else {
@@ -342,29 +351,29 @@
                     }
                 }
 
-                function handleGeolocationError(error) {
-                    let message = 'Please allow location access to proceed.';
-                    switch (error.code) {
-                        case error.PERMISSION_DENIED:
-                            message = isIOS ?
-                                'Location permission denied. To enable, tap the "AA" icon in the address bar, select "Website Settings", and set Location to "Ask" or "Allow".' :
-                                'Location permission denied. Please enable it in your browser settings.';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            message = isIOS ?
-                                'Location unavailable. Please ensure Location Services are enabled in Settings > Privacy > Location Services.' :
-                                'Location unavailable. Please check your device settings.';
-                            break;
-                        case error.TIMEOUT:
-                            message = 'Location request timed out. Please try again.';
-                            break;
-                        default:
-                            message = 'An unknown error occurred. Please try again.';
-                            break;
-                    }
-                    locationError.textContent = message;
-                    locationError.classList.remove('hidden');
-                }
+                // function handleGeolocationError(error) {
+                //     let message = 'Please allow location access to proceed.';
+                //     switch (error.code) {
+                //         case error.PERMISSION_DENIED:
+                //             message = isIOS ?
+                //                 'Location permission denied. To enable, tap the "AA" icon in the address bar, select "Website Settings", and set Location to "Ask" or "Allow".' :
+                //                 'Location permission denied. Please enable it in your browser settings.';
+                //             break;
+                //         case error.POSITION_UNAVAILABLE:
+                //             message = isIOS ?
+                //                 'Location unavailable. Please ensure Location Services are enabled in Settings > Privacy > Location Services.' :
+                //                 'Location unavailable. Please check your device settings.';
+                //             break;
+                //         case error.TIMEOUT:
+                //             message = 'Location request timed out. Please try again.';
+                //             break;
+                //         default:
+                //             message = 'An unknown error occurred. Please try again.';
+                //             break;
+                //     }
+                //     locationError.textContent = message;
+                //     locationError.classList.remove('hidden');
+                // }
             }
         });
     </script>
