@@ -37,6 +37,7 @@
             class="w-fit mx-auto my-4 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white capitalize hover:from-[#FF8787] hover:to-[#B91CDE] transition-colors">
             Allow Location
         </button>
+        <p id="locationError" class="mt-4 text-red-500 text-sm text-center hidden"></p>
     </div>
     <!-- Main Content (hidden until location is provided) -->
     <div id="mainContent" class="bg-white dark:bg-gray-900" style="display: none;">
@@ -60,8 +61,12 @@
 
     @livewireScripts
     @stack('js')
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbPHyGedQQjv4j0yngdWtyPxhfjKtPHgCw1kmRiL6Jbo9bYOJl5twaQgYxg" crossorigin="anonymous">
+    </script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('.select2').select2();
@@ -73,17 +78,26 @@
             const overlay = document.getElementById('locationOverlay');
             const mainContent = document.getElementById('mainContent');
             const allowButton = document.getElementById('allowLocation');
+            const locationError = document.getElementById('locationError');
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const isAndroid = /Android/.test(navigator.userAgent);
 
-            // Check if latitude and longitude are already in the URL
-            if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                    'lng') !== '') {
+            function showMainContent() {
                 overlay.classList.add('hidden');
                 mainContent.style.display = 'block';
-            } else {
+            }
+
+            function showLocationOverlay() {
                 overlay.classList.remove('hidden');
                 mainContent.style.display = 'none';
+            }
+
+            // Check if latitude and longitude are already in the URL and are not empty
+            if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
+                    'lng') !== '') {
+                showMainContent();
+            } else {
+                showLocationOverlay();
 
                 // Add event listeners for button clicks
                 allowButton.addEventListener('click', requestLocation);
@@ -91,6 +105,7 @@
 
                 function requestLocation(event) {
                     event.preventDefault();
+                    locationError.classList.add('hidden'); // Hide any previous error messages
 
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
@@ -114,7 +129,8 @@
                             }
                         );
                     } else {
-                        alert('Geolocation is not supported by this browser.');
+                        locationError.textContent = 'Geolocation is not supported by this browser.';
+                        locationError.classList.remove('hidden');
                     }
                 }
 
@@ -138,34 +154,40 @@
                             message = 'An unknown error occurred. Please try again.';
                             break;
                     }
-                    alert(message);
+                    locationError.textContent = message;
+                    locationError.classList.remove('hidden');
                 }
 
-                // Automatically request location for Android devices for better user experience
-                if (isAndroid) {
+                // Automatically request location for Android devices on initial load
+                if (isAndroid && !(urlParams.has('lat') && urlParams.has('lng'))) {
                     requestLocation(new Event('initial'));
                 }
 
-                // Special handling for Safari browser on iOS
-                if (isIOS) {
+                // Special handling for Safari browser on iOS on initial load if no location params
+                if (isIOS && !(urlParams.has('lat') && urlParams.has('lng'))) {
                     alert(
                         'For best results, ensure that location access is enabled for Safari in your device settings.'
                     );
-                    // Provide additional guidance if necessary
+                    // You might want to add more specific instructions or a link to settings if needed.
                 }
             }
         });
     </script>
     <script>
+        // Overriding console.log and window.onerror for demonstration purposes.
+        // In a production environment, you should handle errors and logging appropriately
+        // without using alert, which can be disruptive.
         window.onerror = function(msg, url, lineNo, columnNo, error) {
-            alert(
+            console.error(
                 `Error: ${msg}\nURL: ${url}\nLine: ${lineNo}\nColumn: ${columnNo}\nError object: ${JSON.stringify(error)}`
             );
-            return false; // Prevent default error handling
+            // In a real application, you would likely log this error to a server.
+            return true; // Prevent default error handling to avoid browser's built-in alert.
         };
 
         console.log = function(message) {
-            alert(`Console Log: ${message}`);
+            console.info(`Console Log: ${message}`);
+            // In a real application, you would likely log this message appropriately.
         };
     </script>
 </body>
