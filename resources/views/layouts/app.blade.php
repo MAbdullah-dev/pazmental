@@ -199,49 +199,63 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="apple-mobile-web-app-title" content="Mirpre">
     <title>{{ config('app.name', 'Mirpre') }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon-96x96.png') }}" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/favicon.svg') }}" />
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/apple-touch-icon.png') }}" />
-    <link rel="manifest" href="{{ asset('assets/images/site.webmanifest') }}" />
+
+    <!-- Favicon and Manifest -->
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon-96x96.png') }}" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/favicon.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('assets/images/site.webmanifest') }}">
+
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    @stack('css')
-    <!-- Scripts -->
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <!-- Scripts (loaded deferred to improve page load) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    @stack('css')
 </head>
 
 <body class="font-sans antialiased">
     <!-- Location Required Overlay -->
     <div id="locationOverlay"
-        class="location-overlay fixed inset-0 bg-gray-900 text-white flex flex-col justify-center items-center p-5">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4 color-black">Please Enable Location</h2>
-        <p class="text-lg md:text-xl mb-6 max-w-lg color-black">We need your location to proceed. Click below to allow
-            access.</p>
+        class="location-overlay fixed inset-0 bg-gray-900 bg-opacity-75 text-white flex flex-col justify-center items-center p-4 z-50 hidden">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">Please Enable Location</h2>
+        <p class="text-base md:text-lg mb-6 max-w-md text-center">We need your location to provide the best experience.
+            Click below to allow access.</p>
         <button id="allowLocation"
-            class="w-fit mx-auto my-4 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white capitalize hover:from-[#FF8787] hover:to-[#B91CDE] transition-colors">
+            class="w-fit mx-auto my-4 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 py-2 text-white capitalize hover:from-[#FF8787] hover:to-[#B91CDE] transition-colors duration-200">
             Allow Location
         </button>
-        <p id="locationError" class="mt-4 text-red-500 text-sm text-center hidden"></p>
-        <div id="iosInstructions" class="mt-4 hidden">
-            <p class="text-sm"><strong>For iOS users:</strong> If you don't see the prompt, tap the "AA" icon in
-                Safari's address bar, select "Website Settings", and set Location to "Ask" or "Allow".</p>
+        <p id="locationError" class="mt-4 text-red-400 text-sm text-center hidden"></p>
+        <div id="iosInstructions" class="mt-4 text-sm max-w-md hidden">
+            <p><strong>For iOS users:</strong> If you don't see the prompt, tap the "Share" icon in Safari, select
+                "Website Settings", and set Location to "Allow".</p>
+        </div>
+        <div id="androidInstructions" class="mt-4 text-sm max-w-md hidden">
+            <p><strong>For Android users:</strong> If location isn't working, go to Settings > Apps > Browser >
+                Permissions and enable Location.</p>
         </div>
     </div>
-    <!-- Main Content (hidden until location is provided) -->
-    <div id="mainContent" class="bg-white dark:bg-gray-900">
+
+    <!-- Main Content -->
+    <div id="mainContent" class="bg-white dark:bg-gray-900 min-h-screen">
         <x-mary-toast />
         <livewire:layout.navigation />
 
@@ -262,93 +276,95 @@
 
     @livewireScripts
     @stack('js')
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-        integrity="sha384-0pUGZvbPHyGedQQjv4j0yngdWtyPxhfjKtPHgCw1kmRiL6Jbo9bYOJl5twaQgYxg" crossorigin="anonymous">
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.select2').select2();
-        });
-    </script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const overlay = document.getElementById('locationOverlay');
-            const mainContent = document.getElementById('mainContent');
-            const allowButton = document.getElementById('allowLocation');
-            const locationError = document.getElementById('locationError');
-            const iosInstructions = document.getElementById('iosInstructions');
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            const isAndroid = /Android/.test(navigator.userAgent);
+        (function() {
+            'use strict';
 
-            // Show iOS-specific instructions if on iOS
-            if (isIOS) {
-                iosInstructions.classList.remove('hidden');
-            }
-
-            function showMainContent() {
-                overlay.classList.add('hidden');
-                mainContent.style.display = 'block';
-            }
-
-            function showLocationOverlay() {
-                overlay.classList.remove('hidden');
-                mainContent.style.display = 'none';
-            }
-
-            // Check if latitude and longitude are already in the URL and are not empty
-            if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                'lng') !== '') {
-                showMainContent();
-            } else {
-                // For iOS, show content immediately with overlay on top
-                if (isIOS) {
-                    mainContent.style.display = 'block';
-                    overlay.style.display = 'flex';
-                    // Auto-attempt location after slight delay
-                    setTimeout(requestLocation, 300);
-                }
-                // For Android, show overlay first
-                else {
-                    showLocationOverlay();
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize Select2
+                if (typeof $.fn.select2 !== 'undefined') {
+                    $('.select2').select2();
                 }
 
-                // Add event listeners for button clicks
-                allowButton.addEventListener('click', requestLocation);
-                allowButton.addEventListener('touchend', requestLocation);
+                // Location handling
+                const overlay = document.getElementById('locationOverlay');
+                const mainContent = document.getElementById('mainContent');
+                const allowButton = document.getElementById('allowLocation');
+                const locationError = document.getElementById('locationError');
+                const iosInstructions = document.getElementById('iosInstructions');
+                const androidInstructions = document.getElementById('androidInstructions');
 
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                const isAndroid = /Android/.test(navigator.userAgent);
+                const urlParams = new URLSearchParams(window.location.search);
+
+                // Show platform-specific instructions
+                if (isIOS) iosInstructions.classList.remove('hidden');
+                if (isAndroid) androidInstructions.classList.remove('hidden');
+
+                function showMainContent() {
+                    overlay.classList.add('hidden');
+                    mainContent.classList.remove('hidden');
+                }
+
+                function showLocationOverlay() {
+                    overlay.classList.remove('hidden');
+                    mainContent.classList.add('hidden');
+                }
+
+                // Check if location is already provided
+                if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') && urlParams.get(
+                    'lng')) {
+                    showMainContent();
+                    return;
+                }
+
+                // Show overlay for browsers requiring location
+                showLocationOverlay();
+
+                // Handle location request
                 function requestLocation(event) {
                     if (event) {
                         event.preventDefault();
                         event.stopPropagation();
                     }
-                    locationError.classList.add('hidden');
 
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                            function(position) {
-                                const lat = position.coords.latitude;
-                                const lng = position.coords.longitude;
-                                const currentUrl = new URL(window.location.href);
-                                currentUrl.searchParams.set('lat', lat);
-                                currentUrl.searchParams.set('lng', lng);
-                                window.location.href = currentUrl.toString();
-                            },
-                            function(error) {
-                                handleGeolocationError(error);
-                            }, {
-                                enableHighAccuracy: true,
-                                timeout: 10000,
-                                maximumAge: 0
-                            }
-                        );
-                    } else {
-                        locationError.textContent = 'Geolocation is not supported by this browser.';
-                        locationError.classList.remove('hidden');
+                    locationError.classList.add('hidden');
+                    allowButton.disabled = true;
+                    allowButton.textContent = 'Requesting...';
+
+                    if (!navigator.geolocation) {
+                        showError('Geolocation is not supported by this browser.');
+                        allowButton.disabled = false;
+                        allowButton.textContent = 'Allow Location';
+                        return;
                     }
+
+                    navigator.geolocation.getCurrentPosition(
+                        position => {
+                            const lat = position.coords.latitude;
+                            const lng = position.coords.longitude;
+                            const currentUrl = new URL(window.location.href);
+                            currentUrl.searchParams.set('lat', lat);
+                            currentUrl.searchParams.set('lng', lng);
+                            window.location.href = currentUrl.toString();
+                        },
+                        error => {
+                            handleGeolocationError(error);
+                            allowButton.disabled = false;
+                            allowButton.textContent = 'Allow Location';
+                        }, {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                }
+
+                function showError(message) {
+                    locationError.textContent = message;
+                    locationError.classList.remove('hidden');
                 }
 
                 function handleGeolocationError(error) {
@@ -356,26 +372,38 @@
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
                             message = isIOS ?
-                                'Location permission denied. To enable, tap the "AA" icon in the address bar, select "Website Settings", and set Location to "Ask" or "Allow".' :
+                                'Location permission denied. Tap the "Share" icon in Safari, select "Website Settings", and set Location to "Allow".' :
+                                isAndroid ?
+                                'Location permission denied. Go to Settings > Apps > Browser > Permissions and enable Location.' :
                                 'Location permission denied. Please enable it in your browser settings.';
                             break;
                         case error.POSITION_UNAVAILABLE:
                             message = isIOS ?
-                                'Location unavailable. Please ensure Location Services are enabled in Settings > Privacy > Location Services.' :
+                                'Location unavailable. Ensure Location Services are enabled in Settings > Privacy > Location Services.' :
                                 'Location unavailable. Please check your device settings.';
                             break;
                         case error.TIMEOUT:
                             message = 'Location request timed out. Please try again.';
                             break;
                         default:
-                            message = 'An unknown error occurred. Please try again.';
+                            message = 'An error occurred. Please try again.';
                             break;
                     }
-                    locationError.textContent = message;
-                    locationError.classList.remove('hidden');
+                    showError(message);
                 }
-            }
-        });
+
+                // Event listeners
+                allowButton.addEventListener('click', requestLocation);
+                if ('ontouchend' in window) {
+                    allowButton.addEventListener('touchend', requestLocation);
+                }
+
+                // Auto-request for iOS after slight delay
+                if (isIOS) {
+                    setTimeout(requestLocation, 500);
+                }
+            });
+        })();
     </script>
 </body>
 
