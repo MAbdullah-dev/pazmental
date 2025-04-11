@@ -94,7 +94,7 @@
 
             // Check if latitude and longitude are already in the URL and are not empty
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                    'lng') !== '') {
+                'lng') !== '') {
                 showMainContent();
             } else {
                 showLocationOverlay();
