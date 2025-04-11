@@ -302,6 +302,8 @@
             // Check if latitude and longitude are already in the URL and are not empty
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
                     'lng') !== '') {
+                console.log("hello");
+
                 showMainContent();
             } else {
                 // For iOS, show content immediately with overlay on top
