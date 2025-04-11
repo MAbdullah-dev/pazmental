@@ -290,12 +290,12 @@
             }
 
             function showMainContent() {
-                overlay.classList.add('hidden');
+                overlay.classList.add('hiddden');
                 mainContent.style.display = 'block';
             }
 
             function showLocationOverlay() {
-                overlay.classList.remove('hidden');
+                overlay.classList.remove('hiddden');
                 mainContent.style.display = 'none';
             }
 
@@ -380,3 +380,8 @@
 </body>
 
 </html>
+<style>
+    .hiddden {
+        display: none
+    }
+</style>
