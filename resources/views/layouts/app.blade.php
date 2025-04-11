@@ -301,7 +301,7 @@
 
             // Check if latitude and longitude are already in the URL and are not empty
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                'lng') !== '') {
+                    'lng') !== '') {
                 showMainContent();
             } else {
                 // For iOS, show content immediately with overlay on top
@@ -351,29 +351,29 @@
                     }
                 }
 
-                function handleGeolocationError(error) {
-                    let message = 'Please allow location access to proceed.';
-                    switch (error.code) {
-                        case error.PERMISSION_DENIED:
-                            message = isIOS ?
-                                'Location permission denied. To enable, tap the "AA" icon in the address bar, select "Website Settings", and set Location to "Ask" or "Allow".' :
-                                'Location permission denied. Please enable it in your browser settings.';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            message = isIOS ?
-                                'Location unavailable. Please ensure Location Services are enabled in Settings > Privacy > Location Services.' :
-                                'Location unavailable. Please check your device settings.';
-                            break;
-                        case error.TIMEOUT:
-                            message = 'Location request timed out. Please try again.';
-                            break;
-                        default:
-                            message = 'An unknown error occurred. Please try again.';
-                            break;
-                    }
-                    locationError.textContent = message;
-                    locationError.classList.remove('hidden');
-                }
+                // function handleGeolocationError(error) {
+                //     let message = 'Please allow location access to proceed.';
+                //     switch (error.code) {
+                //         case error.PERMISSION_DENIED:
+                //             message = isIOS ?
+                //                 'Location permission denied. To enable, tap the "AA" icon in the address bar, select "Website Settings", and set Location to "Ask" or "Allow".' :
+                //                 'Location permission denied. Please enable it in your browser settings.';
+                //             break;
+                //         case error.POSITION_UNAVAILABLE:
+                //             message = isIOS ?
+                //                 'Location unavailable. Please ensure Location Services are enabled in Settings > Privacy > Location Services.' :
+                //                 'Location unavailable. Please check your device settings.';
+                //             break;
+                //         case error.TIMEOUT:
+                //             message = 'Location request timed out. Please try again.';
+                //             break;
+                //         default:
+                //             message = 'An unknown error occurred. Please try again.';
+                //             break;
+                //     }
+                //     locationError.textContent = message;
+                //     locationError.classList.remove('hidden');
+                // }
             }
         });
     </script>
