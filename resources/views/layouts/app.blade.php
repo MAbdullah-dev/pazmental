@@ -289,32 +289,23 @@
                 iosInstructions.classList.remove('hidden');
             }
 
-            function showMainContent() {
-                overlay.style.display = 'none'; // Hide the overlay
-                mainContent.style.display = 'block'; // Show the main content
-            }
-
-            function showLocationOverlay() {
-                overlay.style.display = 'flex'; // Show the overlay
-                mainContent.style.display = 'none'; // Hide the main content
+            // Helper functions for toggling visibility
+            function toggleVisibility(showOverlay) {
+                if (showOverlay) {
+                    overlay.style.display = 'flex'; // Show overlay
+                    mainContent.style.display = 'none'; // Hide main content
+                } else {
+                    overlay.style.display = 'none'; // Hide overlay
+                    mainContent.style.display = 'block'; // Show main content
+                }
             }
 
             // Check if latitude and longitude are already in the URL and are not empty
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
                 'lng') !== '') {
-                showMainContent();
+                toggleVisibility(false); // Show main content
             } else {
-                // For iOS, show content immediately with overlay on top
-                if (isIOS) {
-                    mainContent.style.display = 'block';
-                    overlay.style.display = 'flex';
-                    // Auto-attempt location after slight delay
-                    setTimeout(requestLocation, 300);
-                }
-                // For Android, show overlay first
-                else {
-                    showLocationOverlay();
-                }
+                toggleVisibility(true); // Show overlay
 
                 // Add event listeners for button clicks
                 allowButton.addEventListener('click', requestLocation);
@@ -325,7 +316,7 @@
                         event.preventDefault();
                         event.stopPropagation();
                     }
-                    locationError.classList.add('hidden');
+                    locationError.classList.add('hidden'); // Hide error messages
 
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
@@ -342,7 +333,7 @@
                             }, {
                                 enableHighAccuracy: true,
                                 timeout: 10000,
-                                maximumAge: 0
+                                maximumAge: 0,
                             }
                         );
                     } else {
