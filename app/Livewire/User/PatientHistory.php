@@ -109,7 +109,7 @@ class PatientHistory extends Component
             redirect()
                 ->route('login')
                 ->with(['Referer' => $referer]);
-                dd("redirect login");
+                // dd("redirect login");
             // return redirect('login')->route('login');
         } else {
             // Send email notification check
