@@ -51,6 +51,7 @@ class PatientHistory extends Component
             $product_id = $d_explode[1] ?? '';
             $email = User::where('id', $user_id)->firstOrFail()->user_email;
         } else {
+            dd("mount else");
             return abort(404);
         }
         $product = Product::findOrFail($product_id);
@@ -62,15 +63,18 @@ class PatientHistory extends Component
         $useremrgemail2 = $userdata->allow_notification_emrg_email2 ?? false ? $userdata->emrg_email2 : null;
         if (auth()->check() && auth()->user()->email != $email) {
             auth()->logout();
+            dd("auth check logout");
         }
         foreach ($user->meta as $metadata) {
             if ($metadata['meta_key'] == 'billing_phone') {
                 $phone_no = $metadata['meta_value'];
+                dd("phone no null");
             }
         }
         if (count($d_explode) >= 3) {
             if (Get_QR_Code($product_id, $user, $date) == null) {
                 return abort(404);
+                dd("GET QR CODE NULL");
             }
         }
         $this->is_pet = $user->meta()->where('meta_key', 'subaccount_type')->where('meta_value', 'pet')->exists() ||
@@ -78,8 +82,10 @@ class PatientHistory extends Component
 
         if ($this->is_pet) {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
+            dd("if pet condition");
         } else {
             $this->content = PatientDetails::where('patient_id', $user->ID)->first();
+            dd("else pet condition");
         }
 
         $this->toast(
@@ -103,6 +109,7 @@ class PatientHistory extends Component
             redirect()
                 ->route('login')
                 ->with(['Referer' => $referer]);
+                dd("redirect login");
             // return redirect('login')->route('login');
         } else {
             // Send email notification check
@@ -128,6 +135,7 @@ class PatientHistory extends Component
 
     public function render()
     {
+        dd("function render");
         $view = $this->is_pet ? 'livewire.pet-details' : 'livewire.user.medical-history';
 
         return view($view, ['content' => $this->content]);
@@ -164,7 +172,6 @@ class PatientHistory extends Component
         $latitude = $request->query('lat');
         $longitude = $request->query('lng');
 
-        // Check if latitude or longitude is null or empty, and stop execution if so
         if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
             Log::info('Email not sent: Latitude or Longitude is missing.', [
                 'email' => $email,
