@@ -82,7 +82,7 @@ class PatientHistory extends Component
 
         if ($this->is_pet) {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
-            dd("if pet condition");
+            // dd("if pet condition");
         } else {
             $this->content = PatientDetails::where('patient_id', $user->ID)->first();
             dd("else pet condition");
