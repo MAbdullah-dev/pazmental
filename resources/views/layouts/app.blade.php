@@ -233,6 +233,17 @@
             class="w-fit mx-auto my-4 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white capitalize hover:from-[#FF8787] hover:to-[#B91CDE] transition-colors">
             Allow Location
         </button>
+        <p id="locationError" class="mt-4 text-red-500 text-sm text-center hidden"></p>
+        <div id="iosInstructions" class="mt-4">
+            <p class="text-sm"><strong>For iOS users:</strong> If you don’t see a location prompt, please enable
+                location services:</p>
+            <ol class="text-sm list-decimal list-inside">
+                <li>Open <strong>Settings</strong> app.</li>
+                <li>Go to <strong>Privacy & Security > Location Services</strong> and turn it on.</li>
+                <li>Find <strong>Safari</strong> in the list and set it to <strong>"While Using the App"</strong>.</li>
+                <li>Return here and tap "Allow Location" again.</li>
+            </ol>
+        </div>
     </div>
     <!-- Main Content (hidden until location is provided) -->
     <div id="mainContent" class="bg-white dark:bg-gray-900 hidden">
