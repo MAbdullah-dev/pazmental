@@ -234,9 +234,15 @@
             Allow Location
         </button>
         <p id="locationError" class="mt-4 text-red-500 text-sm text-center hidden"></p>
-        <div id="iosInstructions" class="mt-4 hidden">
-            <p class="text-sm"><strong>For iOS users:</strong> If you don't see the prompt, tap the "AA" icon in
-                Safari's address bar, select "Website Settings", and set Location to "Ask" or "Allow".</p>
+        <div id="iosInstructions" class="mt-4">
+            <p class="text-sm"><strong>For iOS users:</strong> If you don’t see a location prompt, please enable
+                location services:</p>
+            <ol class="text-sm list-decimal list-inside">
+                <li>Open <strong>Settings</strong> app.</li>
+                <li>Go to <strong>Privacy & Security > Location Services</strong> and turn it on.</li>
+                <li>Find <strong>Safari</strong> in the list and set it to <strong>"While Using the App"</strong>.</li>
+                <li>Return here and tap "Allow Location" again.</li>
+            </ol>
         </div>
     </div>
     <!-- Main Content (hidden until location is provided) -->
@@ -269,15 +275,10 @@
             const iosInstructions = document.getElementById('iosInstructions');
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-            // Show iOS instructions if on iOS
-            if (isIOS) {
-                iosInstructions.classList.remove('hidden');
-            }
-
             // Check if lat/lng are in URL and valid
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                    'lng') !== '') {
+                'lng') !== '') {
                 overlay.classList.add('hidden');
                 mainContent.classList.remove('hidden');
                 return;
@@ -287,19 +288,48 @@
             overlay.classList.remove('hidden');
             mainContent.classList.add('hidden');
 
+            // Hide iOS instructions on non-iOS devices
+            if (!isIOS) {
+                iosInstructions.classList.add('hidden');
+            }
+
+            // Check permission status
+            function checkPermissionStatus() {
+                if (navigator.permissions && isIOS) {
+                    navigator.permissions.query({
+                        name: 'geolocation'
+                    }).then(result => {
+                        if (result.state === 'denied') {
+                            locationError.textContent =
+                                'Location access is disabled for Safari. Please enable it in Settings > Privacy & Security > Location Services > Safari > While Using the App.';
+                            locationError.classList.remove('hidden');
+                        }
+                    }).catch(() => {
+                        // Fallback to geolocation request if Permissions API fails
+                    });
+                }
+            }
+
             // Handle location request
             function requestLocation(event) {
-
                 if (event) {
                     event.preventDefault();
                     event.stopPropagation();
                 }
-
                 locationError.classList.add('hidden');
 
                 if (navigator.geolocation) {
+                    const timeoutId = setTimeout(() => {
+                        // If no prompt after 5 seconds, assume "Never" or disabled
+                        locationError.textContent = isIOS ?
+                            'Location access is disabled for Safari. Please enable it in Settings > Privacy & Security > Location Services > Safari > While Using the App.' :
+                            'Location request failed. Please check your browser settings.';
+                        locationError.classList.remove('hidden');
+                    }, 5000);
+
                     navigator.geolocation.getCurrentPosition(
                         position => {
+                            clearTimeout(timeoutId);
                             const lat = position.coords.latitude;
                             const lng = position.coords.longitude;
                             const url = new URL(window.location.href);
@@ -308,12 +338,25 @@
                             window.location.href = url.toString();
                         },
                         error => {
-                            locationError.textContent = {
-                                1: 'Location access denied. Please allow location in your settings.',
-                                2: 'Location unavailable. Please try again.',
-                                3: 'Request timed out. Please try again.'
-                            } [error.code] || 'An error occurred. Please try again.';
+                            clearTimeout(timeoutId);
+                            let errorMessage = '';
+                            if (error.code === 1) {
+                                errorMessage = isIOS ?
+                                    'Location access is disabled for Safari. Please enable it in Settings > Privacy & Security > Location Services > Safari > While Using the App.' :
+                                    'Location access denied. Please allow location in your browser settings.';
+                            } else if (error.code === 2) {
+                                errorMessage =
+                                    'Location unavailable. Please check your connection and try again.';
+                            } else if (error.code === 3) {
+                                errorMessage = 'Request timed out. Please try again.';
+                            } else {
+                                errorMessage = 'An error occurred. Please try again.';
+                            }
+                            locationError.textContent = errorMessage;
                             locationError.classList.remove('hidden');
+                            if (isIOS) {
+                                iosInstructions.classList.remove('hidden');
+                            }
                         }, {
                             enableHighAccuracy: true,
                             timeout: 10000,
@@ -330,8 +373,9 @@
             allowButton.addEventListener('click', requestLocation);
             allowButton.addEventListener('touchend', requestLocation);
 
-            // Auto-request location on iOS after slight delay
+            // Auto-request location and check permissions on iOS
             if (isIOS) {
+                checkPermissionStatus();
                 setTimeout(requestLocation, 300);
             }
         });
