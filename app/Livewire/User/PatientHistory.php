@@ -18,7 +18,6 @@ use App\Mail\QRScannedNotification;
 use libphonenumber\PhoneNumberUtil;
 use Illuminate\Support\Facades\Mail;
 use Corcel\WooCommerce\Model\Product;
-use Illuminate\Support\Facades\Log;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\NumberParseException;
 use Stevebauman\Location\Facades\Location;
@@ -51,7 +50,6 @@ class PatientHistory extends Component
             $product_id = $d_explode[1] ?? '';
             $email = User::where('id', $user_id)->firstOrFail()->user_email;
         } else {
-            dd("mount else");
             return abort(404);
         }
         $product = Product::findOrFail($product_id);
@@ -63,23 +61,19 @@ class PatientHistory extends Component
         $useremrgemail2 = $userdata->allow_notification_emrg_email2 ?? false ? $userdata->emrg_email2 : null;
         if (auth()->check() && auth()->user()->email != $email) {
             auth()->logout();
-            // dd("auth check logout");
         }
         foreach ($user->meta as $metadata) {
             if ($metadata['meta_key'] == 'billing_phone') {
                 $phone_no = $metadata['meta_value'];
-                dd("phone no null");
             }
         }
         if (count($d_explode) >= 3) {
             if (Get_QR_Code($product_id, $user, $date) == null) {
                 return abort(404);
-                dd("GET QR CODE NULL");
             }
         }
-if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null) {
+        if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null) {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
-            dd($this->content, "this->content");
             $this->is_pet = true;
             $this->toast(
                 type: 'success',
@@ -105,7 +99,6 @@ if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null
             );
         }
 
-
         if ($this->content == null) {
             if (env('DEFAULT_LANGUAGE') == 'es') {
                 session()->flash('error', 'Paciente no encontrado o no tiene detalles Inicie sesión para agregar detalles');
@@ -116,7 +109,6 @@ if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null
             redirect()
                 ->route('login')
                 ->with(['Referer' => $referer]);
-                dd("redirect login");
             // return redirect('login')->route('login');
         } else {
             // Send email notification check
@@ -142,7 +134,6 @@ if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null
 
     public function render()
     {
-        dd("function render");
         $view = $this->is_pet ? 'livewire.pet-details' : 'livewire.user.medical-history';
 
         return view($view, ['content' => $this->content]);
@@ -166,30 +157,24 @@ if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null
         }
     }
 
-    private function sendEmailNotification($email, $userName, $request)
-    {
-        $userAgent = $request->header('User-Agent');
-        $deviceInfo = "Device information: " . $userAgent;
-        $ipAddress = $request->ip();
+private function sendEmailNotification($email, $userName, $request){
+     $userAgent = $request->header('User-Agent');
+     $deviceInfo = "Device information: " . $userAgent;
+      $ipAddress = $request->ip();
+       if ($ipAddress === '127.0.0.1' || $ipAddress === '::1'){
+         $ipAddress = '8.8.8.8';
+         }
+          $latitude = $request->query('lat');
+           $longitude = $request->query('lng');
+            if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
+                 Log::info('Email not sent: Latitude or Longitude is missing.', [ 'email' => $email, 'latitude' => $latitude, 'longitude' => $longitude ]);
 
-        if ($ipAddress === '127.0.0.1' || $ipAddress === '::1') {
-            $ipAddress = '8.8.8.8';
-        }
+                  return;
 
-        $latitude = $request->query('lat');
-        $longitude = $request->query('lng');
+                   // Exit the function early }
 
-        if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
-            Log::info('Email not sent: Latitude or Longitude is missing.', [
-                'email' => $email,
-                'latitude' => $latitude,
-                'longitude' => $longitude
-            ]);
-            return; // Exit the function early
-        }
+                   $currentUserInfo = Location::get($ipAddress);
+                   Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude)); }
+}
 
-        $currentUserInfo = Location::get($ipAddress);
-
-        Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude));
-    }
 }
