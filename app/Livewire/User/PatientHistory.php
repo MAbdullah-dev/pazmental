@@ -34,8 +34,6 @@ class PatientHistory extends Component
 
     public function mount($data, Request $request)
     {
-
-
         $data = base64_decode($data);
         $d_explode = explode(",", $data);
 
@@ -53,8 +51,6 @@ class PatientHistory extends Component
             $product_id = $d_explode[1] ?? '';
             $email = User::where('id', $user_id)->firstOrFail()->user_email;
         } else {
-                        dd("here");
-
             return abort(404);
         }
         $product = Product::findOrFail($product_id);
@@ -77,32 +73,25 @@ class PatientHistory extends Component
                 return abort(404);
             }
         }
-        if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null) {
+        $this->is_pet = $user->meta()->where('meta_key', 'subaccount_type')->where('meta_value', 'pet')->exists() ||
+                        $product->categories()->where('term_id', $this->pet_cat_id)->exists();
+
+        if ($this->is_pet) {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
-            $this->is_pet = true;
-            $this->toast(
-                type: 'success',
-                title: @translate('Screen captures and recordings are restricted.'),
-                description: null,
-                position: 'toast-bottom toast-start',
-                icon: 'o-exclamation-circle', // Updated icon to exclamation mark
-                css: 'alert-white', // Updated background to white
-                timeout: 10000,
-                redirectTo: null
-            );
         } else {
             $this->content = PatientDetails::where('patient_id', $user->ID)->first();
-            $this->toast(
-                type: 'success',
-                title: @translate('Screen captures and recordings are restricted.'),
-                description: null,
-                position: 'toast-bottom toast-start',
-                icon: 'o-exclamation-circle', // Updated icon to exclamation mark
-                css: 'alert-white', // Updated background to white
-                timeout: 10000,
-                redirectTo: null
-            );
         }
+
+        $this->toast(
+            type: 'success',
+            title: @translate('Screen captures and recordings are restricted.'),
+            description: null,
+            position: 'toast-bottom toast-start',
+            icon: 'o-exclamation-circle',
+            css: 'alert-white',
+            timeout: 10000,
+            redirectTo: null
+        );
 
         if ($this->content == null) {
             if (env('DEFAULT_LANGUAGE') == 'es') {
