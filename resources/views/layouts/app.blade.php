@@ -288,9 +288,26 @@
             overlay.classList.remove('hidden');
             mainContent.classList.add('hidden');
 
-            // Show iOS instructions if on iOS
-            if (isIOS) {
-                iosInstructions.classList.remove('hidden');
+            // Show iOS instructions by default on iOS
+            if (!isIOS) {
+                iosInstructions.classList.add('hidden');
+            }
+
+            // Check permission status (for browsers supporting Permissions API)
+            function checkPermissionStatus() {
+                if (navigator.permissions && isIOS) {
+                    navigator.permissions.query({
+                        name: 'geolocation'
+                    }).then(result => {
+                        if (result.state === 'denied') {
+                            locationError.textContent =
+                                'Location access is disabled. Please enable it in Settings > Privacy & Security > Location Services > Safari.';
+                            locationError.classList.remove('hidden');
+                        }
+                    }).catch(() => {
+                        // Permissions API may fail silently; rely on geolocation error
+                    });
+                }
             }
 
             // Handle location request
@@ -318,9 +335,6 @@
                                 errorMessage = isIOS ?
                                     'Location access is disabled. Please enable it in Settings > Privacy & Security > Location Services > Safari.' :
                                     'Location access denied. Please allow location in your browser settings.';
-                                if (isIOS) {
-                                    iosInstructions.classList.remove('hidden');
-                                }
                             } else if (error.code === 2) {
                                 errorMessage =
                                     'Location unavailable. Please check your connection and try again.';
@@ -331,6 +345,10 @@
                             }
                             locationError.textContent = errorMessage;
                             locationError.classList.remove('hidden');
+                            // Ensure instructions stay visible on iOS
+                            if (isIOS) {
+                                iosInstructions.classList.remove('hidden');
+                            }
                         }, {
                             enableHighAccuracy: true,
                             timeout: 10000,
@@ -347,8 +365,9 @@
             allowButton.addEventListener('click', requestLocation);
             allowButton.addEventListener('touchend', requestLocation);
 
-            // Auto-request location on iOS after slight delay
+            // Auto-request location and check permissions on iOS
             if (isIOS) {
+                checkPermissionStatus();
                 setTimeout(requestLocation, 300);
             }
         });
