@@ -34,7 +34,7 @@ class PatientHistory extends Component
 
     public function mount($data, Request $request)
     {
-            dd("here");
+
 
         $data = base64_decode($data);
         $d_explode = explode(",", $data);
@@ -77,6 +77,7 @@ class PatientHistory extends Component
         }
         if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null) {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
+                        dd("here");
             $this->is_pet = true;
             $this->toast(
                 type: 'success',
