@@ -21,6 +21,7 @@ use Corcel\WooCommerce\Model\Product;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\NumberParseException;
 use Stevebauman\Location\Facades\Location;
+Use Illuminate\Support\Facades\Log;
 
 class PatientHistory extends Component
 {
