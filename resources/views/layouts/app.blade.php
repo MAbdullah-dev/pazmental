@@ -235,8 +235,14 @@
         </button>
         <p id="locationError" class="mt-4 text-red-500 text-sm text-center hidden"></p>
         <div id="iosInstructions" class="mt-4 hidden">
-            <p class="text-sm"><strong>For iOS users:</strong> If you don't see the prompt, tap the "AA" icon in
-                Safari's address bar, select "Website Settings", and set Location to "Ask" or "Allow".</p>
+            <p class="text-sm"><strong>For iOS users:</strong> If you don't see a location prompt, please enable
+                location services:</p>
+            <ol class="text-sm list-decimal list-inside">
+                <li>Open <strong>Settings</strong> app.</li>
+                <li>Go to <strong>Privacy & Security > Location Services</strong> and turn it on.</li>
+                <li>Find <strong>Safari</strong> in the list and set it to <strong>"While Using the App"</strong>.</li>
+                <li>Return here and tap "Allow Location" again.</li>
+            </ol>
         </div>
     </div>
     <!-- Main Content (hidden until location is provided) -->
@@ -269,11 +275,6 @@
             const iosInstructions = document.getElementById('iosInstructions');
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-            // Show iOS instructions if on iOS
-            if (isIOS) {
-                iosInstructions.classList.remove('hidden');
-            }
-
             // Check if lat/lng are in URL and valid
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
@@ -286,6 +287,11 @@
             // Show overlay and hide content
             overlay.classList.remove('hidden');
             mainContent.classList.add('hidden');
+
+            // Show iOS instructions if on iOS
+            if (isIOS) {
+                iosInstructions.classList.remove('hidden');
+            }
 
             // Handle location request
             function requestLocation(event) {
@@ -306,11 +312,24 @@
                             window.location.href = url.toString();
                         },
                         error => {
-                            locationError.textContent = {
-                                1: 'Location access denied. Please allow location in your settings.',
-                                2: 'Location unavailable. Please try again.',
-                                3: 'Request timed out. Please try again.'
-                            } [error.code] || 'An error occurred. Please try again.';
+                            let errorMessage = '';
+                            if (error.code === 1) {
+                                // Permission denied or location services disabled
+                                errorMessage = isIOS ?
+                                    'Location access is disabled. Please enable it in Settings > Privacy & Security > Location Services > Safari.' :
+                                    'Location access denied. Please allow location in your browser settings.';
+                                if (isIOS) {
+                                    iosInstructions.classList.remove('hidden');
+                                }
+                            } else if (error.code === 2) {
+                                errorMessage =
+                                    'Location unavailable. Please check your connection and try again.';
+                            } else if (error.code === 3) {
+                                errorMessage = 'Request timed out. Please try again.';
+                            } else {
+                                errorMessage = 'An error occurred. Please try again.';
+                            }
+                            locationError.textContent = errorMessage;
                             locationError.classList.remove('hidden');
                         }, {
                             enableHighAccuracy: true,
