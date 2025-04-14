@@ -40,7 +40,6 @@ Route::middleware(['site_access'])->group(
             Route::get('medical-history', MedicalHistory::class)->name('medical-history');
             Route::get('SaveExit', [MedicalHistory::class, 'SaveExit'])->name('SaveExit');
             Route::get('pet-history', PetDetails::class)->name('pet-history');
-            Route::get('patient-pet', PatientPet::class)->name('PatientPet');
             Route::get('faqs', Faqs::class)->name('faqs');
             Route::get('/', Dashboard::class)->name('dashboard');
             Route::get('dashboard', Dashboard::class);
@@ -73,6 +72,8 @@ require __DIR__ . '/auth.php';
 // Route::fallback(ErrorPage::class);
 
 Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
+            Route::get('patient-pet', PatientPet::class)->name('PatientPet');
+
 
 Route::get('/test-db-connection', function () {
     try {
