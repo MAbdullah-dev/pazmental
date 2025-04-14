@@ -289,10 +289,12 @@
 
             // Handle location request
             function requestLocation(event) {
+
                 if (event) {
                     event.preventDefault();
                     event.stopPropagation();
                 }
+
                 locationError.classList.add('hidden');
 
                 if (navigator.geolocation) {
