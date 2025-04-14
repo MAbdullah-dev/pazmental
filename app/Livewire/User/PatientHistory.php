@@ -77,27 +77,33 @@ class PatientHistory extends Component
                 dd("GET QR CODE NULL");
             }
         }
-        $this->is_pet = $user->meta()->where('meta_key', 'subaccount_type')->where('meta_value', 'pet')->exists() ||
-                        $product->categories()->where('term_id', $this->pet_cat_id)->exists();
-
-        if ($this->is_pet) {
+if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null) {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
-            dd($this->content, "if pet condition");
+            $this->is_pet = true;
+            $this->toast(
+                type: 'success',
+                title: @translate('Screen captures and recordings are restricted.'),
+                description: null,
+                position: 'toast-bottom toast-start',
+                icon: 'o-exclamation-circle', // Updated icon to exclamation mark
+                css: 'alert-white', // Updated background to white
+                timeout: 10000,
+                redirectTo: null
+            );
         } else {
             $this->content = PatientDetails::where('patient_id', $user->ID)->first();
-            dd($this->content, "else pet condition");
+            $this->toast(
+                type: 'success',
+                title: @translate('Screen captures and recordings are restricted.'),
+                description: null,
+                position: 'toast-bottom toast-start',
+                icon: 'o-exclamation-circle', // Updated icon to exclamation mark
+                css: 'alert-white', // Updated background to white
+                timeout: 10000,
+                redirectTo: null
+            );
         }
 
-        $this->toast(
-            type: 'success',
-            title: @translate('Screen captures and recordings are restricted.'),
-            description: null,
-            position: 'toast-bottom toast-start',
-            icon: 'o-exclamation-circle',
-            css: 'alert-white',
-            timeout: 10000,
-            redirectTo: null
-        );
 
         if ($this->content == null) {
             if (env('DEFAULT_LANGUAGE') == 'es') {
