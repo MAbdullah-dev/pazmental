@@ -1,4 +1,4 @@
-{{-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -94,7 +94,7 @@
 
             // Check if latitude and longitude are already in the URL and are not empty
             if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                'lng') !== '') {
+                    'lng') !== '') {
                 showMainContent();
             } else {
                 showLocationOverlay();
@@ -192,10 +192,10 @@
     </script>
 </body>
 
-</html> --}}
+</html>
 
 
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -382,4 +382,4 @@
     </script>
 </body>
 
-</html>
+</html> --}}
