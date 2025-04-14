@@ -63,7 +63,7 @@ class PatientHistory extends Component
         $useremrgemail2 = $userdata->allow_notification_emrg_email2 ?? false ? $userdata->emrg_email2 : null;
         if (auth()->check() && auth()->user()->email != $email) {
             auth()->logout();
-            dd("auth check logout");
+            // dd("auth check logout");
         }
         foreach ($user->meta as $metadata) {
             if ($metadata['meta_key'] == 'billing_phone') {
