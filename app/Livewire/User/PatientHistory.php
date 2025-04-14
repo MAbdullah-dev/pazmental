@@ -53,6 +53,8 @@ class PatientHistory extends Component
             $product_id = $d_explode[1] ?? '';
             $email = User::where('id', $user_id)->firstOrFail()->user_email;
         } else {
+                        dd("here");
+
             return abort(404);
         }
         $product = Product::findOrFail($product_id);
@@ -77,7 +79,6 @@ class PatientHistory extends Component
         }
         if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null) {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
-                        dd("here");
             $this->is_pet = true;
             $this->toast(
                 type: 'success',
