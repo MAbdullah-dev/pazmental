@@ -34,8 +34,8 @@ class PatientHistory extends Component
 
     public function mount($data, Request $request)
     {
-        $data = base64_decode($data);
         dd($data);
+        $data = base64_decode($data);
 
         $d_explode = explode(",", $data);
 
