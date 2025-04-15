@@ -81,7 +81,9 @@ class PatientHistory extends Component
 
         if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null || $isPetSubaccount)  {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
-        // dd($this->content);
+            if($this->content == null) {
+                return redirect()->route('patient-pet', ['data' => base64_encode($user->ID)]);
+            }
             $this->is_pet = true;
             $this->toast(
                 type: 'success',
