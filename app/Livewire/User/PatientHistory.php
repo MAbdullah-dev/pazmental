@@ -86,6 +86,7 @@ class PatientHistory extends Component
             if($this->content == null) {
                 return redirect()->route('PatientPet', ['data' => base64_encode($user->ID), 'redirectionRoute' => base64_encode($data)]);
             }
+            dd("idhr laa de redirect");
             $this->is_pet = true;
             $this->toast(
                 type: 'success',
