@@ -38,7 +38,7 @@ class PatientPet extends Component
     public $user_id;
 
 
-    public function mount()
+    public function mount($data = null)
     {
         if ($data) {
             $this->user_id = base64_decode($data);
