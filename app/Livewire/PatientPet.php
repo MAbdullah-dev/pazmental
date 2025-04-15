@@ -36,7 +36,7 @@ class PatientPet extends Component
     public $other_info;
     public $content;
     public $data;
-    public $decodedData;
+    public $user_id;
 
     protected $queryString = ['data'];
 
@@ -44,8 +44,8 @@ class PatientPet extends Component
     public function mount($data = null)
     {
 
-        $this->decodedData = $this->data ? base64_decode($this->data) : null;
-        dd($this->decodedData, $this->data, "decoded data");
+        $this->user_id = $this->data ? base64_decode($this->data) : null;
+        dd($this->user_id, "decoded data user_id");
 
         $this->patient_id = Auth::id();
         $this->content = PatientPets::where('patient_id', Auth::id())->first();
