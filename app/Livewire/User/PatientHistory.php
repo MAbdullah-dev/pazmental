@@ -77,8 +77,11 @@ class PatientHistory extends Component
 
         $isPetSubaccount = $user->meta->where('meta_key', 'subaccount_type')->where('meta_value', 'pet')->isNotEmpty();
 
+        dd($isPetSubaccount);
+
         if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null || $isPetSubaccount)  {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
+        dd("content null PatientPets");
             $this->is_pet = true;
             $this->toast(
                 type: 'success',
@@ -105,6 +108,8 @@ class PatientHistory extends Component
         }
 
         if ($this->content == null) {
+        dd("content null condition");
+
             if (env('DEFAULT_LANGUAGE') == 'es') {
                 session()->flash('error', 'Paciente no encontrado o no tiene detalles Inicie sesión para agregar detalles');
             } else {
