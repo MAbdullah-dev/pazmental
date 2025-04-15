@@ -6,6 +6,11 @@ use Livewire\Component;
 use App\Models\PatientPets;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\QRScannedNotification;
+use Illuminate\Support\Facades\Mail;
+use Stevebauman\Location\Facades\Location;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class PatientPet extends Component
 {
@@ -172,9 +177,45 @@ class PatientPet extends Component
         } else {
             PatientPets::create($data);
         }
-        // dd($data);
-        return redirect('pd/' . $this->redirectionRoute);
+
+    $request = request();
+    $userEmail = $this->owner_email ?? null;
+    $userName = $this->owner_name ?? 'Pet Owner';
+
+    if (filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
+        $this->sendEmailNotification($userEmail, $userName, $request);
     }
+
+    return redirect('pd/' . $this->redirectionRoute);
+
+    }
+
+    private function sendEmailNotification($email, $userName, $request)
+{
+    $userAgent = $request->header('User-Agent');
+    $deviceInfo = "Device information: " . $userAgent;
+    $ipAddress = $request->ip();
+
+    if ($ipAddress === '127.0.0.1' || $ipAddress === '::1') {
+        $ipAddress = '8.8.8.8'; // fallback for local testing
+    }
+
+    $latitude = $request->query('lat');
+    $longitude = $request->query('lng');
+
+    if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
+        Log::info('Email not sent: Latitude or Longitude is missing.', [
+            'email' => $email,
+            'latitude' => $latitude,
+            'longitude' => $longitude
+        ]);
+        return;
+    }
+
+    $currentUserInfo = Location::get($ipAddress);
+    Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude));
+}
+
 
     public function render()
     {
