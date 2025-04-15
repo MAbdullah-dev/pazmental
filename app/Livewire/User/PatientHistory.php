@@ -207,7 +207,7 @@ private function sendEmailNotification($email, $userName, $request){
         $latitude = $this->lat;
         $longitude = $this->lng;
 
-        dd($latitude, $longitude);
+        // dd($latitude, $longitude);
 
 
         if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
