@@ -204,7 +204,7 @@ class PatientPet extends Component
     $latitude = $request->query('lat');
     $longitude = $request->query('lng');
 
-                      dd($latitude, $longitude, "PatientPet");
+                    //   dd($latitude, $longitude, "PatientPet");
 
 
 
