@@ -35,14 +35,17 @@ class PatientPet extends Component
     public $neuter_info;
     public $other_info;
     public $content;
+    public $data;
     public $decodedData;
+
+    protected $queryString = ['data'];
 
 
     public function mount($data = null)
     {
 
-        $this->decodedData = $data ? base64_decode($data) : null;
-        dd($this->decodedData, $data, "decoded data");
+        $this->decodedData = $this->data ? base64_decode($this->data) : null;
+        dd($this->decodedData, $this->data, "decoded data");
 
         $this->patient_id = Auth::id();
         $this->content = PatientPets::where('patient_id', Auth::id())->first();
