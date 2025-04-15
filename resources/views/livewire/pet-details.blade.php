@@ -71,24 +71,32 @@
                     class="mb-4 flex flex-col items-center rounded-2xl p-[10px] sm:p-[15px] bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5]">
                     <div
                         class="image-wrapper flex p-[3px] rounded-[50%] bg-white mb-2 w-[150px] h-[150px] overflow-hidden">
-                        @php
-                            $user_id = $content['patient_id'];
-                        @endphp
-                        <img src="{{ asset('storage/images/' . json_decode($content['main_image'])) }}" alt=""
-                            class="object-cover w-[100%] h-[100%] rounded-[50%] overflow-hidden">
+                        @if (optional($content)->main_image)
+                            <img src="{{ asset('storage/images/' . json_decode(optional($content)->main_image)) }}"
+                                alt="" class="object-cover w-[100%] h-[100%] rounded-[50%] overflow-hidden">
+                        @else
+                            <p class="text-center text-red-500">N/A</p>
+                        @endif
                     </div>
                 </a>
             </div>
             <div class="grid_images">
-                @foreach (json_decode($content['images'], true) as $image)
-                    <img src="{{ asset('storage/images/' . $image) }}" alt=""
-                        class="object-cover w-[100%] h-[100%]">
-                @endforeach
+                @php
+                    $images = optional($content)->images ? json_decode(optional($content)->images, true) : [];
+                @endphp
+                @if ($images)
+                    @foreach ($images as $image)
+                        <img src="{{ asset('storage/images/' . $image) }}" alt=""
+                            class="object-cover w-[100%] h-[100%]">
+                    @endforeach
+                @else
+                    <p class="text-center text-red-500">N/A</p>
+                @endif
             </div>
 
             <div class="head mt-12 sm:mt-12 text-center mb-8">
                 <p class="dark:text-white uppercase text-[16px]  text-[#000] font-semibold">
-                    {{ $content['owner_appeal'] }}
+                    {{ optional($content)->owner_appeal === null || optional($content)->owner_appeal === '' ? 'N/A' : optional($content)->owner_appeal }}
                 </p>
             </div>
             <div class="field-groups">
@@ -137,7 +145,7 @@
                                     @translate(ucwords(str_replace('_', ' ', $key))) :
                                 </span>
                                 <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
-                                    {{ is_null($content->$key) || $content->$key === '' ? 'N/A' : $content->$key }}
+                                    {{ optional($content)->$key === null || optional($content)->$key === '' ? 'N/A' : optional($content)->$key }}
                                 </span>
                             </div>
                         </div>
@@ -159,7 +167,7 @@
                                     @translate(ucwords(str_replace('_', ' ', $key))) :
                                 </span>
                                 <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
-                                    {{ is_null($content->$key) || $content->$key === '' ? 'N/A' : $content->$key }}
+                                    {{ optional($content)->$key === null || optional($content)->$key === '' ? 'N/A' : optional($content)->$key }}
                                 </span>
                             </div>
                         </div>
@@ -181,7 +189,7 @@
                                     @translate(ucwords(str_replace('_', ' ', $key))) :
                                 </span>
                                 <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
-                                    {{ is_null($content->$key) || $content->$key === '' ? 'N/A' : $content->$key }}
+                                    {{ optional($content)->$key === null || optional($content)->$key === '' ? 'N/A' : optional($content)->$key }}
                                 </span>
                             </div>
                         </div>
