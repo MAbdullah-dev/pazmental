@@ -107,20 +107,20 @@ class PatientHistory extends Component
             );
         }
 
-        if ($this->content == null) {
-        dd("content null condition");
+        // if ($this->content == null) {
+        // dd("content null condition");
 
-            if (env('DEFAULT_LANGUAGE') == 'es') {
-                session()->flash('error', 'Paciente no encontrado o no tiene detalles Inicie sesión para agregar detalles');
-            } else {
-                session()->flash('error', 'Patient Not Fount Or Dont Have Details Please Login To Add Details');
-            }
-            $referer = 'true';
-            redirect()
-                ->route('login')
-                ->with(['Referer' => $referer]);
-            // return redirect('login')->route('login');
-        } else {
+        //     if (env('DEFAULT_LANGUAGE') == 'es') {
+        //         session()->flash('error', 'Paciente no encontrado o no tiene detalles Inicie sesión para agregar detalles');
+        //     } else {
+        //         session()->flash('error', 'Patient Not Fount Or Dont Have Details Please Login To Add Details');
+        //     }
+        //     $referer = 'true';
+        //     redirect()
+        //         ->route('login')
+        //         ->with(['Referer' => $referer]);
+        //     // return redirect('login')->route('login');
+        // } else {
             // Send email notification check
             $message = 'PazMental-Alerts:
             Hello ' . $user->user_nicename . ', Your QR code has been scanned recently. Check email for more details. Thank you!';
@@ -140,7 +140,7 @@ class PatientHistory extends Component
                 $this->sendEmailNotification($useremrgemail2, $user->user_nicename, $request);
             }
         }
-    }
+    // }
 
     public function render()
     {
