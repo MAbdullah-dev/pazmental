@@ -88,19 +88,19 @@ class PatientHistory extends Component
             }
             $this->is_pet = true;
             // email
-$useremailprimary = str_replace(' ', '', $user->user_email);
-            $useremrgemail = str_replace(' ', '', $useremrgemail);
-            $useremrgemail2 = str_replace(' ', '', $useremrgemail2);
-            if (filter_var($useremailprimary, FILTER_VALIDATE_EMAIL)) {
-                $this->sendEmailNotification($useremailprimary, $user->user_nicename, $request);
-            }
-            if (filter_var($useremrgemail, FILTER_VALIDATE_EMAIL)) {
+// $useremailprimary = str_replace(' ', '', $user->user_email);
+//             $useremrgemail = str_replace(' ', '', $useremrgemail);
+//             $useremrgemail2 = str_replace(' ', '', $useremrgemail2);
+//             if (filter_var($useremailprimary, FILTER_VALIDATE_EMAIL)) {
+//                 $this->sendEmailNotification($useremailprimary, $user->user_nicename, $request);
+//             }
+//             if (filter_var($useremrgemail, FILTER_VALIDATE_EMAIL)) {
 
-                $this->sendEmailNotification($useremrgemail, $user->user_nicename, $request);
-            }
-            if (filter_var($useremrgemail2, FILTER_VALIDATE_EMAIL)) {
-                $this->sendEmailNotification($useremrgemail2, $user->user_nicename, $request);
-            }
+//                 $this->sendEmailNotification($useremrgemail, $user->user_nicename, $request);
+//             }
+//             if (filter_var($useremrgemail2, FILTER_VALIDATE_EMAIL)) {
+//                 $this->sendEmailNotification($useremrgemail2, $user->user_nicename, $request);
+//             }
             //email end
             $this->toast(
                 type: 'success',
@@ -193,21 +193,17 @@ private function sendEmailNotification($email, $userName, $request){
        if ($ipAddress === '127.0.0.1' || $ipAddress === '::1'){
          $ipAddress = '8.8.8.8';
          }
-          $latitude = $request->query('lat');
-           $longitude = $request->query('lng');
+        $latitude = $request->query('lat');
+        $longitude = $request->query('lng');
 
-           dd($request->query('lat'), $request->query('lng'), "PatientHistory");
+        if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
+        Log::info('Email not sent: Latitude or Longitude is missing.', [ 'email' => $email, 'latitude' => $latitude, 'longitude' => $longitude ]);
 
-            if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
-                 Log::info('Email not sent: Latitude or Longitude is missing.', [ 'email' => $email, 'latitude' => $latitude, 'longitude' => $longitude ]);
+        return;
 
-                  return;
-
-                   // Exit the function early }
-
-                   $currentUserInfo = Location::get($ipAddress);
-                   Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude));
-                }
+           $currentUserInfo = Location::get($ipAddress);
+           Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude));
+        }
 }
 
 }
