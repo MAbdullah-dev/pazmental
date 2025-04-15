@@ -44,6 +44,8 @@ class PatientHistory extends Component
     }
     public function mount($data, Request $request)
     {
+        Log::info('Raw GET parameters:', $_GET);
+    Log::info('Query parameters:', $request->query()->all());
         // dd($data);
         $data = base64_decode($data);
 
