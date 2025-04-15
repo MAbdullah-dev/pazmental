@@ -77,7 +77,7 @@ class PatientHistory extends Component
 
         $isPetSubaccount = $user->meta->where('meta_key', 'subaccount_type')->where('meta_value', 'pet')->isNotEmpty();
 
-        dd($isPetSubaccount);
+        // dd($isPetSubaccount);
 
         if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null || $isPetSubaccount)  {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
