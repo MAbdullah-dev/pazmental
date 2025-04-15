@@ -37,17 +37,23 @@ class PatientPet extends Component
     public $content;
     public $data;
     public $user_id;
+    public $redirectionRoute;
 
-    protected $queryString = ['data'];
+    protected $queryString = ['data', 'redirectionRoute'];
 
 
-    public function mount($data = null)
+    public function mount()
     {
 
         $this->user_id = $this->data ? base64_decode($this->data) : null;
+        $this->redirectionRoute = $this->redirectionRoute ?? '';
+        dd($this->user_id, $this->redirectionRoute, $this->data);
 
+        if(Auth::check()){
         $this->patient_id = Auth::id();
-        dd($this->patient_id);
+        }else{
+        $this->patient_id = $this->user_id;
+        }
         $this->content = PatientPets::where('patient_id', Auth::id())->first();
         if ($this->content) {
             $this->owner_appeal = $this->content['owner_appeal'];
