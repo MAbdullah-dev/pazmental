@@ -180,6 +180,8 @@ private function sendEmailNotification($email, $userName, $request){
          }
           $latitude = $request->query('lat');
            $longitude = $request->query('lng');
+
+           dd($latitude, $longitude);
             if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
                  Log::info('Email not sent: Latitude or Longitude is missing.', [ 'email' => $email, 'latitude' => $latitude, 'longitude' => $longitude ]);
 
