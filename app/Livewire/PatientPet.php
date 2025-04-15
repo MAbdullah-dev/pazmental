@@ -42,7 +42,7 @@ class PatientPet extends Component
     {
 
         $this->decodedData = $data ? base64_decode($data) : null;
-        dd($this->decodedData);
+        dd($this->decodedData, $data, "decoded data");
 
         $this->patient_id = Auth::id();
         $this->content = PatientPets::where('patient_id', Auth::id())->first();
