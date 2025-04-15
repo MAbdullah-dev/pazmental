@@ -203,16 +203,12 @@ private function sendEmailNotification($email, $userName, $request){
        if ($ipAddress === '127.0.0.1' || $ipAddress === '::1'){
          $ipAddress = '8.8.8.8';
          }
-
-        $latitude = $this->lat;
-        $longitude = $this->lng;
-
-        // dd($latitude, $longitude);
-
+        $latitude = $request->query('lat');
+        $longitude = $request->query('lng');
 
         if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
         Log::info('Email not sent: Latitude or Longitude is missing.', [ 'email' => $email, 'latitude' => $latitude, 'longitude' => $longitude ]);
-
+        Log::info('Query parameters:', $request->query()->all());
         return;
 
            $currentUserInfo = Location::get($ipAddress);
