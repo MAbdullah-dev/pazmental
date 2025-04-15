@@ -10,9 +10,16 @@ class PetDetails extends Component
         public $user_id;
     public $content;
 
-    public function mount($data)
+    public function mount($data = null)
     {
-        dd($data);
+        if ($data) {
+            $this->user_id = base64_decode($data);
+        } else {
+            $this->user_id = auth()->id();
+        }
+
+        dd($this->user_id);
+
     }
     public function render()
     {
