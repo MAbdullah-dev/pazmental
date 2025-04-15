@@ -2,6 +2,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
             $locale = session()->get('locale');
+            dd($data);
         @endphp
         <div class="flex justify-center">
             @if ($locale == 'es')
