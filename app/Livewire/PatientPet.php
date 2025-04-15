@@ -47,7 +47,7 @@ class PatientPet extends Component
 
         $this->user_id = $this->data ? base64_decode($this->data) : null;
         $this->redirectionRoute = $this->redirectionRoute ?? '';
-        // dd($this->user_id, $this->redirectionRoute, $this->data);
+        dd($this->user_id, $this->redirectionRoute, $this->data);
 
         if(Auth::check()){
         $this->patient_id = Auth::id();
