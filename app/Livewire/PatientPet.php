@@ -173,7 +173,7 @@ class PatientPet extends Component
             PatientPets::create($data);
         }
         // dd($data);
-        return redirect()->route('pd/' . $this->redirectionRoute);
+        return redirect('pd/' . $this->redirectionRoute);
     }
 
     public function render()
