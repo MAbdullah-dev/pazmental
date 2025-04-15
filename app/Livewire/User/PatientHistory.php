@@ -208,7 +208,7 @@ private function sendEmailNotification($email, $userName, $request){
 
         if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
         Log::info('Email not sent: Latitude or Longitude is missing.', [ 'email' => $email, 'latitude' => $latitude, 'longitude' => $longitude ]);
-        Log::info('Query parameters:', $request->query()->all());
+        Log::info('Query parameters:', $request->all());
         return;
 
            $currentUserInfo = Location::get($ipAddress);
