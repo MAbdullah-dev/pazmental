@@ -32,6 +32,16 @@ class PatientHistory extends Component
     protected bool $is_pet = false;
     public int $pet_cat_id = 77;
 
+    public $lat;
+    public $lng;
+
+    protected $listeners = ['setLocation'];
+
+    public function setLocation($lat, $lng)
+    {
+        $this->lat = $lat;
+        $this->lng = $lng;
+    }
     public function mount($data, Request $request)
     {
         // dd($data);
@@ -193,8 +203,12 @@ private function sendEmailNotification($email, $userName, $request){
        if ($ipAddress === '127.0.0.1' || $ipAddress === '::1'){
          $ipAddress = '8.8.8.8';
          }
-        $latitude = $request->query('lat');
-        $longitude = $request->query('lng');
+
+        $latitude = $this->lat;
+        $longitude = $this->lng;
+
+        dd($latitude, $longitude);
+
 
         if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
         Log::info('Email not sent: Latitude or Longitude is missing.', [ 'email' => $email, 'latitude' => $latitude, 'longitude' => $longitude ]);

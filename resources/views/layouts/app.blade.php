@@ -304,6 +304,8 @@
                             url.searchParams.set('lat', lat);
                             url.searchParams.set('lng', lng);
                             window.location.href = url.toString();
+                            window.livewire.emit('setLocation', lat, lng);
+
                         },
                         error => {
                             locationError.textContent = {
