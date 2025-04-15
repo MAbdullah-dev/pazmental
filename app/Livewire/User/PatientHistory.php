@@ -73,7 +73,11 @@ class PatientHistory extends Component
                 return abort(404);
             }
         }
-        if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null) {
+
+
+        $isPetSubaccount = $user->meta->where('meta_key', 'subaccount_type')->where('meta_value', 'pet')->isNotEmpty();
+
+        if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null || $isPetSubaccount)  {
             $this->content = PatientPets::where('patient_id', $user->ID)->first();
             $this->is_pet = true;
             $this->toast(
@@ -81,8 +85,8 @@ class PatientHistory extends Component
                 title: @translate('Screen captures and recordings are restricted.'),
                 description: null,
                 position: 'toast-bottom toast-start',
-                icon: 'o-exclamation-circle', // Updated icon to exclamation mark
-                css: 'alert-white', // Updated background to white
+                icon: 'o-exclamation-circle',
+                css: 'alert-white',
                 timeout: 10000,
                 redirectTo: null
             );
@@ -93,8 +97,8 @@ class PatientHistory extends Component
                 title: @translate('Screen captures and recordings are restricted.'),
                 description: null,
                 position: 'toast-bottom toast-start',
-                icon: 'o-exclamation-circle', // Updated icon to exclamation mark
-                css: 'alert-white', // Updated background to white
+                icon: 'o-exclamation-circle',
+                css: 'alert-white',
                 timeout: 10000,
                 redirectTo: null
             );
@@ -175,7 +179,8 @@ private function sendEmailNotification($email, $userName, $request){
                    // Exit the function early }
 
                    $currentUserInfo = Location::get($ipAddress);
-                   Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude)); }
+                   Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude));
+                }
 }
 
 }
