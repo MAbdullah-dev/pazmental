@@ -204,7 +204,8 @@ class PatientPet extends Component
     $latitude = $request->query('lat');
     $longitude = $request->query('lng');
 
-           dd($latitude, $longitude);
+                      dd($latitude, $longitude, "PatientPet");
+
 
 
     if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
