@@ -45,9 +45,9 @@ class PatientPet extends Component
     {
 
         $this->user_id = $this->data ? base64_decode($this->data) : null;
-        dd($this->user_id, "decoded data user_id");
 
         $this->patient_id = Auth::id();
+        dd($this->patient_id);
         $this->content = PatientPets::where('patient_id', Auth::id())->first();
         if ($this->content) {
             $this->owner_appeal = $this->content['owner_appeal'];
