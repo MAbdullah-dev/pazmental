@@ -86,8 +86,22 @@ class PatientHistory extends Component
             if($this->content == null) {
                 return redirect()->route('PatientPet', ['data' => base64_encode($user->ID), 'redirectionRoute' => base64_encode($data)]);
             }
-            dd("idhr laa de redirect");
             $this->is_pet = true;
+            // email
+$useremailprimary = str_replace(' ', '', $user->user_email);
+            $useremrgemail = str_replace(' ', '', $useremrgemail);
+            $useremrgemail2 = str_replace(' ', '', $useremrgemail2);
+            if (filter_var($useremailprimary, FILTER_VALIDATE_EMAIL)) {
+                $this->sendEmailNotification($useremailprimary, $user->user_nicename, $request);
+            }
+            if (filter_var($useremrgemail, FILTER_VALIDATE_EMAIL)) {
+
+                $this->sendEmailNotification($useremrgemail, $user->user_nicename, $request);
+            }
+            if (filter_var($useremrgemail2, FILTER_VALIDATE_EMAIL)) {
+                $this->sendEmailNotification($useremrgemail2, $user->user_nicename, $request);
+            }
+            //email end
             $this->toast(
                 type: 'success',
                 title: @translate('Screen captures and recordings are restricted.'),
