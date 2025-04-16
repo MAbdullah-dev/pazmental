@@ -274,13 +274,27 @@
                 iosInstructions.classList.remove('hidden');
             }
 
-            // Check if lat/lng are in URL and valid
+            // Check if all required params are in URL and valid
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
-                    'lng') !== '') {
+            if (
+                urlParams.has('lat') && urlParams.has('lng') &&
+                urlParams.get('lat') !== '' && urlParams.get('lng') !== '' &&
+                urlParams.has('country_name') && urlParams.has('country_code') &&
+                urlParams.has('region_code') && urlParams.has('region_name') &&
+                urlParams.has('city') && urlParams.has('zip_code')
+            ) {
                 overlay.classList.add('hidden');
                 mainContent.classList.remove('hidden');
-                window.livewire.emit('setLocation', urlParams.get('lat'), urlParams.get('lng'));
+                window.livewire.emit('setLocation', {
+                    lat: urlParams.get('lat'),
+                    lng: urlParams.get('lng'),
+                    country_name: urlParams.get('country_name'),
+                    country_code: urlParams.get('country_code'),
+                    region_code: urlParams.get('region_code'),
+                    region_name: urlParams.get('region_name'),
+                    city: urlParams.get('city'),
+                    zip_code: urlParams.get('zip_code')
+                });
                 return;
             }
 
@@ -301,13 +315,49 @@
                         position => {
                             const lat = position.coords.latitude;
                             const lng = position.coords.longitude;
-                            const url = new URL(window.location.href);
-                            url.searchParams.set('lat', lat);
-                            url.searchParams.set('lng', lng);
-                            console.log('Redirecting to:', url.toString());
-                            setTimeout(() => {
-                                window.location.href = url.toString();
-                            }, 1000);
+
+                            // Fetch additional details from BigDataCloud API
+                            fetch(
+                                    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const locationData = {
+                                        lat: lat.toString(),
+                                        lng: lng.toString(),
+                                        country_name: data.countryName || '',
+                                        country_code: data.countryCode || '',
+                                        region_code: data.principalSubdivisionCode || '',
+                                        region_name: data.principalSubdivision || '',
+                                        city: data.city || '',
+                                        zip_code: data.postcode || ''
+                                    };
+
+                                    // Log for debugging
+                                    console.log('Location data:', locationData);
+
+                                    // Update URL with all parameters
+                                    const url = new URL(window.location.href.replace('=?', '?'));
+                                    Object.keys(locationData).forEach(key => {
+                                        url.searchParams.set(key, encodeURIComponent(locationData[
+                                            key]));
+                                    });
+
+                                    console.log('Redirecting to:', url.toString());
+
+                                    // Emit Livewire event with all details
+                                    window.livewire.emit('setLocation', locationData);
+
+                                    // Redirect after slight delay
+                                    setTimeout(() => {
+                                        window.location.href = url.toString();
+                                    }, 1000);
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching geolocation data:', error);
+                                    locationError.textContent =
+                                        'Error retrieving location details. Please try again.';
+                                    locationError.classList.remove('hidden');
+                                });
                         },
                         error => {
                             locationError.textContent = {
