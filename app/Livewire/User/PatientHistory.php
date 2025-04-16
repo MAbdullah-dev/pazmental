@@ -111,13 +111,13 @@ class PatientHistory extends Component
                     $useremrgemail2 = str_replace(' ', '', $useremrgemail2);
 
                     if (filter_var($useremailprimary, FILTER_VALIDATE_EMAIL)) {
-                        $this->sendEmailNotification($useremailprimary, $user->user_nicename, $request);
+                        $this->sendEmailNotification($useremailprimary, $user->display_name, $request);
                     }
                     if (filter_var($useremrgemail, FILTER_VALIDATE_EMAIL)) {
-                        $this->sendEmailNotification($useremrgemail, $user->user_nicename, $request);
+                        $this->sendEmailNotification($useremrgemail, $user->display_name, $request);
                     }
                     if (filter_var($useremrgemail2, FILTER_VALIDATE_EMAIL)) {
-                        $this->sendEmailNotification($useremrgemail2, $user->user_nicename, $request);
+                        $this->sendEmailNotification($useremrgemail2, $user->display_name, $request);
                     }
                 } else {
                     Log::info('Skipping email notification due to missing lat/lng', ['latitude' => $latitude, 'longitude' => $longitude]);
@@ -162,21 +162,21 @@ class PatientHistory extends Component
         // } else {
             // Send email notification check
             $message = 'PazMental-Alerts:
-            Hello ' . $user->user_nicename . ', Your QR code has been scanned recently. Check email for more details. Thank you!';
+            Hello ' . $user->user_display_name . ', Your QR code has been scanned recently. Check email for more details. Thank you!';
             //$this->sendTextNotification($phone_no, $message);
             // Remove extra spaces or characters
             $useremailprimary = str_replace(' ', '', $user->user_email);
             $useremrgemail = str_replace(' ', '', $useremrgemail);
             $useremrgemail2 = str_replace(' ', '', $useremrgemail2);
             if (filter_var($useremailprimary, FILTER_VALIDATE_EMAIL)) {
-                $this->sendEmailNotification($useremailprimary, $user->user_nicename, $request);
+                $this->sendEmailNotification($useremailprimary, $user->display_name, $request);
             }
             if (filter_var($useremrgemail, FILTER_VALIDATE_EMAIL)) {
 
-                $this->sendEmailNotification($useremrgemail, $user->user_nicename, $request);
+                $this->sendEmailNotification($useremrgemail, $user->display_name, $request);
             }
             if (filter_var($useremrgemail2, FILTER_VALIDATE_EMAIL)) {
-                $this->sendEmailNotification($useremrgemail2, $user->user_nicename, $request);
+                $this->sendEmailNotification($useremrgemail2, $user->display_name, $request);
             }
         }
     // }
