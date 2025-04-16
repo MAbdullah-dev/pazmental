@@ -34,6 +34,16 @@ class QRScannedNotification extends Mailable
     public function build()
     {
         return $this->view('emails.qr-scanned')
-            ->subject('Notificación de código QR escaneado');
+            ->subject('Notificación de código QR escaneado')
+                    ->with([
+            'userName' => $this->userName,
+            'deviceInfo' => $this->deviceInfo,
+            'ipAddress' => $this->ipAddress,
+            'currentUserInfo' => $this->currentUserInfo,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'city' => $this->city,
+            'country' => $this->country,
+        ]);
     }
 }
