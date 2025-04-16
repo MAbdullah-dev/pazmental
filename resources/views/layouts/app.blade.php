@@ -304,7 +304,8 @@
 
                             // Reverse geocode using BigDataCloud
                             fetch(
-                                    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
+                                    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+                                    )
                                 .then(response => response.json())
                                 .then(data => {
                                     const country = data.countryName;
@@ -319,15 +320,18 @@
                                     console.log(`City: ${city}`);
 
                                     // Optionally pass these to Livewire
-                                    window.livewire.emit('setLocationDetails', {
-                                        lat,
-                                        lng,
-                                        country,
-                                        countryCode,
-                                        region,
-                                        regionCode,
-                                        city
-                                    });
+                                    if (window.livewire && typeof window.livewire.emit === 'function') {
+                                        window.livewire.emit('setLocationDetails', {
+                                            lat,
+                                            lng,
+                                            country,
+                                            countryCode,
+                                            region,
+                                            regionCode,
+                                            city
+                                        });
+                                    }
+
 
                                     // Also update URL and redirect if needed
                                     const url = new URL(window.location.href);
