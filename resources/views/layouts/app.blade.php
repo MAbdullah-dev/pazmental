@@ -305,7 +305,7 @@
                             // Reverse geocode using BigDataCloud
                             fetch(
                                     `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
-                                    )
+                                )
                                 .then(response => response.json())
                                 .then(data => {
                                     const country = data.countryName;
@@ -315,9 +315,7 @@
                                     const city = data.city || data.locality || data.localityInfo
                                         .administrative[0]?.name;
 
-                                    console.log(`Country: ${country} (${countryCode})`);
-                                    console.log(`Region: ${region} (${regionCode})`);
-                                    console.log(`City: ${city}`);
+                                    console.log(data);
 
                                     // Optionally pass these to Livewire
                                     if (window.livewire && typeof window.livewire.emit === 'function') {
