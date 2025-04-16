@@ -280,6 +280,7 @@
                     'lng') !== '') {
                 overlay.classList.add('hidden');
                 mainContent.classList.remove('hidden');
+                window.livewire.emit('setLocation', urlParams.get('lat'), urlParams.get('lng'));
                 return;
             }
 
@@ -303,9 +304,10 @@
                             const url = new URL(window.location.href);
                             url.searchParams.set('lat', lat);
                             url.searchParams.set('lng', lng);
-                            window.location.href = url.toString();
-                            window.livewire.emit('setLocation', lat, lng);
-
+                            console.log('Redirecting to:', url.toString());
+                            setTimeout(() => {
+                                window.location.href = url.toString();
+                            }, 500);
                         },
                         error => {
                             locationError.textContent = {
@@ -333,6 +335,8 @@
             // Auto-request location on iOS after slight delay
             if (isIOS) {
                 setTimeout(requestLocation, 300);
+            } else {
+                requestLocation(new Event('init'));
             }
         });
     </script>
