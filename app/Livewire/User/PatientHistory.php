@@ -35,17 +35,17 @@ class PatientHistory extends Component
     public $lat;
     public $lng;
     public $city;
-    public $countryCode;
+    public $country;
 
     protected $listeners = ['setLocation'];
 
-    public function setLocation($lat, $lng, $city, $countryCode)
+    public function setLocation($lat, $lng, $city, $country)
     {
-        Log::info('setLocation called with lat: ' . $lat . ' and lng: ' . $lng . ' and city: ' . $city . ' and countryCode: ' . $countryCode);
+        Log::info('setLocation called with lat: ' . $lat . ' and lng: ' . $lng . ' and city: ' . $city . ' and country: ' . $country);
         $this->lat = $lat;
         $this->lng = $lng;
         $this->city = $city;
-        $this->countryCode = $countryCode;
+        $this->country = $country;
     }
     public function mount($data, Request $request)
     {
@@ -108,9 +108,9 @@ class PatientHistory extends Component
                 $latitude = $this->lat ?? $request->query('lat');
 $longitude = $this->lng ?? $request->query('lng');
 $city = $this->city ?? $request->query('city');
-$countryCode = $this->countryCode ?? $request->query('countryCode');
+$country = $this->country ?? $request->query('country');
 
-if (!empty($latitude) && !empty($longitude) && !empty($city) && !empty($countryCode)) {
+if (!empty($latitude) && !empty($longitude) && !empty($city) && !empty($country)) {
     Log::info('Sending email notifications with lat/lng:', [
         'latitude' => $latitude,
         'longitude' => $longitude
@@ -136,7 +136,7 @@ if (!empty($latitude) && !empty($longitude) && !empty($city) && !empty($countryC
         'latitude' => $latitude,
         'longitude' => $longitude,
         'city' => $city,
-        'countryCode' => $countryCode
+        'country' => $country
     ]);
 }
 
@@ -229,16 +229,16 @@ private function sendEmailNotification($email, $userName, $request)
     $latitude = $this->lat ?? $request->query('lat');
     $longitude = $this->lng ?? $request->query('lng');
     $city = $this->city ?? $request->query('city');
-    $countryCode = $this->countryCode ?? $request->query('countryCode');
-    Log::info('Using location data:', ['latitude' => $latitude, 'longitude' => $longitude, 'city' => $city, 'countryCode' => $countryCode]);
+    $country = $this->country ?? $request->query('country');
+    Log::info('Using location data:', ['latitude' => $latitude, 'longitude' => $longitude, 'city' => $city, 'country' => $country]);
 
-if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude) || empty($city) || empty($countryCode)) {
+if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude) || empty($city) || empty($country)) {
     Log::info('Email not sent: Missing required location data.', [
         'email' => $email,
         'latitude' => $latitude,
         'longitude' => $longitude,
         'city' => $city,
-        'countryCode' => $countryCode
+        'country' => $country
     ]);
     return;
 }
@@ -252,7 +252,7 @@ if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($long
     }
 
     $currentUserInfo = Location::get($ipAddress);
-    Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude, $city, $countryCode));
+    Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude, $city, $country));
 }
 
 }
