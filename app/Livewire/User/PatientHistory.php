@@ -57,7 +57,7 @@ class PatientHistory extends Component
     {
         Log::info('Raw GET:', $_GET);
         Log::info('Request URL:', [$request->fullUrl()]);
-        Log::info('Query parameters:', $request->query()->all());
+        Log::info('Query parameters:', $request->all());
 
         $data = base64_decode($data);
         $d_explode = explode(",", $data);
