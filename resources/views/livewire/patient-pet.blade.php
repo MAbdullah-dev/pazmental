@@ -22,15 +22,17 @@
             @endif
         </div>
         <h2
-            class="dark:text-white py-2 text-2xl md:text-3xl xl:text-4xl leading-[1.2] text-black font-semibold text-center dark:text-white">
+            class="py-2 text-2xl md:text-3xl xl:text-4xl leading-[1.2] font-semibold text-center
+           text-black dark:text-white">
             @translate("Pet's Emergency Response Record")
         </h2>
+
         <h5 class="dark:text-white py-2 text-[18px] sm:text-[24px] text-[#000] font-semibold text-center">
             @translate('Entering information in the sections is completely optional.')
         </h5>
         <p class="dark:text-white py-2 text-[16px] text-[#000] font-[500] text-center">
             @translate('Fill out the sections that you think emergency workers should be able to see in "view mode" that
-                        may save your life in a crisis.')
+                                    may save your life in a crisis.')
         </p>
         <div class="flex justify-center mb-5 mt-8 gap-3 sm:gap-8">
             <div class="section_icons_wrapper">
@@ -80,14 +82,14 @@
                             <div class="flex items-center justify-center flex-col w-100">
                                 <label for="main_image"
                                     class="text-left capitalize pb-3 sm:pb-0  text-[16px] sm:text-[22px] pet_label text-semibold dark:text-white text-[#000]">@translate("Pet's
-                                                                        Main Image")</label>
+                                                                                                            Main Image")</label>
                                 <livewire:dropzone wire:model="main_image" :rules="['image', 'mimes:png,jpeg', 'max:10420']" :multiple="false"
                                     :key="'dropzone-one'" />
                             </div>
                             <div class="flex items-center justify-center flex-col w-100">
                                 <label for="images"
                                     class="text-left capitalize pb-3 pt-6 sm:pb-0 sm:pt-0 text-[16px] sm:text-[22px] pet_label text-semibold dark:text-white text-[#000]">@translate("Pet's
-                                                                        Four Images")</label>
+                                                                                                            Four Images")</label>
                                 <livewire:dropzone wire:model="images" :rules="['image', 'mimes:png,jpeg', 'max:10420']" :multiple="true"
                                     :key="'dropzone-two'" />
                             </div>
@@ -103,7 +105,7 @@
                                 <div class="flex flex-col my-5">
                                     <label for="owner_appeal"
                                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Owner
-                                                                                Message')</label>
+                                                                                                                        Message')</label>
                                     <textarea rows="4" id="owner_appeal" wire:model="owner_appeal"
                                         class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700"></textarea>
                                     @error('owner_appeal')
@@ -136,7 +138,7 @@
                                 <div class="flex flex-col my-5">
                                     <label for="eye_color"
                                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Eye
-                                                                                Color')</label>
+                                                                                                                        Color')</label>
                                     <input type="text" id="eye_color" wire:model="eye_color"
                                         class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                                     @error('eye_color')
@@ -155,7 +157,7 @@
                                 <div class="flex flex-col my-5">
                                     <label for="pet_weight"
                                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Pet
-                                                                                Weight')</label>
+                                                                                                                        Weight')</label>
                                     <input type="number" id="pet_weight" wire:model="pet_weight"
                                         class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                                     @error('pet_weight')
@@ -178,7 +180,7 @@
                                 <div class="flex flex-col my-5">
                                     <label for="date_of_birth"
                                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Date
-                                                                                of Birth')
+                                                                                                                        of Birth')
                                         (@translate('AGE: '){{ $age }} )</label>
                                     <x-mary-datetime id="date_of_birth"
                                         class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700"
@@ -191,7 +193,7 @@
                                 <div class="flex flex-col my-5">
                                     <label for="hair_color"
                                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Hair
-                                                                                Color')</label>
+                                                                                                                        Color')</label>
                                     <input type="text" id="hair_color" wire:model="hair_color"
                                         class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                                     @error('hair_color')
@@ -201,7 +203,7 @@
                                 <div class="flex flex-col my-5">
                                     <label for="social_media"
                                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Social
-                                                                                Media')</label>
+                                                                                                                        Media')</label>
                                     <input type="text" id="social_media" wire:model="social_media"
                                         class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                                     @error('social_media')
@@ -230,7 +232,7 @@
                                 <div class="flex flex-col my-5">
                                     <label for="owner_name"
                                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Owner
-                                                                                Name')</label>
+                                                                                                                        Name')</label>
                                     <input type="text" id="owner_name" wire:model="owner_name"
                                         class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                                     @error('owner_name')
@@ -240,8 +242,8 @@
                                 <div class="flex flex-col my-5 phone-number-select">
                                     <label for="owner_phone_no"
                                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Owner
-                                                                                Phone
-                                                                                No')</label>
+                                                                                                                        Phone
+                                                                                                                        No')</label>
                                     <div class="form-item number-select">
                                         <input wire:model="owner_phone_no" class="telselect" type="tel">
                                     </div>
@@ -256,7 +258,7 @@
                                 <div class="flex flex-col my-5">
                                     <label for="owner_email"
                                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Owner
-                                                                                Email')</label>
+                                                                                                                        Email')</label>
                                     <input type="email" id="owner_email" wire:model="owner_email"
                                         class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                                     @error('owner_email')
@@ -266,8 +268,8 @@
                                 <div class="flex flex-col my-5">
                                     <label for="owner_friend_phone_no"
                                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Owner
-                                                                                Friend
-                                                                                Phone No')</label>
+                                                                                                                        Friend
+                                                                                                                        Phone No')</label>
                                     <input type="text" id="owner_friend_phone_no"
                                         wire:model="owner_friend_phone_no"
                                         class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
@@ -280,7 +282,7 @@
                         <div class="flex flex-col col-start-1 col-end-2 w-full sm:col-end-3">
                             <label for="owner_address"
                                 class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Owner
-                                                                Address')</label>
+                                                                                                Address')</label>
                             <input type="text" id="owner_address" wire:model="owner_address"
                                 class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                             @error('owner_address')
@@ -313,7 +315,7 @@
                         <div class="flex flex-col my-5">
                             <label for="neuter_info"
                                 class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Neuter
-                                                                Info')</label>
+                                                                                                Info')</label>
                             <input type="text" id="neuter_info" wire:model="neuter_info"
                                 class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                             @error('neuter_info')
@@ -328,7 +330,7 @@
                         <div class="flex flex-col my-5">
                             <label for="chip_info"
                                 class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Chip
-                                                                Info')</label>
+                                                                                                Info')</label>
                             <input type="text" id="chip_info" wire:model="chip_info"
                                 class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                             @error('chip_info')
@@ -338,7 +340,7 @@
                         <div class="flex flex-col my-5">
                             <label for="clinic_name"
                                 class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Clinic
-                                                                Name')</label>
+                                                                                                Name')</label>
                             <input type="text" id="clinic_name" wire:model="clinic_name"
                                 class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                             @error('clinic_name')
@@ -351,7 +353,7 @@
                 <div class="flex flex-col col-start-1 col-end-2 w-full sm:col-end-3">
                     <label for="insurance_info"
                         class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Insurance
-                                                Info')</label>
+                                                                        Info')</label>
                     <input type="text" id="insurance_info" wire:model="insurance_info"
                         class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700">
                     @error('insurance_info')
@@ -363,7 +365,7 @@
                         <div class="flex flex-col my-5">
                             <label for="other_info"
                                 class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Other
-                                                                Info')</label>
+                                                                                                Info')</label>
                             <textarea rows="4" id="other_info" wire:model="other_info"
                                 class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700"></textarea>
                             @error('other_info')
@@ -377,7 +379,7 @@
                         <div class="flex flex-col my-5">
                             <label for="food_allergy"
                                 class="text-left capitalize text-semibold dark:text-white text-[#000]">@translate('Food
-                                                                Allergy')</label>
+                                                                                                Allergy')</label>
                             <textarea rows="4" id="food_allergy" wire:model="food_allergy"
                                 class="border-0 py-2 pl-4 rounded-md px-2 py-1 bg-white dark:bg-gray-700"></textarea>
                             @error('food_allergy')
