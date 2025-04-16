@@ -183,7 +183,7 @@ class PatientPet extends Component
     $userName = $this->owner_name ?? 'Pet Owner';
 
     if (filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
-        dd("sending email");
+        // dd("sending email");
         $this->sendEmailNotification($userEmail, $userName, $request);
     }
 
