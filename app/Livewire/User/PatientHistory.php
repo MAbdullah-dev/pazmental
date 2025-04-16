@@ -73,6 +73,7 @@ class PatientHistory extends Component
         $phone_no = '';
 
         $user = User::where('user_email', $email)->firstOrFail();
+    dd($user);
         $userdata = PatientDetails::where('patient_id', $user->ID)->first();
         $useremrgemail = $userdata->allow_notification_emrg_email ?? false ? $userdata->emrg_email : null;
         $useremrgemail2 = $userdata->allow_notification_emrg_email2 ?? false ? $userdata->emrg_email2 : null;
