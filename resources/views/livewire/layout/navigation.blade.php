@@ -75,7 +75,7 @@ new class extends Component {
                 @endauth
                 <x-mary-theme-toggle
                     class="ml-2 h-10 w-10 flex items-center justify-center rounded-full
-        dark:text-white" />
+        dark:text-white text-white" />
             </div>
             <div class="hidden w-full md:block md:w-auto" id="navbar-dropdown">
             </div>
