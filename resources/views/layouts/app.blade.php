@@ -307,7 +307,7 @@
                             console.log('Redirecting to:', url.toString());
                             setTimeout(() => {
                                 window.location.href = url.toString();
-                            }, 500);
+                            }, 1000);
                         },
                         error => {
                             locationError.textContent = {

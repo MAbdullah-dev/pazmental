@@ -101,9 +101,10 @@ class PatientHistory extends Component
                 return redirect()->route('PatientPet', ['data' => base64_encode($user->ID), 'redirectionRoute' => base64_encode($data)]);
             }
             $this->is_pet = true;
-            $latitude = $request->query('lat');
-                $longitude = $request->query('lng');
+                $latitude =  $this->lat ?? $request->query('lat');
+                $longitude = $this->lng ?? $request->query('lng');
                 if (!is_null($latitude) && !is_null($longitude) && !empty($latitude) && !empty($longitude)) {
+                    Log::info('Sending email notifications with lat/lng:', ['latitude' => $latitude, 'longitude' => $longitude]);
                     // Send email notifications only when parameters are present
                     $useremailprimary = str_replace(' ', '', $user->user_email);
                     $useremrgemail = str_replace(' ', '', $useremrgemail);
