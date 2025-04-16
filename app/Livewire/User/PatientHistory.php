@@ -34,14 +34,18 @@ class PatientHistory extends Component
 
     public $lat;
     public $lng;
+    public $city;
+    public $country;
 
     protected $listeners = ['setLocation'];
 
-    public function setLocation($lat, $lng)
+    public function setLocation($lat, $lng, $city, $country)
     {
-        Log::info('setLocation called with lat: ' . $lat . ' and lng: ' . $lng);
+        Log::info('setLocation called with lat: ' . $lat . ' and lng: ' . $lng . ' and city: ' . $city . ' and country: ' . $country);
         $this->lat = $lat;
         $this->lng = $lng;
+        $this->city = $city;
+        $this->country = $country;
     }
     public function mount($data, Request $request)
     {
@@ -101,27 +105,41 @@ class PatientHistory extends Component
                 return redirect()->route('PatientPet', ['data' => base64_encode($user->ID), 'redirectionRoute' => base64_encode($data)]);
             }
             $this->is_pet = true;
-                $latitude =  $this->lat ?? $request->query('lat');
-                $longitude = $this->lng ?? $request->query('lng');
-                if (!is_null($latitude) && !is_null($longitude) && !empty($latitude) && !empty($longitude)) {
-                    Log::info('Sending email notifications with lat/lng:', ['latitude' => $latitude, 'longitude' => $longitude]);
-                    // Send email notifications only when parameters are present
-                    $useremailprimary = str_replace(' ', '', $user->user_email);
-                    $useremrgemail = str_replace(' ', '', $useremrgemail);
-                    $useremrgemail2 = str_replace(' ', '', $useremrgemail2);
+                $latitude = $this->lat ?? $request->query('lat');
+$longitude = $this->lng ?? $request->query('lng');
+$city = $this->city ?? $request->query('city');
+$country = $this->country ?? $request->query('country');
 
-                    if (filter_var($useremailprimary, FILTER_VALIDATE_EMAIL)) {
-                        $this->sendEmailNotification($useremailprimary, $user->display_name, $request);
-                    }
-                    if (filter_var($useremrgemail, FILTER_VALIDATE_EMAIL)) {
-                        $this->sendEmailNotification($useremrgemail, $user->display_name, $request);
-                    }
-                    if (filter_var($useremrgemail2, FILTER_VALIDATE_EMAIL)) {
-                        $this->sendEmailNotification($useremrgemail2, $user->display_name, $request);
-                    }
-                } else {
-                    Log::info('Skipping email notification due to missing lat/lng', ['latitude' => $latitude, 'longitude' => $longitude]);
-                }
+if (!empty($latitude) && !empty($longitude) && !empty($city) && !empty($country)) {
+    Log::info('Sending email notifications with lat/lng:', [
+        'latitude' => $latitude,
+        'longitude' => $longitude
+    ]);
+
+    // Clean emails
+    $useremailprimary = str_replace(' ', '', $user->user_email);
+    $useremrgemail = str_replace(' ', '', $useremrgemail);
+    $useremrgemail2 = str_replace(' ', '', $useremrgemail2);
+
+    // Validate and send emails
+    if (filter_var($useremailprimary, FILTER_VALIDATE_EMAIL)) {
+        $this->sendEmailNotification($useremailprimary, $user->display_name, $request);
+    }
+    if (filter_var($useremrgemail, FILTER_VALIDATE_EMAIL)) {
+        $this->sendEmailNotification($useremrgemail, $user->display_name, $request);
+    }
+    if (filter_var($useremrgemail2, FILTER_VALIDATE_EMAIL)) {
+        $this->sendEmailNotification($useremrgemail2, $user->display_name, $request);
+    }
+} else {
+    Log::info('Skipping email notification due to missing lat/lng', [
+        'latitude' => $latitude,
+        'longitude' => $longitude,
+        'city' => $city,
+        'country' => $country
+    ]);
+}
+
             $this->toast(
                 type: 'success',
                 title: @translate('Screen captures and recordings are restricted.'),
@@ -210,12 +228,21 @@ private function sendEmailNotification($email, $userName, $request)
 {
     $latitude = $this->lat ?? $request->query('lat');
     $longitude = $this->lng ?? $request->query('lng');
-    Log::info('Using location data:', ['latitude' => $latitude, 'longitude' => $longitude]);
+    $city = $this->city ?? $request->query('city');
+    $country = $this->country ?? $request->query('country');
+    Log::info('Using location data:', ['latitude' => $latitude, 'longitude' => $longitude, 'city' => $city, 'country' => $country]);
 
-    if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude)) {
-        Log::info('Email not sent: Latitude or Longitude is missing.', ['email' => $email, 'latitude' => $latitude, 'longitude' => $longitude]);
-        return;
-    }
+if (is_null($latitude) || is_null($longitude) || empty($latitude) || empty($longitude) || empty($city) || empty($country)) {
+    Log::info('Email not sent: Missing required location data.', [
+        'email' => $email,
+        'latitude' => $latitude,
+        'longitude' => $longitude,
+        'city' => $city,
+        'country' => $country
+    ]);
+    return;
+}
+
 
     $userAgent = $request->header('User-Agent');
     $deviceInfo = "Device information: " . $userAgent;
@@ -225,7 +252,7 @@ private function sendEmailNotification($email, $userName, $request)
     }
 
     $currentUserInfo = Location::get($ipAddress);
-    Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude));
+    Mail::to($email)->send(new QRScannedNotification($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude, $city, $country));
 }
 
 }

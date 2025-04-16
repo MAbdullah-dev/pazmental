@@ -17,7 +17,7 @@ class QRScannedNotification extends Mailable
     public $latitude;
     public $longitude;
 
-    public function __construct($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude)
+    public function __construct($userName, $deviceInfo, $ipAddress, $currentUserInfo, $latitude, $longitude, $city, $country)
     {
         $this->userName = $userName;
         $this->deviceInfo = $deviceInfo;
@@ -25,13 +25,25 @@ class QRScannedNotification extends Mailable
         $this->currentUserInfo = $currentUserInfo;
         $this->latitude = $latitude;
         $this->longitude = $longitude;
+        $this->city = $city;
+        $this->country = $country;
 
-        // dd($userName, $deviceInfo, $ipAddress, $currentUserInfo);
+        // dd($this->latitude, $this->longitude, $this->city, $this->country);
     }
 
     public function build()
     {
         return $this->view('emails.qr-scanned')
-            ->subject('Notificación de código QR escaneado');
+            ->subject('Notificación de código QR escaneado')
+                    ->with([
+            'userName' => $this->userName,
+            'deviceInfo' => $this->deviceInfo,
+            'ipAddress' => $this->ipAddress,
+            'currentUserInfo' => $this->currentUserInfo,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'city' => $this->city,
+            'country' => $this->country,
+        ]);
     }
 }
