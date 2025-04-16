@@ -274,27 +274,13 @@
                 iosInstructions.classList.remove('hidden');
             }
 
-            // Check if all required params are in URL and valid
+            // Check if lat/lng are in URL and valid
             const urlParams = new URLSearchParams(window.location.search);
-            if (
-                urlParams.has('lat') && urlParams.has('lng') &&
-                urlParams.get('lat') !== '' && urlParams.get('lng') !== '' &&
-                urlParams.has('country_name') && urlParams.has('country_code') &&
-                urlParams.has('region_code') && urlParams.has('region_name') &&
-                urlParams.has('city') && urlParams.has('zip_code')
-            ) {
+            if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
+                    'lng') !== '') {
                 overlay.classList.add('hidden');
                 mainContent.classList.remove('hidden');
-                window.livewire.emit('setLocation', {
-                    lat: urlParams.get('lat'),
-                    lng: urlParams.get('lng'),
-                    country_name: urlParams.get('country_name'),
-                    country_code: urlParams.get('country_code'),
-                    region_code: urlParams.get('region_code'),
-                    region_name: urlParams.get('region_name'),
-                    city: urlParams.get('city'),
-                    zip_code: urlParams.get('zip_code')
-                });
+                window.livewire.emit('setLocation', urlParams.get('lat'), urlParams.get('lng'));
                 return;
             }
 
@@ -316,48 +302,47 @@
                             const lat = position.coords.latitude;
                             const lng = position.coords.longitude;
 
-                            // Fetch additional details from BigDataCloud API
+                            // Reverse geocode using BigDataCloud
                             fetch(
                                     `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
                                 .then(response => response.json())
                                 .then(data => {
-                                    const locationData = {
-                                        lat: lat.toString(),
-                                        lng: lng.toString(),
-                                        country_name: data.countryName || '',
-                                        country_code: data.countryCode || '',
-                                        region_code: data.principalSubdivisionCode || '',
-                                        region_name: data.principalSubdivision || '',
-                                        city: data.city || '',
-                                        zip_code: data.postcode || ''
-                                    };
+                                    const country = data.countryName;
+                                    const countryCode = data.countryCode;
+                                    const region = data.principalSubdivision;
+                                    const regionCode = data.principalSubdivisionCode;
+                                    const city = data.city || data.locality || data.localityInfo
+                                        .administrative[0]?.name;
 
-                                    // Log for debugging
-                                    console.log('Location data:', locationData);
+                                    console.log(`Country: ${country} (${countryCode})`);
+                                    console.log(`Region: ${region} (${regionCode})`);
+                                    console.log(`City: ${city}`);
 
-                                    // Update URL with all parameters
-                                    const url = new URL(window.location.href.replace('=?', '?'));
-                                    Object.keys(locationData).forEach(key => {
-                                        url.searchParams.set(key, encodeURIComponent(locationData[
-                                            key]));
+                                    // Optionally pass these to Livewire
+                                    window.livewire.emit('setLocationDetails', {
+                                        lat,
+                                        lng,
+                                        country,
+                                        countryCode,
+                                        region,
+                                        regionCode,
+                                        city
                                     });
 
-                                    console.log('Redirecting to:', url.toString());
-
-                                    // Emit Livewire event with all details
-                                    window.livewire.emit('setLocation', locationData);
-
-                                    // Redirect after slight delay
+                                    // Also update URL and redirect if needed
+                                    const url = new URL(window.location.href);
+                                    url.searchParams.set('lat', lat);
+                                    url.searchParams.set('lng', lng);
+                                    url.searchParams.set('city', city);
+                                    url.searchParams.set('country', countryCode);
                                     setTimeout(() => {
                                         window.location.href = url.toString();
                                     }, 1000);
                                 })
-                                .catch(error => {
-                                    console.error('Error fetching geolocation data:', error);
-                                    locationError.textContent =
-                                        'Error retrieving location details. Please try again.';
-                                    locationError.classList.remove('hidden');
+                                .catch(err => {
+                                    console.error('Failed to fetch location info:', err);
                                 });
+
                         },
                         error => {
                             locationError.textContent = {
