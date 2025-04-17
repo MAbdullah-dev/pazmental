@@ -11,6 +11,8 @@ use Livewire\Attributes\Validate;
 use Nakanakaii\Countries\Countries;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+Use Illuminate\Support\Facades\Log;
+
 
 class WizardForm extends Component
 {
