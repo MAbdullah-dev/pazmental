@@ -153,10 +153,7 @@ if (!empty($latitude) && !empty($longitude) && !empty($city) && !empty($country)
         } else {
             $this->content = PatientDetails::where('patient_id', $user->ID)->first();
             if($this->content == null) {
-                $referer = 'true';
-                 redirect()
-                 ->route('login')
-                 ->with(['Referer' => $referer]);
+                return redirect()->route('wizard', ['data' => base64_encode($user->ID), 'redirectionRoute' => base64_encode($data)]);
             }
             $this->toast(
                 type: 'success',
