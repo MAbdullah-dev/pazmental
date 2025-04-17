@@ -226,7 +226,7 @@
 <body class="font-sans antialiased">
     <!-- Location Required Overlay -->
     <div id="locationOverlay"
-        class="fixed inset-0 bg-gray-900 text-white flex flex-col justify-center items-center p-5 z-50">
+        class="fixed inset-0 bg-white text-black dark:bg-gray-900 dark:text-white flex flex-col justify-center items-center p-5 z-50">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">Please Enable Location</h2>
         <p class="text-lg md:text-xl mb-6 max-w-lg">We need your location to proceed. Click below to allow access.</p>
         <button id="allowLocation"
@@ -239,6 +239,7 @@
                 Safari's address bar, select "Website Settings", and set Location to "Ask" or "Allow".</p>
         </div>
     </div>
+
     <!-- Main Content (hidden until location is provided) -->
     <div id="mainContent" class="bg-white dark:bg-gray-900 hidden">
         <x-mary-toast />
