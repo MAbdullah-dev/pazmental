@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Livewire\Attributes\Validate;
 use Nakanakaii\Countries\Countries;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class WizardForm extends Component
 {
