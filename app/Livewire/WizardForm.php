@@ -179,7 +179,7 @@ class WizardForm extends Component
         // $this->patient_id = Auth::id();
         // }else{
         // $this->patient_id = $this->user_id;
-        }
+        // }
         $data = [
             'patient_id' => $patient_id,
             'name' => $this->name === "" ? null : $this->name,
