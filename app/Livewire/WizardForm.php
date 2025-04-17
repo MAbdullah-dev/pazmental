@@ -226,7 +226,7 @@ class WizardForm extends Component
             $data['images'] = $fileImages;
         }
 
-        dd($data);
+        // dd($data);
 
         if ($this->patient_id != '') {
             PatientDetails::where('patient_id', $this->patient_id)->update($data);
