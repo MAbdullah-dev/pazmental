@@ -226,12 +226,15 @@ class WizardForm extends Component
             $data['images'] = $fileImages;
         }
 
-        // dd($data);
+
 
         if ($this->patient_id != '') {
             PatientDetails::where('patient_id', $this->patient_id)->update($data);
+            // Log::info('Update result:', ['result' => $result]);
+            Log::info('updating PatientDetails data:', $data);
         } else {
             PatientDetails::create($data);
+            Log::info('creating PatientDetails data:', $data);
         }
 
         return redirect('pd/' . $this->redirectionRoute);
