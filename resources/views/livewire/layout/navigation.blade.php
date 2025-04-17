@@ -19,7 +19,7 @@ new class extends Component {
 
     <nav class="border-gray-200 dark:bg-gray-900 dark:border-gray-700">
         <div
-            class="navitems-wrapper max-w-7xl mx-auto px-2 sm:px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-center md:justify-between p-4">
+            class="navitems-wrapper max-w-7xl mx-auto px-2 sm:px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between md:justify-center p-4">
 
             <a href="{{ route('dashboard') }}" class="hidden md:flex items-center space-x-3 rtl:space-x-reverse">
                 <x-application-logo />
