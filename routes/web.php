@@ -36,7 +36,6 @@ Route::middleware(['site_access'])->group(
     function () {
         Route::middleware(['auth', 'verified'])->group(function () {
             // Route::get('wizard', WizardForm::class)->name('wizard');
-            Route::get('medical-history', MedicalHistory::class)->name('medical-history');
             Route::get('SaveExit', [MedicalHistory::class, 'SaveExit'])->name('SaveExit');
             Route::get('pet-history', PetDetails::class)->name('pet-history');
             Route::get('faqs', Faqs::class)->name('faqs');
@@ -73,6 +72,7 @@ require __DIR__ . '/auth.php';
 Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
 Route::get('patient-pet', PatientPet::class)->name('PatientPet');
 Route::get('wizard', WizardForm::class)->name('wizard');
+Route::get('medical-history', MedicalHistory::class)->name('medical-history');
 
 
 
