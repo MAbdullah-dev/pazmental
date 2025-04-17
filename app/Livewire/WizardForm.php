@@ -175,10 +175,10 @@ class WizardForm extends Component
     public function submit()
     {
         // $this->customValidate();
-        if(Auth::check()){
-        $this->patient_id = Auth::id();
-        }else{
-        $this->patient_id = $this->user_id;
+        // if(Auth::check()){
+        // $this->patient_id = Auth::id();
+        // }else{
+        // $this->patient_id = $this->user_id;
         }
         $data = [
             'patient_id' => $patient_id,
@@ -228,6 +228,8 @@ class WizardForm extends Component
             }
             $data['images'] = $fileImages;
         }
+
+        dd($data);
 
         if ($this->patient_id != '') {
             PatientDetails::where('patient_id', $this->patient_id)->update($data);
