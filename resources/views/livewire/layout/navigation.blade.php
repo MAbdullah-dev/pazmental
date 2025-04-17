@@ -21,7 +21,7 @@ new class extends Component {
         <div
             class="navitems-wrapper max-w-7xl mx-auto px-2 sm:px-4 sm:px-6 lg:px-8 flex flex-row items-center justify-between mx-auto p-4">
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
-                <x-application-logo />
+                <x-application-logo class="hidden md:block" />
             </a>
             <div class="flex md:order-2 space-x-1 md:space-x-0 rtl:space-x-reverse items-center">
                 <div class="custom-select-wrapper w-fit mr-3">
@@ -42,7 +42,7 @@ new class extends Component {
                         class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                         type="button">
                         <span class="sr-only">{{ auth()->user()->name }}</span>
-                        <img class="hidden md:block w-8 h-8 rounded-full object-cover" src="{{ getProfilePicture() }}"
+                        <img class="w-8 h-8 rounded-full object-cover" src="{{ getProfilePicture() }}"
                             alt="{{ auth()->user()->display_name }}">
                     </button>
                     <!-- Dropdown menu -->
