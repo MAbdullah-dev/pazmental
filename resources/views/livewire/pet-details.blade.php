@@ -22,8 +22,7 @@
             @endif
         </div>
         <div class="heading my-4 sm:my-9">
-            <h2
-                class="dark:text-white py-2 text-2xl md:text-3xl xl:text-4xl leading-[1.2] text-black font-semibold text-center">
+            <h2 class="dark:text-white py-2 text-2xl md:text-3xl xl:text-4xl leading-[1.2] font-semibold text-center">
                 @translate('Pet\'s Emergency Response Record')
             </h2>
             <h5 class="dark:text-white py-2 text-[24px] text-[#000] font-semibold text-center">

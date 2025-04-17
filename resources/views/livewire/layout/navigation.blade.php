@@ -17,7 +17,7 @@ new class extends Component {
 }; ?>
 <header class="bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5]">
 
-    <nav class="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+    <nav class="border-gray-200 dark:bg-gray-900 dark:border-gray-700">
         <div
             class="navitems-wrapper max-w-7xl mx-auto px-2 sm:px-4 sm:px-6 lg:px-8 flex flex-row items-center justify-between mx-auto p-4">
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
@@ -73,7 +73,9 @@ new class extends Component {
                         @translate('Login')
                     </a>
                 @endauth
-                <x-mary-theme-toggle class="ml-[10px] btn btn-circle btn-ghost" />
+                <x-mary-theme-toggle
+                    class="ml-2 h-10 w-10 flex items-center justify-center rounded-full
+        dark:text-white text-white" />
             </div>
             <div class="hidden w-full md:block md:w-auto" id="navbar-dropdown">
             </div>

@@ -241,7 +241,7 @@
     </div>
 
     <!-- Main Content (hidden until location is provided) -->
-    <div id="mainContent" class="bg-white dark:bg-gray-900 hidden">
+    <div id="mainContent" class="dark:bg-gray-900 hidden">
         <x-mary-toast />
         <livewire:layout.navigation />
         @if (isset($header))
