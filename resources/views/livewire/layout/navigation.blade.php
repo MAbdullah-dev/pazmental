@@ -73,7 +73,9 @@ new class extends Component {
                         @translate('Login')
                     </a>
                 @endauth
-                <x-mary-theme-toggle class="ml-2 h-10 w-10 flex items-center justify-center rounded-full text-white" />
+                <x-mary-theme-toggle
+                    class="ml-2 h-10 w-10 flex items-center justify-center rounded-full
+        dark:text-white text-white" />
             </div>
             <div class="hidden w-full md:block md:w-auto" id="navbar-dropdown">
             </div>
