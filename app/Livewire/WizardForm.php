@@ -175,8 +175,8 @@ class WizardForm extends Component
     public function submit()
     {
         // $this->customValidate();
-  $this->user_id = $this->data ? base64_decode($this->data) : null;
-    $this->patient_id = $this->user_id;
+//   $this->user_id = $this->data ? base64_decode($this->data) : null;
+//     $this->patient_id = $this->user_id;
         $data = [
             'patient_id' => $this->patient_id,
             'name' => $this->name === "" ? null : $this->name,
@@ -226,7 +226,7 @@ class WizardForm extends Component
             $data['images'] = $fileImages;
         }
 
-        // dd($data);
+        dd($data);
 
         if ($this->patient_id != '') {
             PatientDetails::where('patient_id', $this->patient_id)->update($data);
