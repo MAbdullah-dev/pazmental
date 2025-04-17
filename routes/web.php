@@ -30,7 +30,7 @@ session()->put('locale', $locales);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('wizard', WizardForm::class)->name('wizard');
-        Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
+    Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
 
 });
 

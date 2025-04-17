@@ -153,6 +153,7 @@ if (!empty($latitude) && !empty($longitude) && !empty($city) && !empty($country)
         } else {
             $this->content = PatientDetails::where('patient_id', $user->ID)->first();
             if($this->content == null) {
+                dd("content null condition going to wizard");
                 return redirect()->route('wizard', ['data' => base64_encode($user->ID), 'redirectionRoute' => base64_encode($data)]);
             }
             $this->toast(
