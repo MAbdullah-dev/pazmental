@@ -29,10 +29,7 @@ session()->put('locale', $locales);
 // Wrap all non-admin routes with 'site_access' middleware
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('wizard', WizardForm::class)->name('wizard');
-    Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
-                Route::get('/', Dashboard::class)->name('dashboard');
-            Route::get('dashboard', Dashboard::class);
+
 
 });
 
@@ -45,6 +42,10 @@ Route::middleware(['site_access'])->group(
             Route::get('SaveExit', [MedicalHistory::class, 'SaveExit'])->name('SaveExit');
             Route::get('pet-history', PetDetails::class)->name('pet-history');
             Route::get('faqs', Faqs::class)->name('faqs');
+                Route::get('wizard', WizardForm::class)->name('wizard');
+    Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
+                Route::get('/', Dashboard::class)->name('dashboard');
+            Route::get('dashboard', Dashboard::class);
 
         });
 
