@@ -152,6 +152,12 @@ if (!empty($latitude) && !empty($longitude) && !empty($city) && !empty($country)
             );
         } else {
             $this->content = PatientDetails::where('patient_id', $user->ID)->first();
+            if($this->content == null) {
+                $referer = 'true';
+                 redirect()
+                 ->route('login')
+                 ->with(['Referer' => $referer]);
+            }
             $this->toast(
                 type: 'success',
                 title: @translate('Screen captures and recordings are restricted.'),
