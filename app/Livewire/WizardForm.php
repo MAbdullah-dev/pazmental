@@ -175,10 +175,10 @@ class WizardForm extends Component
     public function submit()
     {
         // $this->customValidate();
-        $this->user_id = $this->data ? base64_decode($this->data) : null;
-        $this->patient_id = $this->user_id;
+  $this->user_id = $this->data ? base64_decode($this->data) : null;
+    $this->patient_id = $this->user_id;
         $data = [
-            'patient_id' => $patient_id,
+            'patient_id' => $this->patient_id,
             'name' => $this->name === "" ? null : $this->name,
             'date_of_birth' => $this->date_of_birth === "" ? null : $this->date_of_birth,
             'emergency_contact_name' => $this->emergency_contact_name === "" ? null : $this->emergency_contact_name,
