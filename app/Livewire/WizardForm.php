@@ -100,9 +100,13 @@ class WizardForm extends Component
 
         $this->user_id = $this->data ? base64_decode($this->data) : null;
         $this->redirectionRoute = $this->redirectionRoute ?? '';
-        dd($this->user_id, $this->redirectionRoute, $this->data);
+        // dd($this->user_id, $this->redirectionRoute, $this->data);
         $this->countries = Countries::all();
-        $patientId = auth()->id();
+        if(Auth::check()){
+        $this->patient_id = Auth::id();
+        }else{
+        $this->patient_id = $this->user_id;
+        }
         if ($patientId) {
             $patientDetails = PatientDetails::where('patient_id', $patientId)->first();
             if ($patientDetails) {
