@@ -235,7 +235,8 @@ class WizardForm extends Component
             PatientDetails::create($data);
         }
 
-        return redirect()->route('medical-history');
+        return redirect('pd/' . $this->redirectionRoute);
+
     }
 
     public function showPrevButton()
