@@ -152,10 +152,6 @@ if (!empty($latitude) && !empty($longitude) && !empty($city) && !empty($country)
             );
         } else {
             $this->content = PatientDetails::where('patient_id', $user->ID)->first();
-            // if($this->content == null) {
-            //     dd("content null condition going to wizard");
-            //     return redirect()->route('wizard', ['data' => base64_encode($user->ID), 'redirectionRoute' => base64_encode($data)]);
-            // }
             $this->toast(
                 type: 'success',
                 title: @translate('Screen captures and recordings are restricted.'),
@@ -168,20 +164,20 @@ if (!empty($latitude) && !empty($longitude) && !empty($city) && !empty($country)
             );
         }
 
-        if ($this->content == null) {
+        // if ($this->content == null) {
         // dd("content null condition");
 
-            if (env('DEFAULT_LANGUAGE') == 'es') {
-                session()->flash('error', 'Paciente no encontrado o no tiene detalles Inicie sesión para agregar detalles');
-            } else {
-                session()->flash('error', 'Patient Not Fount Or Dont Have Details Please Login To Add Details');
-            }
-            $referer = 'true';
-            redirect()
-                ->route('login')
-                ->with(['Referer' => $referer]);
-            // return redirect('login')->route('login');
-        } else {
+        //     if (env('DEFAULT_LANGUAGE') == 'es') {
+        //         session()->flash('error', 'Paciente no encontrado o no tiene detalles Inicie sesión para agregar detalles');
+        //     } else {
+        //         session()->flash('error', 'Patient Not Fount Or Dont Have Details Please Login To Add Details');
+        //     }
+        //     $referer = 'true';
+        //     redirect()
+        //         ->route('login')
+        //         ->with(['Referer' => $referer]);
+        //     // return redirect('login')->route('login');
+        // } else {
             // Send email notification check
             $message = 'PazMental-Alerts:
             Hello ' . $user->user_display_name . ', Your QR code has been scanned recently. Check email for more details. Thank you!';
@@ -201,7 +197,7 @@ if (!empty($latitude) && !empty($longitude) && !empty($city) && !empty($country)
                 $this->sendEmailNotification($useremrgemail2, $user->display_name, $request);
             }
         }
-    }
+    // }
 
     public function render()
     {

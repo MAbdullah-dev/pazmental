@@ -11,7 +11,6 @@ use Livewire\Attributes\Validate;
 use Nakanakaii\Countries\Countries;
 use Illuminate\Support\Facades\Storage;
 
-
 class WizardForm extends Component
 {
     use WithFileUploads;
@@ -57,11 +56,6 @@ class WizardForm extends Component
     public int $totalsteps = 3;
     public $banners;
     public $countries;
-    public $data;
-    public $user_id;
-    public $redirectionRoute;
-
-    protected $queryString = ['data', 'redirectionRoute'];
 
     // protected $rules = [
     //     1 => [
@@ -98,9 +92,6 @@ class WizardForm extends Component
     }
     public function mount($patientId = null)
     {
-        $this->user_id = $this->data ? base64_decode($this->data) : null;
-        $this->redirectionRoute = $this->redirectionRoute ?? '';
-        dd($this->user_id, $this->redirectionRoute, $this->data);
         $this->countries = Countries::all();
         $patientId = auth()->id();
         if ($patientId) {
