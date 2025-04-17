@@ -29,7 +29,6 @@ session()->put('locale', $locales);
 // Wrap all non-admin routes with 'site_access' middleware
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('wizard', WizardForm::class)->name('wizard');
 });
 
 
@@ -72,7 +71,9 @@ require __DIR__ . '/auth.php';
 // Route::fallback(ErrorPage::class);
 
 Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
-            Route::get('patient-pet', PatientPet::class)->name('PatientPet');
+Route::get('patient-pet', PatientPet::class)->name('PatientPet');
+Route::get('wizard', WizardForm::class)->name('wizard');
+
 
 
 Route::get('/test-db-connection', function () {
