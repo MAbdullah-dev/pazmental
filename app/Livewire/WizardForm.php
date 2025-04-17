@@ -92,7 +92,7 @@ class WizardForm extends Component
     }
     public function mount($patientId = null)
     {
-        dd("in wizard");
+        dd("in wizard, patient id:", $patientId);
         $this->countries = Countries::all();
         $patientId = auth()->id();
         if ($patientId) {
