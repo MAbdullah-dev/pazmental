@@ -30,6 +30,8 @@ session()->put('locale', $locales);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('wizard', WizardForm::class)->name('wizard');
+        Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
+
 });
 
 
@@ -46,7 +48,6 @@ Route::middleware(['site_access'])->group(
         });
 
 
-        Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
         Route::get('DetailsView/{data}', DetailsView::class)->name('DetailsView');
     }
 );
