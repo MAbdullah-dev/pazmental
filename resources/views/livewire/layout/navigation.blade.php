@@ -42,7 +42,7 @@ new class extends Component {
                         class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                         type="button">
                         <span class="sr-only">{{ auth()->user()->name }}</span>
-                        <img class="w-8 h-8 rounded-full object-cover" src="{{ getProfilePicture() }}"
+                        <img class="hidden md:block w-8 h-8 rounded-full object-cover" src="{{ getProfilePicture() }}"
                             alt="{{ auth()->user()->display_name }}">
                     </button>
                     <!-- Dropdown menu -->
