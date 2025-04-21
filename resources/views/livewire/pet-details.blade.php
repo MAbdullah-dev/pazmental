@@ -1,8 +1,21 @@
 <section class="medical-history py-10">
+    <div id="locationOverlay"
+        class="{{ $locationObtained ? 'hidden' : '' }} fixed inset-0 bg-gray-800 bg-opacity-75 flex flex-col items-center justify-center z-50">
+        <div class="bg-white p-6 rounded shadow text-center">
+            <h2 class="text-lg font-semibold mb-4">Location Required</h2>
+            <p class="mb-4">We need your location to continue. Please allow location access.</p>
+            <button id="allowLocation" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                Allow Location
+            </button>
+            <p id="locationError" class="text-red-500 mt-4 hidden"></p>
+            <div id="iosInstructions" class="hidden text-sm text-gray-600 mt-2">
+                If you are using iPhone/iPad, please allow location in Safari settings.
+            </div>
+        </div>
+    </div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
             $locale = session()->get('locale');
-            // dd($data);
         @endphp
         <div class="flex justify-center">
             @if ($locale == 'es')
@@ -22,7 +35,8 @@
             @endif
         </div>
         <div class="heading my-4 sm:my-9">
-            <h2 class="dark:text-white py-2 text-2xl md:text-3xl xl:text-4xl leading-[1.2] font-semibold text-center">
+            <h2
+                class="dark:text-white py-2 text-2xl md:text-3xl xl:text-4xl leading-[1.2] text-black font-semibold text-center">
                 @translate('Pet\'s Emergency Response Record')
             </h2>
             <h5 class="dark:text-white py-2 text-[24px] text-[#000] font-semibold text-center">
@@ -71,36 +85,30 @@
                     class="mb-4 flex flex-col items-center rounded-2xl p-[10px] sm:p-[15px] bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5]">
                     <div
                         class="image-wrapper flex p-[3px] rounded-[50%] bg-white mb-2 w-[150px] h-[150px] overflow-hidden">
-                        @if (optional($content)->main_image)
-                            <img src="{{ asset('storage/images/' . json_decode(optional($content)->main_image)) }}"
-                                alt="" class="object-cover w-[100%] h-[100%] rounded-[50%] overflow-hidden">
-                        @else
-                            <p class="text-center text-red-500">N/A</p>
-                        @endif
+                        @php
+                            $user_id = $content['patient_id'];
+                        @endphp
+                        <img src="{{ asset('storage/images/' . json_decode($content['main_image'])) }}" alt=""
+                            class="object-cover w-[100%] h-[100%] rounded-[50%] overflow-hidden">
                     </div>
                 </a>
             </div>
             <div class="grid_images">
-                @php
-                    $images = optional($content)->images ? json_decode(optional($content)->images, true) : [];
-                @endphp
-                @if ($images)
-                    @foreach ($images as $image)
-                        <img src="{{ asset('storage/images/' . $image) }}" alt=""
-                            class="object-cover w-[100%] h-[100%]">
-                    @endforeach
-                @else
-                    <p class="text-center text-red-500">N/A</p>
-                @endif
+                @foreach (json_decode($content['images'], true) as $image)
+                    <img src="{{ asset('storage/images/' . $image) }}" alt=""
+                        class="object-cover w-[100%] h-[100%]">
+                @endforeach
             </div>
 
             <div class="head mt-12 sm:mt-12 text-center mb-8">
                 <p class="dark:text-white uppercase text-[16px]  text-[#000] font-semibold">
-                    {{ optional($content)->owner_appeal === null || optional($content)->owner_appeal === '' ? 'N/A' : optional($content)->owner_appeal }}
+                    {{ $content['owner_appeal'] }}
                 </p>
             </div>
             <div class="field-groups">
                 @php
+                    $filteredAttributes = $content->getAttributes();
+
                     $petDetailsKeys = [
                         'name',
                         'breed',
@@ -112,6 +120,7 @@
                         'eye_color',
                         'social_media',
                     ];
+
                     $ownerKeys = [
                         'owner_name',
                         'owner_phone_no',
@@ -119,6 +128,7 @@
                         'owner_address',
                         'owner_friend_phone_no',
                     ];
+
                     $healthKeys = [
                         'clinic_name',
                         'chip_info',
@@ -128,73 +138,110 @@
                         'neuter_info',
                         'other_info',
                     ];
+
+                    // Filter the attributes and keep only the non-empty ones
+                    $attributes = array_filter(
+                        array_intersect_key($filteredAttributes, array_flip($petDetailsKeys)),
+                        function ($value) {
+                            return !empty($value);
+                        },
+                    );
+
+                    $attributes1 = array_filter(
+                        array_intersect_key($filteredAttributes, array_flip($ownerKeys)),
+                        function ($value) {
+                            return !empty($value);
+                        },
+                    );
+
+                    $attributes2 = array_filter(
+                        array_intersect_key($filteredAttributes, array_flip($healthKeys)),
+                        function ($value) {
+                            return !empty($value);
+                        },
+                    );
                 @endphp
-                <div
-                    class="mb-4 title px-6 sm:px-10 py-2 rounded-2xl bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5] ps-12 gradient_icons_wrapper">
-                    <img src="{{ asset('assets/images/petdetail.svg') }}" class="gradient_icons block" alt="">
-                    <h2
-                        class="text-white text-[18px] md:text-[22px] dark:text-white text-[#000] font-semibold uppercase">
-                        @translate('Pet Information')
-                    </h2>
-                </div>
-                <div class="information-wrapper grid gap-4 grid-cols-1 sm:grid-cols-2 px-2">
-                    @foreach ($petDetailsKeys as $key)
-                        <div class="flex items-start flex-col pl-2">
-                            <div class="span-wrapper">
-                                <span class="text-[16px] dark:text-white text-[#000] font-semibold">
-                                    @translate(ucwords(str_replace('_', ' ', $key))) :
-                                </span>
-                                <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
-                                    {{ optional($content)->$key === null || optional($content)->$key === '' ? 'N/A' : optional($content)->$key }}
-                                </span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-                <div
-                    class="mb-4 mt-4 title px-6 sm:px-10 py-2 rounded-2xl bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5] ps-12 gradient_icons_wrapper">
-                    <img src="{{ asset('assets/images/petowner.svg') }}" class="gradient_icons block" alt="">
-                    <h2
-                        class="text-white text-[18px] md:text-[22px] dark:text-white text-[#000] font-semibold uppercase">
-                        @translate('Owner Information')
-                    </h2>
-                </div>
-                <div class="information-wrapper grid gap-4 grid-cols-1 sm:grid-cols-2 px-2">
-                    @foreach ($ownerKeys as $key)
-                        <div class="flex items-start flex-col pl-2">
-                            <div class="span-wrapper">
-                                <span class="text-[16px] dark:text-white text-[#000] font-semibold">
-                                    @translate(ucwords(str_replace('_', ' ', $key))) :
-                                </span>
-                                <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
-                                    {{ optional($content)->$key === null || optional($content)->$key === '' ? 'N/A' : optional($content)->$key }}
-                                </span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-                <div
-                    class="mb-4 mt-4 title px-6 sm:px-10 py-2 rounded-2xl bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5] ps-12 gradient_icons_wrapper">
-                    <img src="{{ asset('assets/images/pethealth.svg') }}" class="gradient_icons block" alt="">
-                    <h2
-                        class="text-white text-[18px] md:text-[22px] dark:text-white text-[#000] font-semibold uppercase">
-                        @translate('Health Information')
-                    </h2>
-                </div>
-                <div class="information-wrapper grid gap-4 grid-cols-1 sm:grid-cols-2 px-2">
-                    @foreach ($healthKeys as $key)
-                        <div class="flex items-start flex-col pl-2">
-                            <div class="span-wrapper">
-                                <span class="text-[16px] dark:text-white text-[#000] font-semibold">
-                                    @translate(ucwords(str_replace('_', ' ', $key))) :
-                                </span>
-                                <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
-                                    {{ optional($content)->$key === null || optional($content)->$key === '' ? 'N/A' : optional($content)->$key }}
-                                </span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+                @if (!empty($attributes))
+                    <div
+                        class="mb-4 title px-6 sm:px-10 py-2 rounded-2xl bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5] ps-12 gradient_icons_wrapper">
+                        <img src="{{ asset('assets/images/petdetail.svg') }}" class="gradient_icons block"
+                            alt="">
+                        <h2
+                            class="text-white text-[18px] md:text-[22px] dark:text-white text-[#000] font-semibold uppercase">
+                            @translate('Pet Information')
+                        </h2>
+                    </div>
+                    <div class="information-wrapper grid gap-4 grid-cols-1 sm:grid-cols-2 px-2">
+                        @foreach ($attributes as $key => $value)
+                            @if (!empty($value))
+                                <div class="flex items-start flex-col pl-2">
+                                    <div class="span-wrapper">
+                                        <span class="text-[16px] dark:text-white text-[#000] font-semibold">
+                                            @translate(ucwords(str_replace('_', ' ', $key))) :
+                                        </span>
+                                        <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
+                                            {{ $value }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
+                @if (!empty($attributes1))
+                    <div
+                        class="mb-4 mt-4 title px-6 sm:px-10 py-2 rounded-2xl bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5] ps-12 gradient_icons_wrapper">
+                        <img src="{{ asset('assets/images/petowner.svg') }}" class="gradient_icons block"
+                            alt="">
+                        <h2
+                            class="text-white text-[18px] md:text-[22px] dark:text-white text-[#000] font-semibold uppercase">
+                            @translate('Owner Information')
+                        </h2>
+                    </div>
+                    <div class="information-wrapper grid gap-4 grid-cols-1 sm:grid-cols-2 px-2">
+                        @foreach ($attributes1 as $key => $value)
+                            @if (!empty($value))
+                                <div class="flex items-start flex-col pl-2">
+                                    <div class="span-wrapper">
+                                        <span class="text-[16px] dark:text-white text-[#000] font-semibold">
+                                            @translate(ucwords(str_replace('_', ' ', $key))) :
+                                        </span>
+                                        <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
+                                            {{ $value }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
+                @if (!empty($attributes2))
+                    <div
+                        class="mb-4 mt-4 title px-6 sm:px-10 py-2 rounded-2xl bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5] ps-12 gradient_icons_wrapper">
+                        <img src="{{ asset('assets/images/pethealth.svg') }}" class="gradient_icons block"
+                            alt="">
+                        <h2
+                            class="text-white text-[18px] md:text-[22px] dark:text-white text-[#000] font-semibold uppercase">
+                            @translate('Health Information')
+                        </h2>
+                    </div>
+                    <div class="information-wrapper grid gap-4 grid-cols-1 sm:grid-cols-2 px-2">
+                        @foreach ($attributes2 as $key => $value)
+                            @if (!empty($value))
+                                <div class="flex items-start flex-col pl-2">
+                                    <div class="span-wrapper">
+                                        <span class="text-[16px] dark:text-white text-[#000] font-semibold">
+                                            @translate(ucwords(str_replace('_', ' ', $key))) :
+                                        </span>
+                                        <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
+                                            {{ $value }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
         @auth
@@ -202,28 +249,176 @@
                 <a href="{{ route('PatientPet') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
-                    class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save & Exit')</a>
+                    class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
+                                                                            & Exit')</a>
             </div>
         @endauth
     </div>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.location.pathname === '/medical-history' || window.location.pathname.startsWith(
+                    '/DetailsView/') || window.location.pathname === '/pet-history') {
+                const overlay = document.getElementById('locationOverlay');
+                const mainContent = document.getElementById('mainContent');
+                overlay?.classList.add('hidden');
+                mainContent?.classList.remove('hidden');
+                return;
+            }
+            if (window.locationScriptRun) return;
+            window.locationScriptRun = true;
+            console.log('Location script loaded');
+
+            const overlay = document.getElementById('locationOverlay');
+            const mainContent = document.getElementById('mainContent');
+            const allowButton = document.getElementById('allowLocation');
+            const locationError = document.getElementById('locationError');
+            const iosInstructions = document.getElementById('iosInstructions');
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+            if (isIOS) {
+                iosInstructions?.classList.remove('hidden');
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
+                    'lng') !== '') {
+                overlay?.classList.add('hidden');
+                mainContent?.classList.remove('hidden');
+
+                // Send to backend from URL if needed
+                sendLocationDetails({
+                    lat: urlParams.get('lat'),
+                    lng: urlParams.get('lng'),
+                    countryCode: urlParams.get('country') ?? '',
+                    city: urlParams.get('city') ?? '',
+                });
+
+                return;
+            }
+
+            overlay?.classList.remove('hidden');
+            mainContent?.classList.add('hidden');
+
+            function requestLocation(event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                allowButton.disabled = true;
+                locationError?.classList.add('hidden');
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        position => {
+                            const lat = position.coords.latitude;
+                            const lng = position.coords.longitude;
+
+                            fetch(
+                                    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+                                )
+                                .then(response => response.json())
+                                .then(data => {
+                                    const country = data.countryName;
+                                    const countryCode = data.countryCode;
+                                    const region = data.principalSubdivision;
+                                    const regionCode = data.principalSubdivisionCode;
+                                    const city = data.city || data.locality || data.localityInfo
+                                        ?.administrative[0]?.name || '';
+
+                                    console.log('Location details:', {
+                                        lat,
+                                        lng,
+                                        country,
+                                        city
+                                    });
+
+                                    // Send to backend via AJAX
+                                    sendLocationDetails({
+                                        lat,
+                                        lng,
+                                        country,
+                                        countryCode,
+                                        region,
+                                        regionCode,
+                                        city
+                                    });
+
+                                    overlay?.classList.add('hidden');
+                                    mainContent?.classList.remove('hidden');
+
+                                    // Update URL
+                                    const url = new URL(window.location.href);
+                                    url.searchParams.set('lat', lat);
+                                    url.searchParams.set('lng', lng);
+                                    url.searchParams.set('city', city);
+                                    url.searchParams.set('country', countryCode);
+                                    window.history.replaceState({}, '', url.toString());
+                                })
+                                .catch(err => {
+                                    console.error('Failed to fetch location info:', err);
+                                    locationError.textContent =
+                                        'Failed to retrieve location details. Please try again.';
+                                    locationError?.classList.remove('hidden');
+                                    allowButton.disabled = false;
+                                });
+                        },
+                        error => {
+                            locationError.textContent = {
+                                1: 'Location access denied. Please allow location in your settings.',
+                                2: 'Location unavailable. Please try again.',
+                                3: 'Request timed out. Please try again.'
+                            } [error.code] || 'An error occurred. Please try again.';
+                            locationError?.classList.remove('hidden');
+                            allowButton.disabled = false;
+                        }, {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    locationError.textContent = 'Geolocation is not supported by this browser.';
+                    locationError?.classList.remove('hidden');
+                    allowButton.disabled = false;
+                }
+            }
+
+            allowButton?.addEventListener('click', requestLocation);
+            allowButton?.addEventListener('touchend', requestLocation);
+
+            function sendLocationDetails(locationData) {
+                fetch('/save-location', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                'content')
+                        },
+                        body: JSON.stringify(locationData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Location saved to session:', data);
+                        window.dispatchEvent(new CustomEvent('sendEmailNow'));
+                    })
+                    .catch(error => {
+                        console.error('Error saving location:', error);
+                    });
+            }
+        });
+
         let scrollTimeout;
 
-        // Function to redirect the user after 30 seconds of inactivity
         function redirectToUrl() {
-            window.location.href = '/suspenedqr'; // Replace with your desired URL
+            window.location.href = '/suspenedqr';
         }
 
-        // Reset scroll timer whenever user scrolls
         function resetScrollTimer() {
             clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(redirectToUrl, 180000); // 30 seconds
+            scrollTimeout = setTimeout(redirectToUrl, 180000);
         }
 
-        // Event listener for scroll activity
         window.addEventListener('scroll', resetScrollTimer);
-
-        // Set the initial timer for inactivity
-        scrollTimeout = setTimeout(redirectToUrl, 180000); // 30 seconds
+        scrollTimeout = setTimeout(redirectToUrl, 180000);
     </script>
 </section>

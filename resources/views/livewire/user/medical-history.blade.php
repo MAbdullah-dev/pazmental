@@ -1,7 +1,24 @@
 <section class="medical-history py-10">
+    {{-- location view --}}
+    <div id="locationOverlay"
+        class="{{ $locationObtained ? 'hidden' : '' }} fixed inset-0 bg-gray-800 bg-opacity-75 flex flex-col items-center justify-center z-50">
+        <div class="bg-white p-6 rounded shadow text-center">
+            <h2 class="text-lg font-semibold mb-4">Location Required</h2>
+            <p class="mb-4">We need your location to continue. Please allow location access.</p>
+            <button id="allowLocation" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                Allow Location
+            </button>
+            <p id="locationError" class="text-red-500 mt-4 hidden"></p>
+            <div id="iosInstructions" class="hidden text-sm text-gray-600 mt-2">
+                If you are using iPhone/iPad, please allow location in Safari settings.
+            </div>
+        </div>
+    </div>
+    {{-- location view ends --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="heading my-4 sm:my-9">
-            <h2 class="dark:text-white py-2 text-2xl md:text-3xl xl:text-4xl leading-[1.2] font-semibold text-center">
+            <h2
+                class="dark:text-white py-2 text-2xl md:text-3xl xl:text-4xl leading-[1.2] text-black font-semibold text-center">
                 @translate('Personal emergency response record')</h2>
         </div>
         <div
@@ -518,25 +535,172 @@
             </div>
         @endauth
     </div>
-
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.location.pathname === '/medical-history' || window.location.pathname.startsWith(
+                    '/DetailsView/') || window.location.pathname === '/pet-history') {
+                const overlay = document.getElementById('locationOverlay');
+                const mainContent = document.getElementById('mainContent');
+                overlay?.classList.add('hidden');
+                mainContent?.classList.remove('hidden');
+                return;
+            }
+            if (window.locationScriptRun) return;
+            window.locationScriptRun = true;
+            console.log('Location script loaded');
+
+            const overlay = document.getElementById('locationOverlay');
+            const mainContent = document.getElementById('mainContent');
+            const allowButton = document.getElementById('allowLocation');
+            const locationError = document.getElementById('locationError');
+            const iosInstructions = document.getElementById('iosInstructions');
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+            if (isIOS) {
+                iosInstructions?.classList.remove('hidden');
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('lat') && urlParams.has('lng') && urlParams.get('lat') !== '' && urlParams.get(
+                    'lng') !== '') {
+                overlay?.classList.add('hidden');
+                mainContent?.classList.remove('hidden');
+
+                // Send to backend from URL if needed
+                sendLocationDetails({
+                    lat: urlParams.get('lat'),
+                    lng: urlParams.get('lng'),
+                    countryCode: urlParams.get('country') ?? '',
+                    city: urlParams.get('city') ?? '',
+                });
+
+                return;
+            }
+
+            overlay?.classList.remove('hidden');
+            mainContent?.classList.add('hidden');
+
+            function requestLocation(event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                allowButton.disabled = true;
+                locationError?.classList.add('hidden');
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        position => {
+                            const lat = position.coords.latitude;
+                            const lng = position.coords.longitude;
+
+                            fetch(
+                                    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`
+                                )
+                                .then(response => response.json())
+                                .then(data => {
+                                    const country = data.countryName;
+                                    const countryCode = data.countryCode;
+                                    const region = data.principalSubdivision;
+                                    const regionCode = data.principalSubdivisionCode;
+                                    const city = data.city || data.locality || data.localityInfo
+                                        ?.administrative[0]?.name || '';
+
+                                    console.log('Location details:', {
+                                        lat,
+                                        lng,
+                                        country,
+                                        city
+                                    });
+
+                                    // Send to backend via AJAX
+                                    sendLocationDetails({
+                                        lat,
+                                        lng,
+                                        country,
+                                        countryCode,
+                                        region,
+                                        regionCode,
+                                        city
+                                    });
+
+                                    overlay?.classList.add('hidden');
+                                    mainContent?.classList.remove('hidden');
+
+                                    // Update URL
+                                    const url = new URL(window.location.href);
+                                    url.searchParams.set('lat', lat);
+                                    url.searchParams.set('lng', lng);
+                                    url.searchParams.set('city', city);
+                                    url.searchParams.set('country', countryCode);
+                                    window.history.replaceState({}, '', url.toString());
+                                })
+                                .catch(err => {
+                                    console.error('Failed to fetch location info:', err);
+                                    locationError.textContent =
+                                        'Failed to retrieve location details. Please try again.';
+                                    locationError?.classList.remove('hidden');
+                                    allowButton.disabled = false;
+                                });
+                        },
+                        error => {
+                            locationError.textContent = {
+                                1: 'Location access denied. Please allow location in your settings.',
+                                2: 'Location unavailable. Please try again.',
+                                3: 'Request timed out. Please try again.'
+                            } [error.code] || 'An error occurred. Please try again.';
+                            locationError?.classList.remove('hidden');
+                            allowButton.disabled = false;
+                        }, {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    locationError.textContent = 'Geolocation is not supported by this browser.';
+                    locationError?.classList.remove('hidden');
+                    allowButton.disabled = false;
+                }
+            }
+
+            allowButton?.addEventListener('click', requestLocation);
+            allowButton?.addEventListener('touchend', requestLocation);
+
+            function sendLocationDetails(locationData) {
+                fetch('/save-location', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                'content')
+                        },
+                        body: JSON.stringify(locationData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Location saved to session:', data);
+                        window.dispatchEvent(new CustomEvent('sendEmailNow'));
+                    })
+                    .catch(error => {
+                        console.error('Error saving location:', error);
+                    });
+            }
+        });
+
         let scrollTimeout;
 
-        // Function to redirect the user after 30 seconds of inactivity
         function redirectToUrl() {
-            window.location.href = '/suspenedqr'; // Replace with your desired URL
+            window.location.href = '/suspenedqr';
         }
 
-        // Reset scroll timer whenever user scrolls
         function resetScrollTimer() {
             clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(redirectToUrl, 180000); // 30 seconds
+            scrollTimeout = setTimeout(redirectToUrl, 180000);
         }
 
-        // Event listener for scroll activity
         window.addEventListener('scroll', resetScrollTimer);
-
-        // Set the initial timer for inactivity
-        scrollTimeout = setTimeout(redirectToUrl, 180000); // 30 seconds
+        scrollTimeout = setTimeout(redirectToUrl, 180000);
     </script>
+
 </section>

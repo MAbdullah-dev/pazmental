@@ -7,6 +7,7 @@ use Livewire\Component;
 
 class PetDetails extends Component
 {
+        public $locationObtained = false;
     public function render()
     {
         $content = PatientPets::where('patient_id', auth()->id())->first();

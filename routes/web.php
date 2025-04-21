@@ -15,37 +15,34 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\AdminDashboard;
 use App\Http\Controllers\Auth\LoginQrController;
 use App\Livewire\Unauthorized;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 use App\Livewire\User\{MedicalHistory, PatientHistory};
-use Illuminate\Support\Facades\DB;
-
-/*
+ /*
     |--------------------------------------------------------------------------
     | Application language bindings
     |--------------------------------------------------------------------------
     |*/
-
-$locales = env('DEFAULT_LANGUAGE');
-session()->put('locale', $locales);
+    $locales = env('DEFAULT_LANGUAGE');
+    session()->put('locale', $locales);
 // Wrap all non-admin routes with 'site_access' middleware
-
-Route::middleware(['auth', 'verified'])->group(function () {
-});
-
-
 Route::middleware(['site_access'])->group(
     function () {
         Route::middleware(['auth', 'verified'])->group(function () {
-            // Route::get('wizard', WizardForm::class)->name('wizard');
+            Route::get('wizard', WizardForm::class)->name('wizard');
+            Route::get('medical-history', MedicalHistory::class)->name('medical-history');
             Route::get('SaveExit', [MedicalHistory::class, 'SaveExit'])->name('SaveExit');
             Route::get('pet-history', PetDetails::class)->name('pet-history');
+            Route::get('patient-pet', PatientPet::class)->name('PatientPet');
             Route::get('faqs', Faqs::class)->name('faqs');
             Route::get('/', Dashboard::class)->name('dashboard');
             Route::get('dashboard', Dashboard::class);
         });
 
 
-        Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
-        Route::get('DetailsView/{data}', DetailsView::class)->name('DetailsView');
+    Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
+    Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
+    Route::get('DetailsView/{data}', DetailsView::class)->name('DetailsView');
     }
 );
 
@@ -69,18 +66,35 @@ Route::post('/change-language', [ManageLanguage::class, 'changeLanguage'])->name
 require __DIR__ . '/auth.php';
 // Route::fallback(ErrorPage::class);
 
-Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
-Route::get('patient-pet', PatientPet::class)->name('PatientPet');
-Route::get('wizard', WizardForm::class)->name('wizard');
-Route::get('medical-history', MedicalHistory::class)->name('medical-history');
-
-
-
 Route::get('/test-db-connection', function () {
     try {
         DB::connection('wordpress')->getPdo();
         return 'WordPress database connection is successful!';
     } catch (\Exception $e) {
+        Log::error('Error connecting to WordPress database: ' . $e->getMessage());
         return 'Error: ' . $e->getMessage();
+
     }
+});
+
+
+//location route
+Route::post('/save-location', function (Request $request) {
+    $data = $request->validate([
+        'lat' => 'required|numeric',
+        'lng' => 'required|numeric',
+        'country' => 'nullable|string',
+        'city' => 'nullable|string',
+    ]);
+
+    session([
+        'user_location' => $data
+    ]);
+
+    Log::info('Location stored successfully!', $data);
+
+    return response()->json([
+        'message' => 'Location stored successfully!',
+        'stored' => session('user_location')
+    ]);
 });

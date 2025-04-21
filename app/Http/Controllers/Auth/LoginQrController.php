@@ -18,6 +18,7 @@ class LoginQrController extends Controller
             $user = User::where('user_email', $encryptedEmail)->first('id');
             // Auth::login($user);
             $id = $user->id;
+            // dd($id);
             return redirect()->route('patient-details/', $id);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
             abort(403, 'Unauthorized action.');

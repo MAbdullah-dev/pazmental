@@ -11,6 +11,7 @@ class DetailsView extends Component
     public $data;
     public $userId;
     public $content;
+    public $locationObtained;
 
     public function mount($data)
     {
@@ -21,6 +22,8 @@ class DetailsView extends Component
 
     public function render()
     {
+        $this->locationObtained = true;
+
         $view = 'livewire.user.medical-history';
 
         return view($view, ['content' => $this->content]);

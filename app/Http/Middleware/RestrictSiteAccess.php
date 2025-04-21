@@ -6,7 +6,6 @@ use Closure;
 use Corcel\Model\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\URL;
 
@@ -37,6 +36,7 @@ class RestrictSiteAccess
 
         // Decode and validate Base64 data
         $decodedData = base64_decode($data, true);
+        // dd($decodedData);
         if ($decodedData === false) {
             return redirect('/unauthorized')->with('error', 'Invalid data format.');
         }
@@ -63,7 +63,7 @@ class RestrictSiteAccess
             }
         } catch (\Exception $e) {
             // Log error for debugging purposes
-            Log::error('Middleware error: ' . $e->getMessage());
+            \Log::error('Middleware error: ' . $e->getMessage());
         }
 
         // Redirect if access is restricted

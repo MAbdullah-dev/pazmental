@@ -10,9 +10,6 @@ use Illuminate\Support\Carbon;
 use Livewire\Attributes\Validate;
 use Nakanakaii\Countries\Countries;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
-Use Illuminate\Support\Facades\Log;
-
 
 class WizardForm extends Component
 {
@@ -59,11 +56,6 @@ class WizardForm extends Component
     public int $totalsteps = 3;
     public $banners;
     public $countries;
-    public $data;
-    public $user_id;
-    public $redirectionRoute;
-
-    protected $queryString = ['data', 'redirectionRoute'];
 
     // protected $rules = [
     //     1 => [
@@ -100,16 +92,8 @@ class WizardForm extends Component
     }
     public function mount($patientId = null)
     {
-
-        $this->user_id = $this->data ? base64_decode($this->data) : null;
-        $this->redirectionRoute = $this->redirectionRoute ?? '';
-        // dd($this->user_id, $this->redirectionRoute, $this->data);
         $this->countries = Countries::all();
-        if(Auth::check()){
-        $this->patient_id = Auth::id();
-        }else{
-        $this->patient_id = $this->user_id;
-        }
+        $patientId = auth()->id();
         if ($patientId) {
             $patientDetails = PatientDetails::where('patient_id', $patientId)->first();
             if ($patientDetails) {
@@ -177,10 +161,9 @@ class WizardForm extends Component
     public function submit()
     {
         // $this->customValidate();
-//   $this->user_id = $this->data ? base64_decode($this->data) : null;
-//     $this->patient_id = $this->user_id;
+        $patient_id = auth()->id();
         $data = [
-            'patient_id' => $this->patient_id,
+            'patient_id' => $patient_id,
             'name' => $this->name === "" ? null : $this->name,
             'date_of_birth' => $this->date_of_birth === "" ? null : $this->date_of_birth,
             'emergency_contact_name' => $this->emergency_contact_name === "" ? null : $this->emergency_contact_name,
@@ -228,19 +211,13 @@ class WizardForm extends Component
             $data['images'] = $fileImages;
         }
 
-
-
-        // if ($this->patient_id != '') {
-        //     PatientDetails::where('patient_id', $this->patient_id)->update($data);
-        //     // Log::info('Update result:', ['result' => $result]);
-        //     Log::info('updating PatientDetails data:', $data);
-        // } else {
+        if ($this->patient_id != '') {
+            PatientDetails::where('patient_id', $this->patient_id)->update($data);
+        } else {
             PatientDetails::create($data);
-            Log::info('creating PatientDetails data:', $data);
-        // }
+        }
 
-        return redirect('pd/' . $this->redirectionRoute);
-
+        return redirect()->route('medical-history');
     }
 
     public function showPrevButton()

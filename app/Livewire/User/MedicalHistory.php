@@ -5,11 +5,13 @@ namespace App\Livewire\User;
 use Livewire\Component;
 use App\Models\PatientDetails;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MedicalHistory extends Component
 {
     public $content;
     public $userId;
+    public $locationObtained = true;
 
     public function mount()
     {
