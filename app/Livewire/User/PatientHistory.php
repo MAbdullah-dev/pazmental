@@ -148,6 +148,7 @@ class PatientHistory extends Component
                 $this->sendEmailNotification($email, $this->user->user_nicename);
             }
         }
+        $this->loaddata($data);
     }
 
     private function sendEmailNotification($email, $userName)
