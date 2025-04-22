@@ -146,6 +146,8 @@ class PatientHistory extends Component
                 $this->sendEmailNotification($email, $this->user->user_nicename);
             }
         }
+                $view = $this->is_pet ? 'livewire.pet-details' : 'livewire.user.medical-history';
+        return view($view, ['content' => $this->content]);
     }
 
     private function sendEmailNotification($email, $userName)

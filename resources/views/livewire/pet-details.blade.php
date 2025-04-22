@@ -1,4 +1,4 @@
-<section class="medical-history py-10">
+<section wire:ignore.self class="medical-history py-10">
     <div id="locationOverlay"
         class="{{ $locationObtained ? 'hidden' : '' }} fixed inset-0 bg-gray-800 bg-opacity-75 flex flex-col items-center justify-center z-50">
         <div class="bg-white p-6 rounded shadow text-center">
@@ -253,7 +253,7 @@
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
-                                                                                                                                                                                                    & Exit')</a>
+                                                                                                                                                                                                                                            & Exit')</a>
             </div>
         @endauth
     </div>
