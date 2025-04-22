@@ -122,7 +122,7 @@ class PatientHistory extends Component
         }else{
             $this->locationObtained = false;
         }
-        dd($this->content);
+        // dd($this->content);
         $view = $this->is_pet ? 'livewire.pet-details' : 'livewire.user.medical-history';
         return view($view, ['content' => $this->content]);
     }
