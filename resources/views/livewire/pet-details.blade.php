@@ -161,8 +161,8 @@
                         function ($value) {
                             return !empty($value);
                         },
-                        dd($attributes, $attributes1, $attributes2, $filteredAttributes),
                     );
+                    dd($attributes, $attributes1, $attributes2, $filteredAttributes),
                 @endphp
                 @if (!empty($attributes))
                     <div
