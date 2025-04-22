@@ -127,6 +127,7 @@ class PatientHistory extends Component
         return view($view, ['content' => $this->content]);
     }
 
+
     public function sendEmailNow()
     {
         $useremailprimary = str_replace(' ', '', $this->user->user_email);
