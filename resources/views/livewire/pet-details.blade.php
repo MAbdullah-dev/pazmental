@@ -107,7 +107,9 @@
             </div>
             <div class="field-groups">
                 @php
-                    $filteredAttributes = is_array($content) ? $content : $content->getAttributes();
+                    $filteredAttributes = $content->getAttributes();
+
+                    dd($filteredAttributes);
 
                     $petDetailsKeys = [
                         'name',
@@ -143,21 +145,21 @@
                     $attributes = array_filter(
                         array_intersect_key($filteredAttributes, array_flip($petDetailsKeys)),
                         function ($value) {
-                            return $value !== null;
+                            return !empty($value);
                         },
                     );
 
                     $attributes1 = array_filter(
                         array_intersect_key($filteredAttributes, array_flip($ownerKeys)),
                         function ($value) {
-                            return $value !== null;
+                            return !empty($value);
                         },
                     );
 
                     $attributes2 = array_filter(
                         array_intersect_key($filteredAttributes, array_flip($healthKeys)),
                         function ($value) {
-                            return $value !== null;
+                            return !empty($value);
                         },
                     );
                 @endphp
@@ -172,7 +174,6 @@
                         </h2>
                     </div>
                     <div class="information-wrapper grid gap-4 grid-cols-1 sm:grid-cols-2 px-2">
-                        {{-- @dd($attributes) --}}
                         @foreach ($attributes as $key => $value)
                             @if (!empty($value))
                                 <div class="flex items-start flex-col pl-2">
@@ -251,7 +252,7 @@
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
-                                                                                                                                                            & Exit')</a>
+                                                                                                                    & Exit')</a>
             </div>
         @endauth
     </div>
