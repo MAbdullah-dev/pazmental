@@ -142,23 +142,17 @@
                     // Filter the attributes and keep only the non-empty ones
                     $attributes = array_filter(
                         array_intersect_key($filteredAttributes, array_flip($petDetailsKeys)),
-                        function ($value) {
-                            return !empty($value);
-                        },
+                        fn($value) => $value !== null,
                     );
 
                     $attributes1 = array_filter(
                         array_intersect_key($filteredAttributes, array_flip($ownerKeys)),
-                        function ($value) {
-                            return !empty($value);
-                        },
+                        fn($value) => $value !== null,,
                     );
 
                     $attributes2 = array_filter(
                         array_intersect_key($filteredAttributes, array_flip($healthKeys)),
-                        function ($value) {
-                            return !empty($value);
-                        },
+                        fn($value) => $value !== null,
                     );
                 @endphp
                 @if (!empty($attributes))
@@ -251,7 +245,7 @@
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
-                                                                                                                                        & Exit')</a>
+                                                                                                                                                            & Exit')</a>
             </div>
         @endauth
     </div>
