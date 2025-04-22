@@ -162,7 +162,7 @@
                             return !empty($value);
                         },
                     );
-                    dd($attributes, $attributes1, $attributes2, $filteredAttributes);
+                    // dd($attributes, $attributes1, $attributes2, $filteredAttributes);
                 @endphp
                 @if (!empty($attributes))
                     <div
@@ -183,7 +183,7 @@
                                             @translate(ucwords(str_replace('_', ' ', $key))) :
                                         </span>
                                         <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
-                                            {{ $value }}
+                                            {{ $value ?? 'No Data Available' }}
                                         </span>
                                     </div>
                                 </div>
@@ -210,7 +210,7 @@
                                             @translate(ucwords(str_replace('_', ' ', $key))) :
                                         </span>
                                         <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
-                                            {{ $value }}
+                                            {{ $value ?? 'No Data Available' }}
                                         </span>
                                     </div>
                                 </div>
@@ -237,7 +237,7 @@
                                             @translate(ucwords(str_replace('_', ' ', $key))) :
                                         </span>
                                         <span class="text-[16px] dark:text-[#ffffffb8] text-[#666] font-semibold">
-                                            {{ $value }}
+                                            {{ $value ?? 'No Data Available' }}
                                         </span>
                                     </div>
                                 </div>
@@ -253,7 +253,7 @@
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
-                                                                                                                                                                                & Exit')</a>
+                                                                                                                                                                                                    & Exit')</a>
             </div>
         @endauth
     </div>
