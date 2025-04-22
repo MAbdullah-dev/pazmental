@@ -37,83 +37,162 @@ class PatientHistory extends Component
     public $useremrgemail2;
     public $locationObtained = false;
 
+public function mount($data)
+{
+    $this->handleData($data);
+}
+private function handleData($data)
+{
+    $data = base64_decode($data);
+    $d_explode = explode(",", $data);
 
-    public function mount($data)
-    {
-        $data = base64_decode($data);
-        $d_explode = explode(",", $data);
+    if (count($d_explode) >= 3) {
+        $email = $d_explode[0] ?? '';
+        $timestamp = $d_explode[1];
+        $date = Carbon::createFromTimestamp($timestamp)->toDateTimeString();
+        $product_id = $d_explode[2];
+    } elseif (count($d_explode) == 2) {
+        $user_id = $d_explode[0] ?? '';
+        $product_id = $d_explode[1] ?? '';
+        $email = User::where('id', $user_id)->firstOrFail()->user_email;
+    } else {
+        abort(404);
+    }
 
-        if (count($d_explode) >= 3) {
-            $email = $d_explode[0] ?? '';
-            $timestamp = $d_explode[1];
-            $date = Carbon::createFromTimestamp($timestamp)->toDateTimeString();
-            $product_id = $d_explode[2];
-        } elseif (count($d_explode) == 2) {
-            $user_id = $d_explode[0] ?? '';
-            $product_id = $d_explode[1] ?? '';
-            $email = User::where('id', $user_id)->firstOrFail()->user_email;
-        } else {
-            abort(404);
-        }
+    $product = Product::findOrFail($product_id);
+    $this->user = User::where('user_email', $email)->firstOrFail();
+    $this->userdata = PatientDetails::where('patient_id', $this->user->ID)->first();
 
-        $product = Product::findOrFail($product_id);
-        $this->user = User::where('user_email', $email)->firstOrFail();
-        $this->userdata = PatientDetails::where('patient_id', $this->user->ID)->first();
+    $isPetSubaccount = $this->user->meta->where('meta_key', 'subaccount_type')->where('meta_value', 'pet')->isNotEmpty();
 
-        $isPetSubaccount = $this->user->meta->where('meta_key', 'subaccount_type')->where('meta_value', 'pet')->isNotEmpty();
-// dd(session()->all());
-                if ($isPetSubaccount) {
-            $meta = $this->user->meta
-                ->where('meta_key', 'subaccount_type')
-                ->where('meta_value', 'pet')
-                ->first();
+    if ($isPetSubaccount) {
+        $meta = $this->user->meta
+            ->where('meta_key', 'subaccount_type')
+            ->where('meta_value', 'pet')
+            ->first();
 
-            session([
-                'petSubAcc' => [
-                    'meta_key' => $meta->meta_key,
-                    'meta_value' => $meta->meta_value,
-                ]
-            ]);
-        } else {
-            session()->forget('petSubAcc');
-        }
+        session([
+            'petSubAcc' => [
+                'meta_key' => $meta->meta_key,
+                'meta_value' => $meta->meta_value,
+            ]
+        ]);
+    } else {
+        session()->forget('petSubAcc');
+    }
 
-        if ($this->userdata) {
+    if ($this->userdata) {
         $this->useremrgemail = $this->userdata->allow_notification_emrg_email ? $this->userdata->emrg_email : null;
         $this->useremrgemail2 = $this->userdata->allow_notification_emrg_email2 ? $this->userdata->emrg_email2 : null;
-        }
-        if (auth()->check() && auth()->user()->email != $email) {
-            auth()->logout();
-        }
-
-        if (count($d_explode) >= 3 && Get_QR_Code($product_id, $this->user, $date) == null) {
-            abort(404);
-        }
-
-        if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null || $isPetSubaccount) {
-            // dd($isPetSubaccount);
-            $this->content = PatientPets::where('patient_id', $this->user->ID)->first();
-            $this->is_pet = true;
-        } else {
-            $this->content = PatientDetails::where('patient_id', $this->user->ID)->first();
-        }
-
-        if ($this->content == null) {
-            session()->flash('error', __('Patient Not Found Or Don\'t Have Details. Please login to add details.'));
-            return redirect()->route('login')->with('Referer', 'true');
-        } else {
-            $this->toast(
-                type: 'success',
-                title: @translate('Screen captures and recordings are restricted.'),
-                description: null,
-                position: 'toast-bottom toast-start',
-                icon: 'o-exclamation-circle',
-                css: 'alert-white',
-                timeout: 10000,
-                redirectTo: null
-            );
-        }
     }
+
+    if (auth()->check() && auth()->user()->email != $email) {
+        auth()->logout();
+    }
+
+    if (count($d_explode) >= 3 && Get_QR_Code($product_id, $this->user, $date) == null) {
+        abort(404);
+    }
+
+    if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null || $isPetSubaccount) {
+        $this->content = PatientPets::where('patient_id', $this->user->ID)->first();
+        $this->is_pet = true;
+    } else {
+        $this->content = PatientDetails::where('patient_id', $this->user->ID)->first();
+    }
+
+    if ($this->content == null) {
+        session()->flash('error', __('Patient Not Found Or Don\'t Have Details. Please login to add details.'));
+        return redirect()->route('login')->with('Referer', 'true');
+    } else {
+        $this->toast(
+            type: 'success',
+            title: @translate('Screen captures and recordings are restricted.'),
+            description: null,
+            position: 'toast-bottom toast-start',
+            icon: 'o-exclamation-circle',
+            css: 'alert-white',
+            timeout: 10000,
+            redirectTo: null
+        );
+    }
+}
+//     public function mount($data)
+//     {
+//         $data = base64_decode($data);
+//         $d_explode = explode(",", $data);
+
+//         if (count($d_explode) >= 3) {
+//             $email = $d_explode[0] ?? '';
+//             $timestamp = $d_explode[1];
+//             $date = Carbon::createFromTimestamp($timestamp)->toDateTimeString();
+//             $product_id = $d_explode[2];
+//         } elseif (count($d_explode) == 2) {
+//             $user_id = $d_explode[0] ?? '';
+//             $product_id = $d_explode[1] ?? '';
+//             $email = User::where('id', $user_id)->firstOrFail()->user_email;
+//         } else {
+//             abort(404);
+//         }
+
+//         $product = Product::findOrFail($product_id);
+//         $this->user = User::where('user_email', $email)->firstOrFail();
+//         $this->userdata = PatientDetails::where('patient_id', $this->user->ID)->first();
+
+//         $isPetSubaccount = $this->user->meta->where('meta_key', 'subaccount_type')->where('meta_value', 'pet')->isNotEmpty();
+// // dd(session()->all());
+//                 if ($isPetSubaccount) {
+//             $meta = $this->user->meta
+//                 ->where('meta_key', 'subaccount_type')
+//                 ->where('meta_value', 'pet')
+//                 ->first();
+
+//             session([
+//                 'petSubAcc' => [
+//                     'meta_key' => $meta->meta_key,
+//                     'meta_value' => $meta->meta_value,
+//                 ]
+//             ]);
+//         } else {
+//             session()->forget('petSubAcc');
+//         }
+
+//         if ($this->userdata) {
+//         $this->useremrgemail = $this->userdata->allow_notification_emrg_email ? $this->userdata->emrg_email : null;
+//         $this->useremrgemail2 = $this->userdata->allow_notification_emrg_email2 ? $this->userdata->emrg_email2 : null;
+//         }
+//         if (auth()->check() && auth()->user()->email != $email) {
+//             auth()->logout();
+//         }
+
+//         if (count($d_explode) >= 3 && Get_QR_Code($product_id, $this->user, $date) == null) {
+//             abort(404);
+//         }
+
+//         if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null || $isPetSubaccount) {
+//             // dd($isPetSubaccount);
+//             $this->content = PatientPets::where('patient_id', $this->user->ID)->first();
+//             $this->is_pet = true;
+//         } else {
+//             $this->content = PatientDetails::where('patient_id', $this->user->ID)->first();
+//         }
+
+//         if ($this->content == null) {
+//             session()->flash('error', __('Patient Not Found Or Don\'t Have Details. Please login to add details.'));
+//             return redirect()->route('login')->with('Referer', 'true');
+//         } else {
+//             $this->toast(
+//                 type: 'success',
+//                 title: @translate('Screen captures and recordings are restricted.'),
+//                 description: null,
+//                 position: 'toast-bottom toast-start',
+//                 icon: 'o-exclamation-circle',
+//                 css: 'alert-white',
+//                 timeout: 10000,
+//                 redirectTo: null
+//             );
+//         }
+//     }
 
     public function render()
     {
@@ -144,13 +223,6 @@ class PatientHistory extends Component
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->sendEmailNotification($email, $this->user->user_nicename);
             }
-        }
-        if ($product->categories()->where('term_id', $this->pet_cat_id)->first() != null || $isPetSubaccount) {
-            // dd($isPetSubaccount);
-            $this->content = PatientPets::where('patient_id', $this->user->ID)->first();
-            $this->is_pet = true;
-        } else {
-            $this->content = PatientDetails::where('patient_id', $this->user->ID)->first();
         }
     }
 
