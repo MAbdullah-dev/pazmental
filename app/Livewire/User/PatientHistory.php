@@ -117,6 +117,7 @@ class PatientHistory extends Component
                 redirectTo: null
             );
         }
+         $this->sendEmailNow($data); // Call sendEmailNow at the end of loaddata
     }
     public function render()
     {
@@ -130,7 +131,7 @@ class PatientHistory extends Component
         return view($view, ['content' => $this->content]);
     }
 
-    public function sendEmailNow()
+    public function sendEmailNow($data)
     {
         $useremailprimary = str_replace(' ', '', $this->user->user_email);
         $useremrgemail = str_replace(' ', '', $this->useremrgemail);
@@ -148,7 +149,7 @@ class PatientHistory extends Component
                 $this->sendEmailNotification($email, $this->user->user_nicename);
             }
         }
-        $this->loaddata($data);
+         $this->loaddata($data); // Passing $data here
     }
 
     private function sendEmailNotification($email, $userName)
