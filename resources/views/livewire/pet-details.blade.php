@@ -142,17 +142,23 @@
                     // Filter the attributes and keep only the non-empty ones
                     $attributes = array_filter(
                         array_intersect_key($filteredAttributes, array_flip($petDetailsKeys)),
-                        fn($value) => $value !== null,
+                        function ($value) {
+                            return $value !== null;
+                        },
                     );
 
                     $attributes1 = array_filter(
                         array_intersect_key($filteredAttributes, array_flip($ownerKeys)),
-                        fn($value) => $value !== null,,
+                        function ($value) {
+                            return $value !== null;
+                        },
                     );
 
                     $attributes2 = array_filter(
                         array_intersect_key($filteredAttributes, array_flip($healthKeys)),
-                        fn($value) => $value !== null,
+                        function ($value) {
+                            return $value !== null;
+                        },
                     );
                 @endphp
                 @if (!empty($attributes))
