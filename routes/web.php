@@ -103,69 +103,61 @@ Route::post('/save-location', function (Request $request) {
 use Illuminate\Support\Str;
 
 Route::get('/test-wp-hash', function () {
-$password = 'admin';
-$hash = '$P$B8D6YF8zNOk0ZvhQARoBiQwyyJ7I0u1'; // Generated from WP using password 'admin'
+    $password = 'admin';
+    $storedHash = '$P$B8D6YF8zNOk0ZvhQARoBiQwyyJ7I0u1'; // This is the real WP hash for 'admin'
 
+    $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-    // Handle bcrypt-style prefixed with $wp$
-    if (Str::startsWith($hash, '$wp$')) {
-        $bcryptHash = Str::after($hash, '$wp$');
+    $cryptPrivate = function ($password, $setting) use ($itoa64) {
+        if (substr($setting, 0, 3) !== '$P$' && substr($setting, 0, 3) !== '$H$') {
+            return '*0';
+        }
 
-        return password_verify($password, $bcryptHash)
-            ? '✅ Bcrypt-style password matches!'
-            : '❌ Bcrypt-style password does NOT match.';
-    }
-
-    // Handle legacy WP hashes ($P$ or $H$)
-    if (Str::startsWith($hash, ['$P$', '$H$'])) {
-        $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
-        $count_log2 = strpos($itoa64, $hash[3]);
+        $count_log2 = strpos($itoa64, $setting[3]);
         if ($count_log2 < 7 || $count_log2 > 30) {
-            return '❌ Invalid legacy hash';
+            return '*0';
         }
 
         $count = 1 << $count_log2;
-        $salt = substr($hash, 4, 8);
-        $hash_input = md5($salt . $password, true);
-
-        for ($i = 0; $i < $count; $i++) {
-            $hash_input = md5($hash_input . $password, true);
+        $salt = substr($setting, 4, 8);
+        if (strlen($salt) !== 8) {
+            return '*0';
         }
 
-        $output = substr($hash, 0, 12);
+        $hash = md5($salt . $password, true);
+        for ($i = 0; $i < $count; $i++) {
+            $hash = md5($hash . $password, true);
+        }
 
+        $output = substr($setting, 0, 12);
         $encode64 = function ($input, $count) use ($itoa64) {
             $output = '';
             $i = 0;
             do {
                 $value = ord($input[$i++]);
                 $output .= $itoa64[$value & 0x3f];
-
                 if ($i < $count) {
                     $value |= ord($input[$i]) << 8;
                 }
                 $output .= $itoa64[($value >> 6) & 0x3f];
                 if ($i++ >= $count) break;
-
                 if ($i < $count) {
                     $value |= ord($input[$i]) << 16;
                 }
                 $output .= $itoa64[($value >> 12) & 0x3f];
                 if ($i++ >= $count) break;
-
                 $output .= $itoa64[($value >> 18) & 0x3f];
             } while ($i < $count);
-
             return $output;
         };
+        $output .= $encode64($hash, 16);
+        return $output;
+    };
 
-        $output .= $encode64($hash_input, 16);
-
-        return $output === $hash
-            ? '✅ Legacy WP password matches!'
-            : '❌ Legacy WP password does NOT match.';
+    $calculated = $cryptPrivate($password, $storedHash);
+    if ($calculated === $storedHash) {
+        return '✅ Legacy WP password matches!';
+    } else {
+        return '❌ Legacy WP password does NOT match.';
     }
-
-    return '❌ Unknown hash format.';
 });
