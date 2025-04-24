@@ -100,36 +100,52 @@ Route::post('/save-location', function (Request $request) {
 });
 
 
-use Illuminate\Support\Str;
+Route::get('/test-password', function (Illuminate\Http\Request $request) {
+    // Set plain text response
+    header('Content-Type: text/plain');
 
-// use Illuminate\Support\Facades\Route;
+    // Get inputs from query parameters
+    $plainPassword = $request->query('password');
+    $existingHash = $request->query('hash', '');
 
-Route::get('/test-wp-hash', function () {
-    $password = 'admin'; // Password to check (adjust this to your needs)
-    $storedHash = '$P$B8D6YF8zNOk0ZvhQARoBiQwyyJ7I0u1'; // Replace with your real WP hash
-
-    // Manually adjust the password checking logic (without helpers)
-    if (strpos($storedHash, '$P$') === 0) {
-        $storedHash = substr($storedHash, 3); // Remove the `$P$` prefix
+    // Check if password is provided
+    if (!$plainPassword) {
+        return "Error: Please provide a 'password' query parameter.\nExample: /test-password?password=mysecretpassword&hash=\$wp\$2y\$10\$...";
     }
 
-    // Prepare the WordPress style hash comparison
-    $hashParts = str_split($storedHash, 8);
-    $salt = $hashParts[0];
+    // Generate SHA-384 pre-hashed bcrypt hash with $wp$2y$ prefix
+    $sha384Password = hash('sha384', $plainPassword, true); // Binary output
+    $bcryptHash = password_hash($sha384Password, PASSWORD_BCRYPT, ['cost' => 10]);
+    $generatedHash = '$wp$2y$' . $bcryptHash;
 
-    // Check password by hashing it with the stored salt
-    $calculatedHash = md5($salt . $password, true);
-    for ($i = 0; $i < (1 << (ord($storedHash[3]) - 6)); $i++) {
-        $calculatedHash = md5($calculatedHash . $password, true);
-    }
+    // Initialize output
+    $output = "Plain Password: {$plainPassword}\n";
+    $output .= "Generated Hash: {$generatedHash}\n";
 
-    // Prepare the final hash output
-    $finalHash = substr($storedHash, 0, 12) . base64_encode($calculatedHash);
-
-    // Check if hashes match
-    if ($finalHash === $storedHash) {
-        return '✅ Legacy WP password matches!';
+    // Verify against existing hash (if provided)
+    if ($existingHash) {
+        $output .= "Provided Hash: {$existingHash}\n";
+        if (strpos($existingHash, '$wp$2y$') === 0) {
+            $cleanHash = substr($existingHash, 7); // Remove $wp$2y$ prefix
+            // Check if clean hash starts with $10$ and has correct length
+            if (preg_match('/^\$10\$/', $cleanHash) && strlen($cleanHash) === 57) {
+                $output .= "Clean Hash: {$cleanHash}\n";
+                $output .= "Clean Hash Length: " . strlen($cleanHash) . "\n";
+                $verificationResult = password_verify($sha384Password, $cleanHash)
+                    ? 'Password matches the provided hash.'
+                    : 'Password does NOT match the provided hash.';
+                $output .= "Verification Result: {$verificationResult}\n";
+            } else {
+                $output .= "Clean Hash: {$cleanHash}\n";
+                $output .= "Clean Hash Length: " . strlen($cleanHash) . "\n";
+                $output .= "Verification Result: Invalid bcrypt hash format after removing \$wp\$2y\$ prefix.\n";
+            }
+        } else {
+            $output .= "Verification Result: Provided hash does not have \$wp\$2y\$ prefix.\n";
+        }
     } else {
-        return '❌ Legacy WP password does NOT match.';
+        $output .= "No existing hash provided for verification.\n";
     }
-});
+
+    return $output;
+})->name('test.password');
