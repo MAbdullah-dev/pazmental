@@ -100,15 +100,19 @@ Route::post('/save-location', function (Request $request) {
 });
 
 
-Route::get('/test-password', function () {
-    $hash = '$wp$2y$10$O4rzwrwCtVwLePhiWDLyUu/2MYEE0ctF3iIKXyuDAB/rftNz3UYTW';
-    $cleanHash = str_replace('$wp$', '', $hash);
+use Illuminate\Support\Facades\Hash;
+// use Illuminate\Support\Facades\Route;
 
-    $password = 'Ajk24312124'; // use exact value
-
-    if (password_verify($password, $cleanHash)) {
-        return '✅ password_verify passed!';
+Route::get('/test-wp-hash', function () {
+    $plainPassword = '123456789'; // Replace with real password
+    $hashedPassword = '$wp$2y$10$Prm4mHVB9ds3TZD5TQHFUO4nzXTGet7nbH1LoHvtr/piqOsCmF52e'; // Replace with real hash from DB
+    // Manually strip $wp$ prefix
+    if (strpos($hashedPassword, '$wp$') === 0) {
+        $hashedPassword = substr($hashedPassword, 4);
     }
-
-    return '❌ password_verify failed.';
+    if (password_verify($plainPassword, $hashedPassword)) {
+        return ':white_tick: Password matches!';
+    } else {
+        return ':x: Password does NOT match.';
+    }
 });
