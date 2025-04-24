@@ -106,16 +106,14 @@ use Illuminate\Support\Facades\Hash;
 // use Illuminate\Support\Facades\Route;
 
 Route::get('/test-wp-hash', function () {
-    $plainPassword = 'secret123';
-    $hashedPassword = '$wp$2y$10$7cKQU9KPYynvG4dsyfeBjuUkFZ0BgvC79X4ILpuNSyOZcsxgPOXH2';
+    $password = 'secret123';
+    $hashed = '$wp$2y$10$fsuXcIfC9ebk4AShiK7PjOvJxu3YY06bnI1oQl9LY5QQU7dxTF40G';
 
-    if (str_starts_with($hashedPassword, '$wp$')) {
-        $hashedPassword = substr($hashedPassword, 4);
+    if (str_starts_with($hashed, '$wp$')) {
+        $hashed = substr($hashed, 4);
     }
 
-    if (password_verify($plainPassword, $hashedPassword)) {
-        return '✅ Password matches!';
-    } else {
-        return '❌ Password does NOT match.';
-    }
+    return password_verify($password, $hashed)
+        ? '✅ Password matches!'
+        : '❌ Password does NOT match.';
 });
