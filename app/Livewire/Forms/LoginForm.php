@@ -3,7 +3,7 @@
 namespace App\Livewire\Forms;
 
 use Livewire\Form;
-use App\Models\Wordpress\User;
+use Corcel\Model\User as User;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Illuminate\Auth\Events\Lockout;
@@ -43,42 +43,55 @@ class LoginForm extends Form
     //     RateLimiter::clear($this->throttleKey());
     // }
 
-    public function authenticate(): void
+public function authenticate(): void
 {
     $this->ensureIsNotRateLimited();
 
     $credentials = $this->only(['email', 'password']);
+    Log::debug('Login attempt started', ['email' => $credentials['email']]);
 
     // Try standard Laravel auth
     if (Auth::attempt($credentials, $this->remember)) {
+        Log::debug('Auth::attempt successful');
         RateLimiter::clear($this->throttleKey());
         return;
     }
 
-    // Get user manually to handle $wp$ prefixed bcrypt
+    Log::debug('Auth::attempt failed, trying manual $wp$ fallback');
+
+    // Get user manually
     $user = User::where('user_email', $credentials['email'])->first();
 
     if (!$user) {
+        Log::warning('User not found', ['email' => $credentials['email']]);
         $this->failLogin();
     }
 
     $hashed = $user->user_pass;
+    Log::debug('Found user', ['user_id' => $user->ID, 'user_pass' => $hashed]);
 
-    // Handle $wp$ bcrypt hashes
     if (str_starts_with($hashed, '$wp$2y$')) {
         $realHash = str_replace('$wp$', '', $hashed);
+        Log::debug('Detected $wp$ hash, trying password_verify');
 
         if (password_verify($credentials['password'], $realHash)) {
-            // Optionally rehash and save to clean up
+            Log::debug('Manual password_verify passed, logging in');
+
+            // Optionally clean up
             // $user->user_pass = bcrypt($credentials['password']);
             // $user->save();
 
             Auth::login($user, $this->remember);
             RateLimiter::clear($this->throttleKey());
             return;
+        } else {
+            Log::warning('password_verify failed for $wp$ hash');
         }
+    } else {
+        Log::info('Hash not prefixed with $wp$, skipping manual check');
     }
 
+    Log::error('All authentication methods failed');
     $this->failLogin();
 }
 
