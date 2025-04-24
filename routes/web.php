@@ -102,49 +102,52 @@ Route::post('/save-location', function (Request $request) {
 
 use Illuminate\Support\Str;
 
+// use Illuminate\Support\Facades\Route;
+
 Route::get('/test-wp-hash', function () {
     $password = 'admin';
-    $storedHash = '$P$B8D6YF8zNOk0ZvhQARoBiQwyyJ7I0u1'; // This is the real WP hash for 'admin'
+    $storedHash = '$P$B8D6YF8zNOk0ZvhQARoBiQwyyJ7I0u1'; // Known WP hash for 'admin'
 
-$itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-$storedHash = '$P$B8D6YF8zNOk0ZvhQARoBiQwyyJ7I0u1'; // WP hash for "admin"
-$password = 'admin';
+    $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-$cryptPrivate = function ($password, $setting) use ($itoa64) {
-    if (substr($setting, 0, 3) !== '$P$' && substr($setting, 0, 3) !== '$H$') {
-        return '*0';
-    }
-    $count_log2 = strpos($itoa64, $setting[3]);
-    if ($count_log2 < 7 || $count_log2 > 30) return '*0';
-    $count = 1 << $count_log2;
-    $salt = substr($setting, 4, 8);
-    if (strlen($salt) !== 8) return '*0';
-    $hash = md5($salt . $password, true);
-    for ($i = 0; $i < $count; $i++) {
-        $hash = md5($hash . $password, true);
-    }
-    $output = substr($setting, 0, 12);
-    $encode64 = function ($input, $count) use ($itoa64) {
-        $output = '';
-        $i = 0;
-        do {
-            $value = ord($input[$i++]);
-            $output .= $itoa64[$value & 0x3f];
-            if ($i < $count) $value |= ord($input[$i]) << 8;
-            $output .= $itoa64[($value >> 6) & 0x3f];
-            if ($i++ >= $count) break;
-            if ($i < $count) $value |= ord($input[$i]) << 16;
-            $output .= $itoa64[($value >> 12) & 0x3f];
-            if ($i++ >= $count) break;
-            $output .= $itoa64[($value >> 18) & 0x3f];
-        } while ($i < $count);
-        return $output;
+    $cryptPrivate = function ($password, $setting) use ($itoa64) {
+        if (substr($setting, 0, 3) !== '$P$' && substr($setting, 0, 3) !== '$H$') {
+            return '*0';
+        }
+        $count_log2 = strpos($itoa64, $setting[3]);
+        if ($count_log2 < 7 || $count_log2 > 30) return '*0';
+        $count = 1 << $count_log2;
+        $salt = substr($setting, 4, 8);
+        if (strlen($salt) !== 8) return '*0';
+
+        $hash = md5($salt . $password, true);
+        for ($i = 0; $i < $count; $i++) {
+            $hash = md5($hash . $password, true);
+        }
+
+        $output = substr($setting, 0, 12);
+
+        $encode64 = function ($input, $count) use ($itoa64) {
+            $output = '';
+            $i = 0;
+            do {
+                $value = ord($input[$i++]);
+                $output .= $itoa64[$value & 0x3f];
+                if ($i < $count) $value |= ord($input[$i]) << 8;
+                $output .= $itoa64[($value >> 6) & 0x3f];
+                if ($i++ >= $count) break;
+                if ($i < $count) $value |= ord($input[$i]) << 16;
+                $output .= $itoa64[($value >> 12) & 0x3f];
+                if ($i++ >= $count) break;
+                $output .= $itoa64[($value >> 18) & 0x3f];
+            } while ($i < $count);
+            return $output;
+        };
+
+        return $output . $encode64($hash, 16);
     };
-    return $output .= $encode64($hash, 16);
-};
 
-$calculated = $cryptPrivate($password, $storedHash);
-$calculated === $storedHash;
+    $calculated = $cryptPrivate($password, $storedHash);
 
     if ($calculated === $storedHash) {
         return '✅ Legacy WP password matches!';
