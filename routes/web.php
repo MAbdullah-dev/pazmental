@@ -103,17 +103,19 @@ Route::post('/save-location', function (Request $request) {
 use Illuminate\Support\Facades\Hash;
 // use Illuminate\Support\Facades\Route;
 
+// use Illuminate\Support\Facades\Route;
+
 Route::get('/test-wp-hash', function () {
-    $plainPassword = 'secret123'; // Replace with real password
-    $hashedPassword = '$wp$2y$10$7cKQU9KPYynvG4dsyfeBjuUkFZ0BgvC79X4ILpuNSyOZcsxgPOXH2
-'; // Replace with real hash from DB
-    // Manually strip $wp$ prefix
-    if (strpos($hashedPassword, '$wp$') === 0) {
+    $plainPassword = 'secret123';
+    $hashedPassword = '$wp$2y$10$7cKQU9KPYynvG4dsyfeBjuUkFZ0BgvC79X4ILpuNSyOZcsxgPOXH2';
+
+    if (str_starts_with($hashedPassword, '$wp$')) {
         $hashedPassword = substr($hashedPassword, 4);
     }
+
     if (password_verify($plainPassword, $hashedPassword)) {
-        return ':white_tick: Password matches!';
+        return '✅ Password matches!';
     } else {
-        return ':x: Password does NOT match.';
+        return '❌ Password does NOT match.';
     }
 });
