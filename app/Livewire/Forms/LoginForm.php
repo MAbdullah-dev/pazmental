@@ -3,7 +3,7 @@
 namespace App\Livewire\Forms;
 
 use Livewire\Form;
-use App\Models\User;
+use App\Models\Wordpress\User;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Illuminate\Auth\Events\Lockout;
@@ -56,7 +56,7 @@ class LoginForm extends Form
     }
 
     // Get user manually to handle $wp$ prefixed bcrypt
-    $user = WPUser::where('user_email', $credentials['email'])->first();
+    $user = User::where('user_email', $credentials['email'])->first();
 
     if (!$user) {
         $this->failLogin();
