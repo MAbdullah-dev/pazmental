@@ -104,8 +104,9 @@ use Illuminate\Support\Facades\Hash;
 // use Illuminate\Support\Facades\Route;
 
 Route::get('/test-wp-hash', function () {
-    $plainPassword = '123456789'; // Replace with real password
-    $hashedPassword = '$wp$2y$10$Prm4mHVB9ds3TZD5TQHFUO4nzXTGet7nbH1LoHvtr/piqOsCmF52e'; // Replace with real hash from DB
+    $plainPassword = 'secret123'; // Replace with real password
+    $hashedPassword = '$wp$2y$10$7cKQU9KPYynvG4dsyfeBjuUkFZ0BgvC79X4ILpuNSyOZcsxgPOXH2
+'; // Replace with real hash from DB
     // Manually strip $wp$ prefix
     if (strpos($hashedPassword, '$wp$') === 0) {
         $hashedPassword = substr($hashedPassword, 4);
