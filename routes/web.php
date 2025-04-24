@@ -103,10 +103,9 @@ Route::post('/save-location', function (Request $request) {
 use Illuminate\Support\Str;
 
 Route::get('/test-wp-hash', function () {
-    $password = 'secret123';
+$password = 'admin';
+$hash = '$P$B8D6YF8zNOk0ZvhQARoBiQwyyJ7I0u1'; // Generated from WP using password 'admin'
 
-    // Replace with a real hash from your DB
-    $hash = '$P$B5TaaL31UIs8a4NgHg8YDZxYQaC2fr1'; // Legacy hash OR $wp$2y$... for bcrypt
 
     // Handle bcrypt-style prefixed with $wp$
     if (Str::startsWith($hash, '$wp$')) {
