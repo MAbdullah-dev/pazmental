@@ -98,3 +98,17 @@ Route::post('/save-location', function (Request $request) {
         'stored' => session('user_location')
     ]);
 });
+
+
+Route::get('/test-password', function () {
+    $hash = '$wp$2y$10$O4rzwrwCtVwLePhiWDLyUu/2MYEE0ctF3iIKXyuDAB/rftNz3UYTW';
+    $cleanHash = str_replace('$wp$', '', $hash);
+
+    $password = 'Ajk24312124'; // use exact value
+
+    if (password_verify($password, $cleanHash)) {
+        return '✅ password_verify passed!';
+    }
+
+    return '❌ password_verify failed.';
+});
