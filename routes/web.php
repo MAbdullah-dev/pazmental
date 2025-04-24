@@ -107,7 +107,7 @@ use Illuminate\Support\Facades\Hash;
 
 Route::get('/test-wp-hash', function () {
     $password = 'secret123';
-    $hashed = '$wp$2y$10$fsuXcIfC9ebk4AShiK7PjOvJxu3YY06bnI1oQl9LY5QQU7dxTF40G';
+    $hashed = '$wp$2y$10$NIL/ZZuCEKJUN6BCTMI8tuV51qVKebjYfYlzW/8UvSXYeSsyUvLIS';
 
     if (str_starts_with($hashed, '$wp$')) {
         $hashed = substr($hashed, 4);
