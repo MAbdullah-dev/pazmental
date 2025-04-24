@@ -105,8 +105,8 @@ Route::get('/test-password', function (Illuminate\Http\Request $request) {
     header('Content-Type: text/plain');
 
     // Get inputs from query parameters
-    $plainPassword = '123456789';
-    $existingHash = '$wp$2y$10$Prm4mHVB9ds3TZD5TQHFUO4nzXTGet7nbH1LoHvtr/piqOsCmF52e';
+    $plainPassword = $request->query('password');
+    $existingHash = $request->query('hash', '');
 
     // Check if password is provided
     if (!$plainPassword) {
