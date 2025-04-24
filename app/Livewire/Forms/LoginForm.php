@@ -28,20 +28,69 @@ class LoginForm extends Form
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+    // public function authenticate(): void
+    // {
+    //     $this->ensureIsNotRateLimited();
+
+    //     if (!Auth::attempt($this->only(['email', 'password']), $this->remember)) {
+    //         RateLimiter::hit($this->throttleKey());
+
+    //         throw ValidationException::withMessages([
+    //             'form.email' => trans('auth.failed'),
+    //         ]);
+    //     }
+
+    //     RateLimiter::clear($this->throttleKey());
+    // }
+
     public function authenticate(): void
-    {
-        $this->ensureIsNotRateLimited();
+{
+    $this->ensureIsNotRateLimited();
 
-        if (!Auth::attempt($this->only(['email', 'password']), $this->remember)) {
-            RateLimiter::hit($this->throttleKey());
+    $credentials = $this->only(['email', 'password']);
 
-            throw ValidationException::withMessages([
-                'form.email' => trans('auth.failed'),
-            ]);
-        }
-
+    // Try standard Laravel auth
+    if (Auth::attempt($credentials, $this->remember)) {
         RateLimiter::clear($this->throttleKey());
+        return;
     }
+
+    // Get user manually to handle $wp$ prefixed bcrypt
+    $user = WPUser::where('user_email', $credentials['email'])->first();
+
+    if (!$user) {
+        $this->failLogin();
+    }
+
+    $hashed = $user->user_pass;
+
+    // Handle $wp$ bcrypt hashes
+    if (str_starts_with($hashed, '$wp$2y$')) {
+        $realHash = str_replace('$wp$', '', $hashed);
+
+        if (password_verify($credentials['password'], $realHash)) {
+            // Optionally rehash and save to clean up
+            // $user->user_pass = bcrypt($credentials['password']);
+            // $user->save();
+
+            Auth::login($user, $this->remember);
+            RateLimiter::clear($this->throttleKey());
+            return;
+        }
+    }
+
+    $this->failLogin();
+}
+
+protected function failLogin()
+{
+    RateLimiter::hit($this->throttleKey());
+
+    throw ValidationException::withMessages([
+        'form.email' => trans('auth.failed'),
+    ]);
+}
+
     public function authenticateadmin(): void
     {
 
