@@ -18,13 +18,14 @@ use App\Livewire\Unauthorized;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Livewire\User\{MedicalHistory, PatientHistory};
- /*
+/*
     |--------------------------------------------------------------------------
     | Application language bindings
     |--------------------------------------------------------------------------
     |*/
-    $locales = env('DEFAULT_LANGUAGE');
-    session()->put('locale', $locales);
+
+$locales = env('DEFAULT_LANGUAGE');
+session()->put('locale', $locales);
 // Wrap all non-admin routes with 'site_access' middleware
 Route::middleware(['site_access'])->group(
     function () {
@@ -40,9 +41,9 @@ Route::middleware(['site_access'])->group(
         });
 
 
-    Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
-    Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
-    Route::get('DetailsView/{data}', DetailsView::class)->name('DetailsView');
+        Route::get('patient-details/{data}', PatientHistory::class)->name('patient-details');
+        Route::get('pd/{data}', PatientHistory::class)->name('patient-details');
+        Route::get('DetailsView/{data}', DetailsView::class)->name('DetailsView');
     }
 );
 
@@ -73,7 +74,6 @@ Route::get('/test-db-connection', function () {
     } catch (\Exception $e) {
         Log::error('Error connecting to WordPress database: ' . $e->getMessage());
         return 'Error: ' . $e->getMessage();
-
     }
 });
 
@@ -113,9 +113,10 @@ Route::get('/test-password', function (Illuminate\Http\Request $request) {
         return "Error: Please provide a 'password' query parameter.\nExample: /test-password?password=mysecretpassword&hash=\$wp\$2y\$10\$...";
     }
 
-    // Generate bcrypt hash with $wp$ prefix
-    $bcryptHash = password_hash($plainPassword, PASSWORD_BCRYPT, ['cost' => 10]);
-    $generatedHash = '$wp$' . $bcryptHash;
+    // Generate SHA-384 pre-hashed bcrypt hash with $wp$2y$ prefix
+    $sha384Password = hash('sha384', $plainPassword, true); // Binary output
+    $bcryptHash = password_hash($sha384Password, PASSWORD_BCRYPT, ['cost' => 10]);
+    $generatedHash = '$wp$2y$' . $bcryptHash;
 
     // Initialize output
     $output = "Plain Password: {$plainPassword}\n";
@@ -124,18 +125,23 @@ Route::get('/test-password', function (Illuminate\Http\Request $request) {
     // Verify against existing hash (if provided)
     if ($existingHash) {
         $output .= "Provided Hash: {$existingHash}\n";
-        if (strpos($existingHash, '$wp$') === 0) {
-            $cleanHash = substr($existingHash, 4); // Remove $wp$ prefix
-            if (preg_match('/^\$2[ayb]\$\d{2}\$[.\/0-9a-zA-Z]{53}$/', $cleanHash)) {
-                $verificationResult = password_verify($plainPassword, $cleanHash)
+        if (strpos($existingHash, '$wp$2y$') === 0) {
+            $cleanHash = substr($existingHash, 7); // Remove $wp$2y$ prefix
+            // Check if clean hash starts with $10$ and has correct length
+            if (preg_match('/^\$10\$/', $cleanHash) && strlen($cleanHash) === 57) {
+                $output .= "Clean Hash: {$cleanHash}\n";
+                $output .= "Clean Hash Length: " . strlen($cleanHash) . "\n";
+                $verificationResult = password_verify($sha384Password, $cleanHash)
                     ? 'Password matches the provided hash.'
                     : 'Password does NOT match the provided hash.';
                 $output .= "Verification Result: {$verificationResult}\n";
             } else {
-                $output .= "Verification Result: Invalid bcrypt hash format after removing \$wp\$ prefix.\n";
+                $output .= "Clean Hash: {$cleanHash}\n";
+                $output .= "Clean Hash Length: " . strlen($cleanHash) . "\n";
+                $output .= "Verification Result: Invalid bcrypt hash format after removing \$wp\$2y\$ prefix.\n";
             }
         } else {
-            $output .= "Verification Result: Provided hash does not have \$wp\$ prefix.\n";
+            $output .= "Verification Result: Provided hash does not have \$wp\$2y\$ prefix.\n";
         }
     } else {
         $output .= "No existing hash provided for verification.\n";
