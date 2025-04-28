@@ -28,20 +28,56 @@ class LoginForm extends Form
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+    // public function authenticate(): void
+    // {
+    //     $this->ensureIsNotRateLimited();
+
+    //     if (!Auth::attempt($this->only(['email', 'password']), $this->remember)) {
+    //         RateLimiter::hit($this->throttleKey());
+
+    //         throw ValidationException::withMessages([
+    //             'form.email' => trans('auth.failed'),
+    //         ]);
+    //     }
+
+    //     RateLimiter::clear($this->throttleKey());
+    // }
+
     public function authenticate(): void
-    {
-        $this->ensureIsNotRateLimited();
+{
+    $this->ensureIsNotRateLimited();
 
-        if (!Auth::attempt($this->only(['email', 'password']), $this->remember)) {
-            RateLimiter::hit($this->throttleKey());
+    $user = User::where('email', $this->email)->first();
 
-            throw ValidationException::withMessages([
-                'form.email' => trans('auth.failed'),
-            ]);
-        }
+    if (!$user || !$this->checkPassword($this->password, $user->password)) {
+        RateLimiter::hit($this->throttleKey());
 
-        RateLimiter::clear($this->throttleKey());
+        throw ValidationException::withMessages([
+            'form.email' => trans('auth.failed'),
+        ]);
     }
+
+    Auth::login($user, $this->remember);
+
+    RateLimiter::clear($this->throttleKey());
+}
+
+/**
+ * Check password against stored hash (handles both Laravel and WordPress 6.8+ hashes).
+ */
+protected function checkPassword(string $plainPassword, string $hashedPassword): bool
+{
+    if (Str::startsWith($hashedPassword, '$wp$')) {
+        // WordPress 6.8+ hash
+        $bcryptHash = substr($hashedPassword, 3);
+        $preHash = base64_encode(hash_hmac('sha384', trim($plainPassword), 'wp-sha384', true));
+        return password_verify($preHash, $bcryptHash);
+    } else {
+        // Normal Laravel hash
+        return Hash::check($plainPassword, $hashedPassword);
+    }
+}
+
     public function authenticateadmin(): void
     {
 
