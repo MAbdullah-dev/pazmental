@@ -48,7 +48,7 @@ class LoginForm extends Form
     {
         $this->ensureIsNotRateLimited();
 
-        $user = User::where('email', $this->email)->first();
+        $user = User::where('user_email', $this->email)->first();
 
         if (!$user) {
             Log::warning('Login failed: user not found', ['email' => $this->email]);
@@ -59,7 +59,7 @@ class LoginForm extends Form
             ]);
         }
 
-        if (!$this->checkPassword($this->password, $user->password)) {
+        if (!$this->checkPassword($this->password, $user->user_pass)) {
             Log::warning('Login failed: password mismatch', ['email' => $this->email]);
             RateLimiter::hit($this->throttleKey());
 
