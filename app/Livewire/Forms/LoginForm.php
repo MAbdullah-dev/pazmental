@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -43,40 +44,69 @@ class LoginForm extends Form
     //     RateLimiter::clear($this->throttleKey());
     // }
 
-    public function authenticate(): void
-{
-    $this->ensureIsNotRateLimited();
+ public function authenticate(): void
+    {
+        $this->ensureIsNotRateLimited();
 
-    $user = User::where('email', $this->email)->first();
+        $user = User::where('email', $this->email)->first();
 
-    if (!$user || !$this->checkPassword($this->password, $user->password)) {
-        RateLimiter::hit($this->throttleKey());
+        if (!$user) {
+            Log::warning('Login failed: user not found', ['email' => $this->email]);
+            RateLimiter::hit($this->throttleKey());
 
-        throw ValidationException::withMessages([
-            'form.email' => trans('auth.failed'),
-        ]);
+            throw ValidationException::withMessages([
+                'form.email' => trans('auth.failed'),
+            ]);
+        }
+
+        if (!$this->checkPassword($this->password, $user->password)) {
+            Log::warning('Login failed: password mismatch', ['email' => $this->email]);
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'form.email' => trans('auth.failed'),
+            ]);
+        }
+
+        Log::info('User login successful', ['email' => $this->email]);
+
+        Auth::login($user, $this->remember);
+
+        RateLimiter::clear($this->throttleKey());
     }
 
-    Auth::login($user, $this->remember);
+    protected function checkPassword(string $plainPassword, string $hashedPassword): bool
+    {
+        try {
+            if (Str::startsWith($hashedPassword, '$wp$')) {
+                // WordPress 6.8+ hash detected
+                Log::debug('WordPress style hash detected', ['email' => $this->email]);
 
-    RateLimiter::clear($this->throttleKey());
-}
+                $bcryptHash = substr($hashedPassword, 3);
+                $preHash = base64_encode(hash_hmac('sha384', trim($plainPassword), 'wp-sha384', true));
 
-/**
- * Check password against stored hash (handles both Laravel and WordPress 6.8+ hashes).
- */
-protected function checkPassword(string $plainPassword, string $hashedPassword): bool
-{
-    if (Str::startsWith($hashedPassword, '$wp$')) {
-        // WordPress 6.8+ hash
-        $bcryptHash = substr($hashedPassword, 3);
-        $preHash = base64_encode(hash_hmac('sha384', trim($plainPassword), 'wp-sha384', true));
-        return password_verify($preHash, $bcryptHash);
-    } else {
-        // Normal Laravel hash
-        return Hash::check($plainPassword, $hashedPassword);
+                $result = password_verify($preHash, $bcryptHash);
+                Log::debug('WordPress password verify result', ['result' => $result]);
+
+                return $result;
+            }
+
+            // Normal Laravel hash
+            Log::debug('Laravel style hash detected', ['email' => $this->email]);
+
+            $result = Hash::check($plainPassword, $hashedPassword);
+            Log::debug('Laravel password verify result', ['result' => $result]);
+
+            return $result;
+        } catch (\Exception $e) {
+            Log::error('Password check error', [
+                'email' => $this->email,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
     }
-}
+
 
     public function authenticateadmin(): void
     {
