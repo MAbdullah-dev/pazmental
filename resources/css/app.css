@@ -1,10 +1,34 @@
-@import 'boxicons';
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "boxicons";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "@dasundev/livewire-dropzone-styles";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@media print {
+    body {
+        display: none;
+    }
+}
+
+.watermark {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0.05;
+    font-size: 24px;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.emergency-notice {
+    background: red;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 18px;
+}
 
 .steps {
     width: 100%;
@@ -32,7 +56,7 @@ canvas#party-welcome {
 
 .custom-select {
     appearance: none;
-    background-image: linear-gradient(to right, #FF6B6B, #A500CD) !important;
+    background-image: linear-gradient(to right, #ff6b6b, #a500cd) !important;
     color: white;
     padding-right: 2.5rem;
     background-clip: padding-box;
@@ -60,7 +84,7 @@ canvas#party-welcome {
 }
 
 .custom-select-wrapper::after {
-    content: '▼';
+    content: "▼";
     /* Custom arrow */
     font-size: 0.75rem;
     color: white;
@@ -78,16 +102,14 @@ canvas#party-welcome {
     }
 }
 
-
 .steps .step {
-
     position: relative;
     padding-top: 15px;
     margin: 0 5px;
 }
 
 .steps .step::after {
-    content: '';
+    content: "";
 }
 
 span.step-icon img {
@@ -106,7 +128,7 @@ span.step-icon {
 }
 
 .steps .step::after {
-    content: '' !important;
+    content: "" !important;
     width: 60px;
     height: 60px;
 }
@@ -117,15 +139,24 @@ span.step-icon {
 
 .dark .steps .step::after,
 .dark .steps .step::before {
-    background-image: linear-gradient(90deg, #ffffff 0%, #ffffff 55%, #ffffff 100%);
+    background-image: linear-gradient(
+        90deg,
+        #ffffff 0%,
+        #ffffff 55%,
+        #ffffff 100%
+    );
 }
 
 .steps .step-primary::after,
 .steps .step-primary::before {
-    background-image: linear-gradient(90deg, #FF6B6B 0%, #A500CD 55%, #0101C5 100%) !important;
+    background-image: linear-gradient(
+        90deg,
+        #ff6b6b 0%,
+        #a500cd 55%,
+        #0101c5 100%
+    ) !important;
     background-color: none;
 }
-
 
 .steps .step-primary span.step-icon img {
     filter: invert(1);
@@ -156,7 +187,7 @@ span.step-text {
 }
 
 .phone-number-select .number-select input,
-.phone-number-select .number-select>div {
+.phone-number-select .number-select > div {
     width: 100%;
 }
 
@@ -176,9 +207,12 @@ span.step-text {
 .step-form input:focus,
 .step-form select:focus {
     --tw-ring-color: transparent;
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+        var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+        calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+        var(--tw-shadow) !important;
     outline: none !important;
     border: none !important;
 }
@@ -250,7 +284,7 @@ span.step-text {
     transform: rotate(180deg);
 }
 
-@media screen and (max-width:1024px) {
+@media screen and (max-width: 1024px) {
     .drawer-side {
         position: static;
         display: flex;
@@ -260,28 +294,28 @@ span.step-text {
         width: 0;
     }
 
-    .drawer-side>*:not(.drawer-overlay) {
+    .drawer-side > *:not(.drawer-overlay) {
         width: 0;
         overflow: hidden;
     }
 
-    .drawer-toggle:checked~.drawer-side>*:not(.drawer-overlay),
-    .drawer-toggle:checked~.drawer-side {
+    .drawer-toggle:checked ~ .drawer-side > *:not(.drawer-overlay),
+    .drawer-toggle:checked ~ .drawer-side {
         width: auto;
         overflow: visible;
     }
 }
 
 @media (min-width: 1024px) {
-    .lg\:drawer-open>.drawer-toggle~.drawer-side {
+    .lg\:drawer-open > .drawer-toggle ~ .drawer-side {
         display: grid !important;
     }
 }
 @media screen and (max-width: 480px) {
     .navitems-wrapper {
-       flex-direction: column !important;
-       justify-content: center !important;
-       gap: 10px;
+        flex-direction: column !important;
+        justify-content: center !important;
+        gap: 10px;
     }
 }
 .content-management table tbody > tr td:nth-child(2) {
@@ -304,7 +338,8 @@ span.step-text {
     word-break: break-word !important;
 }
 
-[type='checkbox'], [type='radio'] {
+[type="checkbox"],
+[type="radio"] {
     color: #fc686e !important;
 }
 .alert-white {
@@ -313,12 +348,11 @@ span.step-text {
     border: 1px solid #ccc !important; /* Optional: Add border for clarity */
 }
 
-
 .toast {
     white-space: unset !important;
 }
 .pet_label {
-        font-size: 24px !important;
+    font-size: 24px !important;
 }
 .information-wrapper:has(.pet_label) .dz-items-start {
     padding-top: 0;
@@ -334,14 +368,14 @@ span.step-text {
 }
 @media (max-width: 1024px) {
     .grid_images {
-            margin-top: 70px;
-        }
+        margin-top: 70px;
+    }
 }
 @media (max-width: 640px) {
     .grid_images {
-                    margin-top: 105px;
-                    grid-template-columns: repeat(2, 1fr);
-        }
+        margin-top: 105px;
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 .gradient_icons_wrapper {
     position: relative;
@@ -368,16 +402,16 @@ span.step-text {
     line-height: 1;
 }
 
-@media screen and (max-width:767px) {
+@media screen and (max-width: 767px) {
     .section_icons_wrapper h5 {
-            text-wrap: wrap;
-            line-height: 1.2;
-        }
+        text-wrap: wrap;
+        line-height: 1.2;
+    }
 }
 .gradient_icons_wrapper_dashboard {
     position: relative;
-        width: fit-content;
-            margin: 0 auto;
+    width: fit-content;
+    margin: 0 auto;
 }
 
 .gradient_icons_dashboard {
