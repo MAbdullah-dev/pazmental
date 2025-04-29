@@ -79,7 +79,6 @@ class LoginForm extends Form
     {
         try {
             if (Str::startsWith($hashedPassword, '$wp$')) {
-                // WordPress 6.8+ hash detected
                 Log::debug('WordPress style hash detected', ['email' => $this->email]);
 
                 $bcryptHash = substr($hashedPassword, 3);
@@ -91,7 +90,6 @@ class LoginForm extends Form
                 return $result;
             }
 
-            // Normal Laravel hash
             Log::debug('Laravel style hash detected', ['email' => $this->email]);
 
             $result = Hash::check($plainPassword, $hashedPassword);
