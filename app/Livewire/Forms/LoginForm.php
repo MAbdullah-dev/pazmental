@@ -78,6 +78,17 @@ class LoginForm extends Form
     protected function checkPassword(string $plainPassword, string $hashedPassword): bool
     {
         try {
+
+            if (Str::startsWith($hashedPassword, '$P$')) {
+    Log::debug('phpass style hash detected', ['email' => $this->email]);
+
+    $result = $this->verifyPhpassHash($plainPassword, $hashedPassword);
+
+    Log::debug('phpass password verify result', ['result' => $result]);
+    return $result;
+}
+
+
             if (Str::startsWith($hashedPassword, '$wp$')) {
                 Log::debug('WordPress style hash detected', ['email' => $this->email]);
 
@@ -104,6 +115,71 @@ class LoginForm extends Form
             return false;
         }
     }
+
+    protected function verifyPhpassHash(string $password, string $hash): bool
+{
+    $itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+    if (strlen($hash) !== 34 || substr($hash, 0, 3) !== '$P$') {
+        return false;
+    }
+
+    $count_log2 = strpos($itoa64, $hash[3]);
+    if ($count_log2 < 7 || $count_log2 > 30) {
+        return false;
+    }
+
+    $count = 1 << $count_log2;
+    $salt = substr($hash, 4, 8);
+
+    if (strlen($salt) !== 8) {
+        return false;
+    }
+
+    $hash_output = md5($salt . $password, true);
+    for ($i = 0; $i < $count; $i++) {
+        $hash_output = md5($hash_output . $password, true);
+    }
+
+    $encoded = $this->encode64($hash_output, 16, $itoa64);
+
+    return substr($hash, 0, 12) . $encoded === $hash;
+}
+
+protected function encode64(string $input, int $count, string $itoa64): string
+{
+    $output = '';
+    $i = 0;
+
+    do {
+        $value = ord($input[$i++]);
+        $output .= $itoa64[$value & 0x3f];
+
+        if ($i < $count) {
+            $value |= ord($input[$i]) << 8;
+        }
+
+        $output .= $itoa64[($value >> 6) & 0x3f];
+
+        if ($i++ >= $count) {
+            break;
+        }
+
+        if ($i < $count) {
+            $value |= ord($input[$i]) << 16;
+        }
+
+        $output .= $itoa64[($value >> 12) & 0x3f];
+
+        if ($i++ >= $count) {
+            break;
+        }
+
+        $output .= $itoa64[($value >> 18) & 0x3f];
+    } while ($i < $count);
+
+    return $output;
+}
 
 
     public function authenticateadmin(): void
