@@ -32,7 +32,7 @@ class RestrictSiteAccess
         }
 
         // Remove "=" character only from the end of $data
-        $data = rtrim($data, '=');
+        // $data = rtrim($data, '=');
 
         // Decode and validate Base64 data
         $decodedData = base64_decode($data, true);
