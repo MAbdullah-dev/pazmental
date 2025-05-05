@@ -103,7 +103,7 @@
                 </a>
             </div>
             <div class="grid_images">
-                @foreach (json_decode($content['images'], true) as $image)
+                @foreach (collect(json_decode($content['images'], true)) as $image)
                     <img src="{{ asset('storage/images/' . $image) }}" alt=""
                         class="object-cover w-[100%] h-[100%]">
                 @endforeach
@@ -262,7 +262,7 @@
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
-                                                                                                                                                                                                                                                                                                                                                                                                                                            & Exit')</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                & Exit')</a>
             </div>
         @endauth
     </div>
