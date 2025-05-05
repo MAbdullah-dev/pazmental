@@ -40,7 +40,7 @@
                     <div
                         class="image-wrapper flex p-[3px] rounded-[50%] bg-white mb-2 w-[150px] h-[150px] overflow-hidden">
                         @php
-                            $user_id = $content['patient_id'];
+                            $user_id = is_array($content) ? $content['patient_id'] ?? null : null;
                         @endphp
                         <img src="{{ getProfilePicture($user_id) }}" alt=""
                             class="object-cover w-[100%] h-[100%] rounded-[50%] overflow-hidden">
