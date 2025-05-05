@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('patient_id')->nullable();
             $table->string('name');
             $table->string('breed');
-            $table->integer('age');
+            $table->string('age');
             $table->string('social_media');
             $table->string('owner_name');
             $table->string('owner_phone_no');
