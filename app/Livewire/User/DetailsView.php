@@ -4,6 +4,7 @@ namespace App\Livewire\User;
 
 use Livewire\Component;
 use App\Models\PatientDetails;
+use App\Models\PatientPets;
 use Illuminate\Support\Facades\Auth;
 
 class DetailsView extends Component
@@ -17,7 +18,8 @@ class DetailsView extends Component
     {
         $id = decrypt($data);
         $this->userId = $id;
-        $this->content = PatientDetails::where('patient_id', $this->userId)->first();
+        $this->content = PatientDetails::where('patient_id', $this->userId)->first() ?? PatientPets::where('patient_id', $this->userId)->first();
+
     }
 
     public function render()
