@@ -42,16 +42,15 @@ function getPatientpet($user_id = null)
 function getProfilePicture($id = null)
 {
     $id = $id ?? auth()->id();
-
     $patient = getPatient($id);
 
-    $image = $patient->images[0] ?? null;
-
-    if (!$patient || !$image) {
+    // Check if patient exists and has at least one image
+    if (!$patient || empty($patient->images) || !isset($patient->images[0])) {
         return asset('assets/images/avatar-place.png');
     }
 
-    return asset('storage/images/' . $image);
+    // Return image path
+    return asset('storage/images/' . $patient->images[0]);
 }
 
 
