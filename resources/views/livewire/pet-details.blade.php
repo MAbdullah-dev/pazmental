@@ -1,11 +1,11 @@
 <section wire:ignore.self class="medical-history py-10">
     <div>
         <div class="emergency-notice">
-            EMERGENCY USE ONLY - CONFIDENTIAL PATIENT INFORMATION
+            SOLO PARA USO EN CASO DE EMERGENCIA:
         </div>
 
         <div class="watermark">
-            Emergency Access - {{ now()->format('Y-m-d H:i:s') }}
+            información confidencial del paciente - {{ now()->format('F j, Y, g:i A') }}
         </div>
     </div>
     <div id="locationOverlay"
@@ -262,7 +262,7 @@
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                & Exit')</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        & Exit')</a>
             </div>
         @endauth
     </div>
@@ -281,7 +281,8 @@
         // Blank page on tab switch/minimize
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'hidden') {
-                document.body.innerHTML = "<h1 style='text-align:center;margin-top:20%;'>Access Restricted</h1>";
+                document.body.innerHTML =
+                    "<h1 style='text-align:center;margin-top:20%;'>Access Restricted. Please Scan the QR code again.</h1>";
             }
         });
 

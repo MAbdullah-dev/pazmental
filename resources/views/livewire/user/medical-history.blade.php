@@ -560,7 +560,8 @@
         // Blank page on tab switch/minimize
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'hidden') {
-                document.body.innerHTML = "<h1 style='text-align:center;margin-top:20%;'>Access Restricted</h1>";
+                document.body.innerHTML =
+                    "<h1 style='text-align:center;margin-top:20%;'>Access Restricted.  Please Scan the QR code again.</h1>";
             }
         });
 

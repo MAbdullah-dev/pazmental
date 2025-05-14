@@ -21,21 +21,37 @@ function getPatientpet($user_id = null)
     return PatientPets::where('patient_id', $user_id)->first();
 }
 
+// function getProfilePicture($id = null)
+// {
+
+
+//     if ($id === null) {
+//         $id = auth()->id();
+//     }
+
+//     $patient = getPatient($id);
+
+//     if (!$patient || !isset($patient->images[0])) {
+//         return asset('assets/images/avatar-place.png');
+//     } else {
+//         return asset('storage/images/' . $patient->images[0]);
+//     }
+// }
+
+
 function getProfilePicture($id = null)
 {
-
-
-    if ($id === null) {
-        $id = auth()->id();
-    }
+    $id = $id ?? auth()->id();
 
     $patient = getPatient($id);
 
-    if (!$patient || !isset($patient->images[0])) {
+    $image = $patient->images[0] ?? null;
+
+    if (!$patient || !$image) {
         return asset('assets/images/avatar-place.png');
-    } else {
-        return asset('storage/images/' . $patient->images[0]);
     }
+
+    return asset('storage/images/' . $image);
 }
 
 
@@ -46,13 +62,13 @@ function translate($key, $lang = null)
         $lang = App::getLocale();
     }
     //dd($lang);
-    
+
     $lang_key = preg_replace('/[^A-Za-z0-9\_]/', '', str_replace(' ', '_', strtolower($key)));
-    
+
     $translations_default = Cache::rememberForever('translations-' . env('DEFAULT_LANGUAGE', 'en'), function () {
         return Translation::where('lang', env('DEFAULT_LANGUAGE', 'en'))->pluck('lang_value', 'lang_key')->toArray();
     });
-    
+
     if (!isset($translations_default[$lang_key])) {
         $translation_def = new Translation;
         $translation_def->lang = env('DEFAULT_LANGUAGE', 'en');
@@ -65,7 +81,7 @@ function translate($key, $lang = null)
     $translation_locale = Cache::rememberForever('translations-' . $lang, function () use ($lang) {
         return Translation::where('lang', $lang)->pluck('lang_value', 'lang_key')->toArray();
     });
-    
+
     //Check for session lang
     if (isset($translation_locale[$lang_key])) {
         return $translation_locale[$lang_key];
