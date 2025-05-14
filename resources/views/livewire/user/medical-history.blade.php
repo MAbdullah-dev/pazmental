@@ -42,7 +42,9 @@
                         @php
                             $user_id = is_array($content) ? $content['patient_id'] ?? null : null;
                         @endphp
-                        <img src="{{ getProfilePicture($user_id) }}" alt=""
+                        {{-- <img src="{{ getProfilePicture($user_id) }}" alt=""
+                            class="object-cover w-[100%] h-[100%] rounded-[50%] overflow-hidden"> --}}
+                        <img src="{{ asset('storage/images/' . $patient->images[0]) }}" alt=""
                             class="object-cover w-[100%] h-[100%] rounded-[50%] overflow-hidden">
                     </div>
                 </a>
