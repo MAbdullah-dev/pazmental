@@ -423,8 +423,3 @@ span.step-text {
     object-fit: contain;
     transform: translate(-100%, -50%);
 }
-
-.history-image-wrapper {
-    min-height: 190px;
-    min-width: 190px;
-}
