@@ -38,7 +38,7 @@
                 <a href=""
                     class="mb-4 flex flex-col items-center rounded-2xl p-[10px] sm:p-[15px] bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5]">
                     <div
-                        class="image-wrapper flex p-[3px] rounded-[50%] bg-white mb-2 w-[150px] h-[150px] overflow-hidden">
+                        class="history-image-wrapper image-wrapper flex p-[3px] rounded-[50%] bg-white mb-2 w-[150px] h-[150px] overflow-hidden">
                         @php
                             $user_id = is_array($content) ? $content['patient_id'] ?? null : null;
                         @endphp

@@ -425,6 +425,6 @@ span.step-text {
 }
 
 .history-image-wrapper {
-    /* height: 180px;
-    width: 180px; */
+    min-height: 190px;
+    min-width: 190px;
 }
