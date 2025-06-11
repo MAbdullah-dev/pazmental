@@ -98,7 +98,7 @@
                             $user_id = $content['patient_id'];
                         @endphp
                         <img src="{{ asset('storage/images/' . json_decode($content['main_image'])) }}" alt=""
-                            class="object-cover w-[100%] h-[100%] rounded-[50%] overflow-hidden">
+                            class="w-[100%] h-[100%] rounded-[50%] overflow-hidden">
                     </div>
                 </a>
             </div>
@@ -262,7 +262,7 @@
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        & Exit')</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            & Exit')</a>
             </div>
         @endauth
     </div>

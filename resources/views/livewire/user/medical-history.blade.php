@@ -45,7 +45,7 @@
                         {{-- <img src="{{ getProfilePicture($user_id) }}" alt=""
                             class="object-cover w-[100%] h-[100%] rounded-[50%] overflow-hidden"> --}}
                         <img src="{{ asset('storage/images/' . ($content->images[0] ?? 'avatar-place.png')) }}"
-                            alt="" class="object-cover w-[100%] h-[100%] rounded-[50%] overflow-hidden">
+                            alt="" class="w-[100%] h-[100%] rounded-[50%] overflow-hidden">
                     </div>
                 </a>
             </div>
