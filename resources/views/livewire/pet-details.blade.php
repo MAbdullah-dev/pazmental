@@ -11,10 +11,10 @@
     <div id="locationOverlay"
         class="{{ $locationObtained ? 'hidden' : '' }} fixed inset-0 bg-gray-800 bg-opacity-75 flex flex-col items-center justify-center z-50">
         <div class="bg-white p-6 rounded shadow text-center">
-            <h2 class="text-lg font-semibold mb-4">Location Required</h2>
-            <p class="mb-4">We need your location to continue. Please allow location access.</p>
+            <h2 class="text-lg font-semibold mb-4">La ubicación es obligatoria. </h2>
+            <p class="mb-4"> Por favor, permita el acceso a la ubicación para acceder al historial médico.</p>
             <button id="allowLocation" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                Allow Location
+                Permitir ubicación
             </button>
             <p id="locationError" class="text-red-500 mt-4 hidden"></p>
             <div id="iosInstructions" class="hidden text-sm text-gray-600 mt-2">
@@ -262,7 +262,7 @@
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        & Exit')</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    & Exit')</a>
             </div>
         @endauth
     </div>
