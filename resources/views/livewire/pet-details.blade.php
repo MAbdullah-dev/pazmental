@@ -93,12 +93,12 @@
                 <a href=""
                     class="mb-4 flex flex-col items-center rounded-2xl p-[10px] sm:p-[15px] bg-gradient-to-r from-[#FF6B6B] via-[#A500CD] to-[#0101C5]">
                     <div style="width: 180px; height: 180px"
-                        class="image-wrapper flex p-[3px] rounded-[50%] bg-white mb-2 w-[180px] h-[180px] overflow-hidden">
+                        class="history-image-wrapper image-wrapper flex p-[3px] rounded-[50%] bg-white mb-2 w-[180px] h-[180px] overflow-hidden">
                         @php
                             $user_id = $content['patient_id'];
                         @endphp
                         <img src="{{ asset('storage/images/' . json_decode($content['main_image'])) }}" alt=""
-                            class="w-[100%] h-[100%] rounded-[50%] overflow-hidden">
+                            class="object-fill w-[100%] h-[100%] rounded-[50%] overflow-hidden">
                     </div>
                 </a>
             </div>
@@ -262,7 +262,7 @@
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-10 py-2 text-white ">@translate('Edit')</a>
                 <a href="{{ route('SaveExit') }}"
                     class="flex w-fit my-6 rounded-xl bg-gradient-to-r from-[#FF6B6B] to-[#A500CD] px-8 sm:px-10 py-2 text-white ">@translate('Save
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                & Exit')</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        & Exit')</a>
             </div>
         @endauth
     </div>
